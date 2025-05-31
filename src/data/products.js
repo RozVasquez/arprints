@@ -73,7 +73,7 @@ const productData = {
             details: "Choose any design."
           },
           {
-            quantity: "6 strips",
+            quantity: "5 strips",
             price: "₱60",
             details: "Choose any design."
           }
