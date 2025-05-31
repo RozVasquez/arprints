@@ -6,6 +6,7 @@ function ProductTabs() {
   const [activeProduct, setActiveProduct] = useState(null);
   const [activeInstaxSubtype, setActiveInstaxSubtype] = useState('instax-classic');
   const productRefs = useRef({});
+  const tabsContainerRef = useRef(null);
 
   // Set initial active product based on the active tab
   useEffect(() => {
@@ -40,49 +41,11 @@ function ProductTabs() {
     }
   };
 
-  // Get color class based on product color
-  const getColorClass = (color) => {
-    const colorMap = {
-      pink: 'bg-pink-100 hover:bg-pink-200 text-pink-800',
-      blue: 'bg-blue-100 hover:bg-blue-200 text-blue-800',
-      green: 'bg-green-100 hover:bg-green-200 text-green-800',
-      orange: 'bg-orange-100 hover:bg-orange-200 text-orange-800',
-      violet: 'bg-violet-100 hover:bg-violet-200 text-violet-800',
-      red: 'bg-red-100 hover:bg-red-200 text-red-800',
-      yellow: 'bg-yellow-100 hover:bg-yellow-200 text-yellow-800',
-      indigo: 'bg-indigo-100 hover:bg-indigo-200 text-indigo-800',
-    };
-    return colorMap[color] || colorMap.pink;
-  };
-
-  // Get border color class based on product color
-  const getBorderColorClass = (color) => {
-    const colorMap = {
-      pink: 'border-pink-500',
-      blue: 'border-blue-500',
-      green: 'border-green-500',
-      orange: 'border-orange-500',
-      violet: 'border-violet-500',
-      red: 'border-red-500',
-      yellow: 'border-yellow-500',
-      indigo: 'border-indigo-500',
-    };
-    return colorMap[color] || colorMap.pink;
-  };
-
-  // Get button color class based on product color
-  const getButtonColorClass = (color) => {
-    const colorMap = {
-      pink: 'bg-pink-600 hover:bg-pink-700',
-      blue: 'bg-blue-600 hover:bg-blue-700',
-      green: 'bg-green-600 hover:bg-green-700',
-      orange: 'bg-orange-600 hover:bg-orange-700',
-      violet: 'bg-violet-600 hover:bg-violet-700',
-      red: 'bg-red-600 hover:bg-red-700',
-      yellow: 'bg-yellow-600 hover:bg-yellow-700',
-      indigo: 'bg-indigo-600 hover:bg-indigo-700',
-    };
-    return colorMap[color] || colorMap.pink;
+  // Function to scroll tabs to the right
+  const scrollTabsRight = () => {
+    if (tabsContainerRef.current) {
+      tabsContainerRef.current.scrollBy({ left: 150, behavior: 'smooth' });
+    }
   };
 
   // Function to render table based on product type
@@ -147,42 +110,66 @@ function ProductTabs() {
   return (
     <section id="pricing" className="py-16 md:py-20 bg-pink-50">
       <div className="container mx-auto px-4 md:px-6">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Product Prices</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">Product Prices</h2>
         
-        {/* Mobile-friendly tab navigation */}
-        <div className="flex flex-wrap justify-center gap-2 mb-8 sticky top-16 z-30 bg-pink-50 py-4 shadow-sm rounded-lg">
-          {Object.keys(productData).map((tabId) => (
-            <button
-              key={tabId}
-              className={`tab-button relative ${
-                activeTab === tabId 
-                  ? 'bg-pink-500 text-white font-bold shadow-md' 
-                  : 'bg-pink-100 text-pink-700'
-              } text-sm md:text-base px-4 md:px-6 py-2 md:py-3 rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none`}
-              onClick={() => handleTabClick(tabId)}
-            >
-              {productData[tabId].title}
-              {activeTab === tabId && (
-                <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-pink-500 rounded-full"></span>
-              )}
-            </button>
-          ))}
+        {/* Mobile-friendly tab navigation with horizontal scroll */}
+        <div className="relative mb-8 sticky top-[65px] z-40 bg-pink-50 py-5 rounded-lg border border-pink-200">
+          <div 
+            ref={tabsContainerRef}
+            className="flex overflow-x-auto no-scrollbar gap-3 px-4 py-2 pr-12 md:pr-4 md:justify-center"
+          >
+            {Object.keys(productData).map((tabId) => (
+              <button
+                key={tabId}
+                className={`tab-button flex-shrink-0 relative border-2 transition-all duration-300 ${
+                  activeTab === tabId 
+                    ? 'bg-pink-500 text-white font-bold border-pink-500' 
+                    : 'bg-white text-pink-700 border-pink-300 hover:bg-pink-100'
+                } text-base md:text-lg px-5 py-3 md:px-6 md:py-3 rounded-lg transform hover:scale-105 focus:outline-none whitespace-nowrap`}
+                onClick={() => handleTabClick(tabId)}
+              >
+                <div className="flex items-center">
+                  {productData[tabId].title}
+                </div>
+                {activeTab === tabId && (
+                  <>
+                    <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                    <div className="absolute bottom-0 left-0 w-full h-1 bg-pink-500"></div>
+                  </>
+                )}
+              </button>
+            ))}
+          </div>
+          
+          {/* Next button for mobile */}
+          <button 
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-white text-pink-500 border-2 border-pink-300 rounded-full p-2.5 md:hidden focus:outline-none hover:bg-pink-500 hover:text-white hover:border-pink-500 transition-all duration-300"
+            onClick={scrollTabsRight}
+            aria-label="Scroll tabs right"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         </div>
         
         {/* Instax subtabs - only show when instax tab is active */}
         {activeTab === 'instax' && (
-          <div className="flex flex-wrap justify-center gap-4 mb-6">
+          <div className="flex flex-wrap justify-center gap-4 mb-8 mt-4">
             {productData.instax.items.map(product => (
               <button
                 key={product.id}
                 onClick={() => handleProductClick(product.id)}
-                className={`px-5 py-2 rounded-md transition-all duration-200 ${
+                className={`px-5 py-3 rounded-md relative transition-all duration-200 ${
                   activeProduct === product.id
-                    ? `${getColorClass(product.color)} font-bold border-2 ${getBorderColorClass(product.color)}`
-                    : 'bg-white border-2 border-gray-200'
-                }`}
+                    ? 'bg-white text-pink-700 font-bold' 
+                    : 'bg-white text-pink-700 hover:bg-pink-100'
+                } mb-1`}
               >
                 {product.name.split(' ').slice(-2).join(' ')}
+                {activeProduct === product.id && (
+                  <span className="absolute bottom-0 left-0 w-full h-1.5 bg-pink-500 rounded-b-md"></span>
+                )}
               </button>
             ))}
           </div>
@@ -190,19 +177,22 @@ function ProductTabs() {
         
         {/* Product selection buttons - only show for non-instax tabs */}
         {activeTab !== 'instax' && productData[activeTab].items.length > 1 && (
-          <div className="flex flex-wrap gap-2 mb-6 justify-center">
+          <div className="flex flex-wrap gap-4 mb-8 mt-4 justify-center">
             {productData[activeTab].items.map(product => (
               <button
                 key={product.id}
                 ref={el => productRefs.current[product.id] = el}
                 onClick={() => handleProductClick(product.id)}
-                className={`px-4 py-2 rounded-lg transition-all duration-300 ${
+                className={`px-5 py-3 rounded-lg relative transition-all duration-300 ${
                   activeProduct === product.id
-                    ? `${getColorClass(product.color)} border-2 ${getBorderColorClass(product.color)}`
-                    : `${getColorClass(product.color)} border-2 border-transparent`
-                }`}
+                    ? 'bg-white text-pink-700 font-bold'
+                    : 'bg-white text-pink-700 hover:bg-pink-100'
+                } mb-1`}
               >
                 {product.name}
+                {activeProduct === product.id && (
+                  <span className="absolute bottom-0 left-0 w-full h-1.5 bg-pink-500 rounded-b-md"></span>
+                )}
               </button>
             ))}
           </div>
@@ -227,7 +217,7 @@ function ProductTabs() {
                 
                 return (
                   <>
-                    <h3 className={`text-xl md:text-2xl font-bold mb-2 text-${product.color}-600`}>{product.name}</h3>
+                    <h3 className="text-xl md:text-2xl font-bold mb-2 text-black">{product.name}</h3>
                     {product.description && <p className="text-gray-600 mb-4">{product.description}</p>}
                     <div className="overflow-x-auto">
                       {renderProductTable(product)}

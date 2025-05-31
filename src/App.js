@@ -5,20 +5,18 @@ import Hero from './components/Hero';
 import About from './components/About';
 import ProductTabs from './components/ProductTabs';
 import Footer from './components/Footer';
-import Admin from './pages/Admin';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/admin" element={<Admin />} />
         <Route path="/" element={
           <div className="App">
             <Header />
             <main>
               <Hero />
-              <About />
               <ProductTabs />
+              <About />
             </main>
             <Footer />
           </div>
