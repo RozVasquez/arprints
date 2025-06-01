@@ -39,9 +39,6 @@ function DesignGallery() {
     document.body.style.overflow = 'auto';
   };
 
-  // Landscape 3:2 aspect ratio for all images (instead of portrait 2:3)
-  const aspectRatioStyle = { paddingBottom: 'calc(2 / 3 * 100%)' }; // 66.67% for 3:2 ratio
-
   // Get current items to display based on active tab and subtype
   const getCurrentItems = () => {
     if (activeTab === 'instax') {
@@ -103,14 +100,14 @@ function DesignGallery() {
             {getCurrentItems().map((image, index) => (
               <div 
                 key={index}
-                className="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
+                className="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1 bg-white"
                 onClick={() => openModal(image.path)}
               >
-                <div className="relative" style={aspectRatioStyle}>
+                <div className="w-full aspect-[3/2] relative">
                   <BlobImage
                     src={image.path}
                     alt={`Design ${index + 1}`}
-                    className="absolute top-0 left-0 w-full h-full object-contain bg-white"
+                    className="w-full h-full object-contain"
                   />
                 </div>
               </div>
