@@ -12,6 +12,9 @@ const galleryData = {
       mini: {
         title: "Mini",
         items: [
+          { path: "/images/designs/instaxmini/Design1.jpg" },
+          { path: "/images/designs/instaxmini/Design2.jpg" },
+          { path: "/images/designs/instaxmini/Design3.jpg" },
           { path: "/images/designs/instaxmini/Design4.jpg" },
           { path: "/images/designs/instaxmini/Design5.jpg" },
           { path: "/images/designs/instaxmini/Design6.jpg" },
@@ -21,9 +24,7 @@ const galleryData = {
           { path: "/images/designs/instaxmini/Design10.jpg" },
           { path: "/images/designs/instaxmini/Design11.jpg" },
           { path: "/images/designs/instaxmini/Design12.jpg" },
-          { path: "/images/designs/instaxmini/Design13.jpg" },
-          { path: "/images/designs/instaxmini/Design14.jpg" },
-          { path: "/images/designs/instaxmini/Design15.jpg" },
+
         ]
       },
     }
@@ -31,6 +32,10 @@ const galleryData = {
   strips: {
     title: "Photo Strip Designs",
     items: [
+      { path: "/images/designs/strips/Silakbo.jpg" },
+      { path: "/images/designs/strips/Taylor.jpg" },
+      { path: "/images/designs/strips/Classic.jpg" },
+
     ]
   }
 };
