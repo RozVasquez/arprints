@@ -10,7 +10,14 @@ function Header() {
   return (
     <header id="header" className="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="#hero" className="text-2xl font-bold text-pink-600">AR Prints</a>
+        <a href="#hero" className="flex items-center space-x-2">
+          <img 
+            src="/images/favicon.png" 
+            alt="AR Prints Logo" 
+            className="w-8 h-8 rounded-full object-cover"
+          />
+          <span className="text-2xl font-bold text-pink-600">AR Prints</span>
+        </a>
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-8">

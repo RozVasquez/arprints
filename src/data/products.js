@@ -150,12 +150,12 @@ const productData = {
       "color": "gray",
       "options": [
         {
-          "type": "any size",
+          "type": "Black and White",
           "quantity": "per page",
           "price": "₱3"
         },
         {
-          "type": "any size",
+          "type": "Colored",
           "quantity": "per page",
           "price": "₱4"
         }
@@ -168,12 +168,12 @@ const productData = {
       "color": "blue",
       "options": [
         {
-          "type": "any size",
+          "type": "Black and White",
           "quantity": "per page",
           "price": "₱4"
         },
         {
-          "type": "any size",
+          "type": "Colored",
           "quantity": "per page",
           "price": "₱5"
         }
