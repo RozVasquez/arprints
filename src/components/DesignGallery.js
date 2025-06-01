@@ -50,6 +50,14 @@ function DesignGallery() {
         {activeTab === 'instax' && (
           <p className="text-xl md:text-xl font-normal text-center mb-10 text-gray-600">All designs are available in Mini, Square, and Wide sizes.</p>
         )}
+        {/* Add info text for Instax */}
+        {activeTab === 'strips' && (
+          <p className="text-xl md:text-xl font-normal text-center mb-10 text-gray-600">All designs are available in Mini Strips.</p>
+        )}
+        {/* Add info text for Instax */}
+        {activeTab === 'photocard' && (
+          <p className="text-xl md:text-xl font-normal text-center mb-10 text-gray-600">Available in Glttered, Matte, and Glossy Finish.</p>
+        )}
         {/* Main tabs for different gallery categories */}
         <div className="flex flex-wrap justify-center gap-4 mb-8">
           {Object.keys(galleryData).map((tab) => (
