@@ -53,14 +53,15 @@ function ProductTabs() {
     if (!product) return null;
 
     // Handle different table structures based on product type
-    if (activeTab === 'instax') {
+    if (activeTab === 'instax' || 
+        (activeTab === 'photoPrinting' && product.id === 'a4-photo') || 
+        (product.options && product.options.length > 0 && 'type' in product.options[0])) {
       return (
         <table className="w-full text-left">
           <thead>
             <tr className="border-b-2 border-gray-200">
               <th className="py-3 px-4 font-semibold text-gray-700">Type</th>
               <th className="py-3 px-4 font-semibold text-gray-700">Quantity</th>
-              <th className="py-3 px-4 font-semibold text-gray-700">Details</th>
               <th className="py-3 px-4 font-semibold text-gray-700">Price</th>
             </tr>
           </thead>
@@ -72,7 +73,6 @@ function ProductTabs() {
               >
                 <td className="py-4 px-4">{option.type}</td>
                 <td className="py-4 px-4">{option.quantity}</td>
-                <td className="py-4 px-4">{option.details || ''}</td>
                 <td className="py-4 px-4 font-semibold">{option.price}</td>
               </tr>
             ))}
@@ -87,7 +87,6 @@ function ProductTabs() {
         <thead>
           <tr className="border-b-2 border-gray-200">
             <th className="py-3 px-4 font-semibold text-gray-700">Quantity</th>
-            <th className="py-3 px-4 font-semibold text-gray-700">Details</th>
             <th className="py-3 px-4 font-semibold text-gray-700">Price</th>
           </tr>
         </thead>
@@ -98,7 +97,6 @@ function ProductTabs() {
               className={`${index < product.options.length - 1 ? 'border-b border-gray-100' : ''} hover:bg-gray-50 transition-colors duration-200`}
             >
               <td className="py-4 px-4">{option.quantity}</td>
-              <td className="py-4 px-4">{option.details || ''}</td>
               <td className="py-4 px-4 font-semibold">{option.price}</td>
             </tr>
           ))}

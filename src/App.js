@@ -4,6 +4,7 @@ import Header from './components/Header';
 import Hero from './components/Hero';
 import About from './components/About';
 import ProductTabs from './components/ProductTabs';
+import DesignGallery from './components/DesignGallery';
 import Footer from './components/Footer';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
             <main>
               <Hero />
               <ProductTabs />
+              <DesignGallery />
               <About />
             </main>
             <Footer />

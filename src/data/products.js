@@ -10,13 +10,11 @@ const productData = {
         options: [
           {
             quantity: "18 pcs",
-            price: "₱120",
-            details: "18 cards with glitter finish"
+            price: "₱120"
           },
           {
             quantity: "9 pcs",
-            price: "₱70",
-            details: "9 cards with glitter finish"
+            price: "₱70"
           }
         ]
       },
@@ -28,13 +26,11 @@ const productData = {
         options: [
           {
             quantity: "18 pcs",
-            price: "₱100",
-            details: "18 cards with choice of finish."
+            price: "₱100"
           },
           {
             quantity: "9 pcs",
-            price: "₱60",
-            details: "9 cards with choice of finish."
+            price: "₱60"
           }
         ]
       }
@@ -51,13 +47,11 @@ const productData = {
         options: [
           {
             quantity: "2 strips",
-            price: "₱30",
-            details: "Minimalist Photo Strips. Choose any color."
+            price: "₱30"
           },
           {
             quantity: "5 strips",
-            price: "₱50",
-            details: "Minimalist Photo Strips. Choose any color."
+            price: "₱50"
           }
         ]
       },
@@ -69,13 +63,11 @@ const productData = {
         options: [
           {
             quantity: "2 strips",
-            price: "₱40",
-            details: "Choose any design."
+            price: "₱40"
           },
           {
             quantity: "5 strips",
-            price: "₱60",
-            details: "Choose any design."
+            price: "₱60"
           }
         ]
       }
@@ -93,20 +85,17 @@ const productData = {
           {
             type: "Mini",
             quantity: "10 pcs",
-            price: "₱50",
-            details: "Small size, perfect for wallets and small albums. (2.1 in x 3.4 in)"
+            price: "₱50"
           },
           {
             type: "Square",
             quantity: "8 pcs",
-            price: "₱60",
-            details: "Classic square format, perfect for display. (2.8 in x 3.4 in)"
+            price: "₱60"
           },
           {
             type: "Wide",
             quantity: "4 pcs",
-            price: "₱70",
-            details: "Larger format with more detail. (4.25 in x 3.4 in)"
+            price: "₱70"
           }
         ]
       },
@@ -119,20 +108,17 @@ const productData = {
           {
             type: "Mini",
             quantity: "10 pcs",
-            price: "₱70",
-            details: "Small size with custom design elements. (2.1 in x 3.4 in)"
+            price: "₱70"
           },
           {
             type: "Square",
             quantity: "8 pcs",
-            price: "₱80",
-            details: "Square format with custom design elements. (2.8 in x 3.4 in)"
+            price: "₱80"
           },
           {
             type: "Wide",
             quantity: "5 pcs",
-            price: "₱100",
-            details: "Larger format with custom design elements. (4.25 in x 3.4 in)"
+            price: "₱100"
           }
         ]
       }
@@ -150,14 +136,12 @@ const productData = {
         {
           "type": "any size",
           "quantity": "per page",
-          "price": "₱3",
-          "details": "Black and White photocopy on any size paper."
+          "price": "₱3"
         },
         {
           "type": "any size",
           "quantity": "per page",
-          "price": "₱4",
-          "details": "Colored photocopy on any size paper."
+          "price": "₱4"
         }
       ]
     },
@@ -170,14 +154,12 @@ const productData = {
         {
           "type": "any size",
           "quantity": "per page",
-          "price": "₱4",
-          "details": "Black and White print on any size paper."
+          "price": "₱4"
         },
         {
           "type": "any size",
           "quantity": "per page",
-          "price": "₱5",
-          "details": "Colored print on any size paper."
+          "price": "₱5"
         }
       ]
     }
@@ -195,58 +177,50 @@ const productData = {
         {
           "type": "Package 1",
           "quantity": "1x1: 6 pcs, 2x2: 4 pcs",
-          "price": "₱60",
-          "details": "Standard package for general ID requirements."
+          "price": "₱60"
         },
         {
           "type": "Package 2",
           "quantity": "1x1: 4 pcs, 2x2: 6 pcs",
-          "price": "₱60",
-          "details": "Alternative package with more 2x2 photos."
+          "price": "₱60"
         },
         {
           "type": "Package 3",
           "quantity": "1x1: 12 pcs",
-          "price": "₱60",
-          "details": "Bulk 1x1 photos for multiple uses."
+          "price": "₱60"
         },
         {
           "type": "Package 4",
           "quantity": "2x2: 8 pcs",
-          "price": "₱60",
-          "details": "Bulk 2x2 photos for various applications."
+          "price": "₱60"
         },
         {
           "type": "Package 5",
           "quantity": "Passport: 6 pcs",
-          "price": "₱80",
-          "details": "Standard passport-sized photos."
+          "price": "₱80"
         },
         {
           "type": "Package 6",
           "quantity": "Passport with Name: 8 pcs",
-          "price": "₱100",
-          "details": "Passport-sized photos with printed name."
+          "price": "₱100"
         }
       ]
     },
     {
       "id": "a4-photo",
-      "name": "A4 Photo",
+      "name": "A4",
       "description": "High-quality A4 size photo prints.",
       "color": "purple",
       "options": [
         {
-          "type": "Basic",
+          "type": "Basic Print",
           "quantity": "1 pc",
-          "price": "₱60",
-          "details": "Printed on satin paper."
+          "price": "₱60"
         },
         {
-          "type": "Premium",
+          "type": "Matte / Glossy Phototop",
           "quantity": "1 pc",
-          "price": "₱75",
-          "details": "Printed on satin paper with matte or glossy photo top."
+          "price": "₱75"
         }
       ]
     }
