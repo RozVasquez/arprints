@@ -2,7 +2,8 @@ const galleryData = {
   photocard: {
     title: "Photocard Designs",
     items: [
-
+      { path: "/images/designs/photocards/Glitters.jpg" },
+      { path: "/images/designs/photocards/Matte.jpg" },
     ]
   },
   instax: {
@@ -23,7 +24,6 @@ const galleryData = {
           { path: "/images/designs/instaxmini/Design13.jpg" },
           { path: "/images/designs/instaxmini/Design14.jpg" },
           { path: "/images/designs/instaxmini/Design15.jpg" },
-          { path: "https://via.placeholder.com/600x900/fcd34d/000000?text=Mini+Instax" },
         ]
       },
       square: {
@@ -44,7 +44,6 @@ const galleryData = {
           { path: "/images/designs/instaxsq/Design13.jpg" },
           { path: "/images/designs/instaxsq/Design14.jpg" },
           { path: "/images/designs/instaxsq/Design15.jpg" },
-          { path: "https://via.placeholder.com/600x600/60a5fa/000000?text=Square+Instax" },
         ]
       },
       wide: {
