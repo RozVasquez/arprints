@@ -42,31 +42,47 @@ const productData = {
       {
         id: "strips-classic",
         name:"Classic",
-        description: "Classic Plain Strips. (2 in x 6 in)",
+        description: "Classic Plain Strips.",
         color: "blue",
         options: [
           {
-            quantity: "2 strips",
+            quantity: "2 Strips (2\" x 6\")",
             price: "₱30"
           },
           {
-            quantity: "5 strips",
+            quantity: "5 Strips (2\" x 6\")",
             price: "₱50"
+          },
+          {
+            quantity: "4 Mini Strips (1.2\" x 3.5\")",
+            price: "₱30"
+          },
+          {
+            quantity: "10 Mini Strips (1.2\" x 3.5\")",
+            price: "₱60"
           }
         ]
       },
       {
         id: "strips-premium",
         name: "with Design",
-        description: "Creative designs just for you. (2 in x 6 in)",
+        description: "Creative designs just for you.",
         color: "green",
         options: [
           {
-            quantity: "2 strips",
+            quantity: "2 Strips (2\" x 6\")",
             price: "₱40"
           },
           {
-            quantity: "5 strips",
+            quantity: "5 Strips (2\" x 6\")",
+            price: "₱60"
+          },
+          {
+            quantity: "4 Mini Strips (1.2\" x 3.5\")",
+            price: "₱40"
+          },
+          {
+            quantity: "10 Mini Strips (1.2\" x 3.5\")",
             price: "₱60"
           }
         ]

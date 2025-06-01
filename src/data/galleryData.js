@@ -35,6 +35,7 @@ const galleryData = {
       { path: "/images/designs/strips/Silakbo.jpg" },
       { path: "/images/designs/strips/Taylor.jpg" },
       { path: "/images/designs/strips/Classic.jpg" },
+      { path: "/images/designs/strips/Creative.jpg" },
 
     ]
   }
