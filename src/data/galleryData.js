@@ -26,38 +26,11 @@ const galleryData = {
           { path: "/images/designs/instaxmini/Design15.jpg" },
         ]
       },
-      square: {
-        title: "Square",
-        items: [
-          { path: "/images/designs/instaxsq/Design1.jpg" },
-          { path: "/images/designs/instaxsq/Design2.jpg" },
-          { path: "/images/designs/instaxsq/Design3.jpg" },
-          { path: "/images/designs/instaxsq/Design4.jpg" },
-          { path: "/images/designs/instaxsq/Design5.jpg" },
-          { path: "/images/designs/instaxsq/Design6.jpg" },
-          { path: "/images/designs/instaxsq/Design7.jpg" },
-          { path: "/images/designs/instaxsq/Design8.jpg" },
-          { path: "/images/designs/instaxsq/Design9.jpg" },
-          { path: "/images/designs/instaxsq/Design10.jpg" },
-          { path: "/images/designs/instaxsq/Design11.jpg" },
-          { path: "/images/designs/instaxsq/Design12.jpg" },
-          { path: "/images/designs/instaxsq/Design13.jpg" },
-          { path: "/images/designs/instaxsq/Design14.jpg" },
-          { path: "/images/designs/instaxsq/Design15.jpg" },
-        ]
-      },
-      wide: {
-        title: "Wide",
-        items: [
-
-        ]
-      }
     }
   },
   strips: {
     title: "Photo Strip Designs",
     items: [
-  
     ]
   }
 };

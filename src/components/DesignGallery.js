@@ -5,22 +5,12 @@ import galleryData from '../data/galleryData';
 
 function DesignGallery() {
   const [activeTab, setActiveTab] = useState('photocard');
-  const [activeInstaxSubtype, setActiveInstaxSubtype] = useState('mini');
   const [selectedImage, setSelectedImage] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
   // Function to handle tab click
   const handleTabClick = (tab) => {
     setActiveTab(tab);
-    // If switching to instax, ensure a valid subtype is selected
-    if (tab === 'instax' && !galleryData.instax.subtypes[activeInstaxSubtype]) {
-      setActiveInstaxSubtype('mini');
-    }
-  };
-
-  // Function to handle instax subtype click
-  const handleInstaxSubtypeClick = (subtype) => {
-    setActiveInstaxSubtype(subtype);
   };
 
   // Function to open modal when image is clicked
@@ -39,10 +29,15 @@ function DesignGallery() {
     document.body.style.overflow = 'auto';
   };
 
-  // Get current items to display based on active tab and subtype
+  // Get current items to display based on active tab
   const getCurrentItems = () => {
     if (activeTab === 'instax') {
-      return galleryData.instax.subtypes[activeInstaxSubtype]?.items || [];
+      // For instax, combine all items from all subtypes
+      let allInstaxItems = [];
+      Object.keys(galleryData.instax.subtypes).forEach(subtype => {
+        allInstaxItems = [...allInstaxItems, ...galleryData.instax.subtypes[subtype].items];
+      });
+      return allInstaxItems;
     }
     return galleryData[activeTab]?.items || [];
   };
@@ -71,28 +66,6 @@ function DesignGallery() {
             </button>
           ))}
         </div>
-        
-        {/* Instax subtabs - only show when instax tab is active */}
-        {activeTab === 'instax' && (
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
-            {Object.keys(galleryData.instax.subtypes).map((subtype) => (
-              <button
-                key={subtype}
-                className={`px-5 py-2 rounded-md relative transition-all duration-200 ${
-                  activeInstaxSubtype === subtype
-                    ? 'bg-white text-pink-700 font-bold border-2 border-pink-300' 
-                    : 'bg-white text-pink-700 border border-pink-200 hover:bg-pink-50'
-                }`}
-                onClick={() => handleInstaxSubtypeClick(subtype)}
-              >
-                {galleryData.instax.subtypes[subtype].title}
-                {activeInstaxSubtype === subtype && (
-                  <span className="absolute bottom-0 left-0 w-full h-1 bg-pink-400 rounded-b-md"></span>
-                )}
-              </button>
-            ))}
-          </div>
-        )}
         
         {/* Gallery grid - 2 columns on all screen sizes with Hero matching margins */}
         <div className="w-full">
