@@ -192,51 +192,71 @@ const productData = {
       "options": [
         {
           "type": "Package 1",
-          "quantity": "1x1: 6 pcs, 2x2: 4 pcs",
-          "price": "₱60"
+          "quantity": "1x1: 8 pcs",
+          "price": "₱30"
         },
         {
           "type": "Package 2",
-          "quantity": "1x1: 4 pcs, 2x2: 6 pcs",
-          "price": "₱60"
+          "quantity": "2x2: 4pcs + 1x1: 4pcs",
+          "price": "₱35"
         },
         {
           "type": "Package 3",
-          "quantity": "1x1: 12 pcs",
-          "price": "₱60"
+          "quantity": "2x2: 4pcs + 1x1: 8pcs",
+          "price": "₱65"
         },
         {
           "type": "Package 4",
-          "quantity": "2x2: 8 pcs",
-          "price": "₱60"
+          "quantity": "Passport: 6 pcs",
+          "price": "₱40"
         },
         {
           "type": "Package 5",
-          "quantity": "Passport: 6 pcs",
-          "price": "₱80"
+          "quantity": "2x2: 4pcs + Passport: 2pcs",
+          "price": "₱45"
         },
         {
           "type": "Package 6",
           "quantity": "Passport with Name: 8 pcs",
-          "price": "₱100"
+          "price": "₱65"
         }
       ]
     },
     {
-      "id": "a4-photo",
-      "name": "A4",
+      "id": "photo-prints",
+      "name": "Photo Prints",
       "description": "High-quality A4 size photo prints.",
       "color": "purple",
       "options": [
         {
-          "type": "Basic Print",
+          "type": "3R",
+          "quantity": "2 pc",
+          "price": "₱45"
+        },
+        {
+          "type": "4R",
+          "quantity": "2 pc",
+          "price": "₱60"
+        },
+        {
+          "type": "5R",
+          "quantity": "1 pc",
+          "price": "₱40"
+        },
+        {
+          "type": "A4",
           "quantity": "1 pc",
           "price": "₱60"
         },
         {
-          "type": "Matte / Glossy Phototop",
+          "type": "A4 + Matte / Glossy Photo Top",
           "quantity": "1 pc",
           "price": "₱75"
+        },
+        {
+          "type": "Add-Ons: Matte / Glossy Photo Top",
+          "quantity": "1 pc",
+          "price": "₱15"
         }
       ]
     }
