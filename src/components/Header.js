@@ -15,8 +15,8 @@ function Header() {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-8">
           <a href="#hero" className="text-pink-600 hover:text-pink-300 transition duration-300">Home</a>
-          <a href="#about" className="text-pink-600 hover:text-pink-300 transition duration-300">About</a>
           <a href="#pricing" className="text-pink-600 hover:text-pink-300 transition duration-300">Pricing</a>
+          <a href="#gallery" className="text-pink-600 hover:text-pink-300 transition duration-300">Designs</a>
           <a href="#footer" className="text-pink-600 hover:text-pink-300 transition duration-300">Contact</a>
         </nav>
 
@@ -53,18 +53,18 @@ function Header() {
             Home
           </a>
           <a 
-            href="#about" 
-            className="py-2 px-6 text-center text-pink-600 hover:bg-pink-50 transition duration-300"
-            onClick={toggleMobileMenu}
-          >
-            About
-          </a>
-          <a 
             href="#pricing" 
             className="py-2 px-6 text-center text-pink-600 hover:bg-pink-50 transition duration-300"
             onClick={toggleMobileMenu}
           >
             Pricing
+          </a>
+          <a 
+            href="#gallery" 
+            className="py-2 px-6 text-center text-pink-600 hover:bg-pink-50 transition duration-300"
+            onClick={toggleMobileMenu}
+          >
+            Designs
           </a>
           <a 
             href="#footer" 
