@@ -13,8 +13,8 @@ function ProductTabs() {
   // Set initial active product based on the active tab
   useEffect(() => {
     if (productData[activeTab] && productData[activeTab].items.length > 0) {
-      setActiveProduct(productData[activeTab].items[0].id);
-    }
+        setActiveProduct(productData[activeTab].items[0].id);
+      }
   }, [activeTab]);
 
   // Close mobile menu when clicking outside
@@ -36,7 +36,7 @@ function ProductTabs() {
     setMobileMenuOpen(false);
     // Reset the active product when switching tabs
     if (productData[tab] && productData[tab].items.length > 0) {
-      setActiveProduct(productData[tab].items[0].id);
+        setActiveProduct(productData[tab].items[0].id);
     }
   };
 
@@ -111,20 +111,20 @@ function ProductTabs() {
                         {isDocumentPrinting ? "Paper Size" : "Quantity"}
                       </th>
                       <th className="py-3 px-4 font-semibold text-gray-700 text-right bg-white w-1/3">Price</th>
-                    </tr>
-                  </thead>
+            </tr>
+          </thead>
                   <tbody className="bg-white">
                     {groupedOptions[type].map((option, index) => (
-                      <tr 
-                        key={index} 
+              <tr 
+                key={index} 
                         className={`${index < groupedOptions[type].length - 1 ? 'border-b border-gray-100' : ''} hover:bg-gray-50 transition-colors duration-200 bg-white`}
-                      >
+              >
                         <td className="py-4 px-4 text-left bg-white">{option.quantity}</td>
                         <td className="py-4 px-4 font-semibold text-right bg-white">{option.price}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              </tr>
+            ))}
+          </tbody>
+        </table>
               </div>
             </div>
           ))}
@@ -142,20 +142,20 @@ function ProductTabs() {
                 {isDocumentPrinting ? "Paper Size" : "Quantity"}
               </th>
               <th className="py-3 px-4 font-semibold text-gray-700 text-right bg-white w-1/3">Price</th>
-            </tr>
-          </thead>
+          </tr>
+        </thead>
           <tbody className="bg-white">
-            {product.options.map((option, index) => (
-              <tr 
-                key={index} 
+          {product.options.map((option, index) => (
+            <tr 
+              key={index} 
                 className={`${index < product.options.length - 1 ? 'border-b border-gray-100' : ''} hover:bg-gray-50 transition-colors duration-200 bg-white`}
-              >
+            >
                 <td className="py-4 px-4 text-left bg-white">{option.quantity}</td>
                 <td className="py-4 px-4 font-semibold text-right bg-white">{option.price}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+            </tr>
+          ))}
+        </tbody>
+      </table>
       </div>
     );
   };
@@ -220,23 +220,23 @@ function ProductTabs() {
           
           {/* Desktop tabs */}
           <div className="hidden md:block bg-white border-b border-gray-200 relative">
-            <div
-              ref={tabsContainerRef} 
+          <div 
+            ref={tabsContainerRef}
               className="flex overflow-x-auto no-scrollbar px-8 md:px-0"
-            >
-              {Object.keys(productData).map((tabId) => (
-                <button
-                  key={tabId}
+          >
+            {Object.keys(productData).map((tabId) => (
+              <button
+                key={tabId}
                   className={`py-4 px-6 text-base font-medium transition-colors duration-200 relative whitespace-nowrap ${
-                    activeTab === tabId 
+                  activeTab === tabId 
                       ? 'text-pink-600 border-b-2 border-pink-500' 
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
-                  onClick={() => handleTabClick(tabId)}
-                >
+                onClick={() => handleTabClick(tabId)}
+              >
                   {productData[tabId].title}
-                </button>
-              ))}
+              </button>
+            ))}
             </div>
           </div>
           
@@ -244,34 +244,34 @@ function ProductTabs() {
           {productData[activeTab].items.length > 1 && (
             <div className="bg-white border-b border-gray-200 px-4 relative">
               {/* Left scroll button for product tabs */}
-              <button 
+          <button 
                 className="absolute left-1 top-1/2 transform -translate-y-1/2 bg-white text-pink-500 border border-gray-200 rounded-full p-1.5 md:hidden focus:outline-none hover:bg-pink-500 hover:text-white transition-all duration-200 z-10"
                 onClick={scrollProductTabsLeft}
                 aria-label="Scroll product tabs left"
-              >
+          >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
+            </svg>
               </button>
               
               <div 
                 ref={productTabsRef}
                 className="flex overflow-x-auto no-scrollbar gap-1 px-8 md:px-0"
               >
-                {productData[activeTab].items.map(product => (
-                  <button
-                    key={product.id}
-                    ref={el => productRefs.current[product.id] = el}
-                    onClick={() => handleProductClick(product.id)}
+            {productData[activeTab].items.map(product => (
+              <button
+                key={product.id}
+                ref={el => productRefs.current[product.id] = el}
+                onClick={() => handleProductClick(product.id)}
                     className={`py-3 px-4 text-sm font-medium transition-colors duration-200 whitespace-nowrap ${
-                      activeProduct === product.id 
+                  activeProduct === product.id
                         ? 'text-pink-600 border-b-2 border-pink-500' 
                         : 'text-gray-600 hover:text-gray-900'
                     }`}
-                  >
-                    {product.name}
-                  </button>
-                ))}
+              >
+                {product.name}
+              </button>
+            ))}
               </div>
               
               {/* Right scroll button for product tabs */}
@@ -284,12 +284,12 @@ function ProductTabs() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </button>
-            </div>
-          )}
-          
+          </div>
+        )}
+        
           {/* Content area */}
           <div className="p-6">
-            {activeProduct && (
+          {activeProduct && (
               <>
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 pb-4 border-b border-gray-100 bg-white">
                   <div className="text-left w-full bg-white">
@@ -313,10 +313,10 @@ function ProductTabs() {
                 <div className="mt-6 text-sm text-gray-500 text-left bg-white">
                   <p>* Prices may vary slightly based on specific requirements or designs.</p>
                   <p>* Please contact us for bulk orders or custom requirements.</p>
-                </div>
-              </>
+                    </div>
+                  </>
             )}
-          </div>
+            </div>
         </div>
         
         <div className="text-center mt-10 bg-white">

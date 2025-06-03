@@ -300,23 +300,23 @@ const productData = {
   documentPrinting: {
     title: "Document Printing",
     items: [
-      {
+    {
         id: "text-only",
         name: "Text Only",
         description: "Document printing for text-only documents",
         color: "gray",
         options: [
-          {
+        {
             type: "Black and White (One Side)",
             quantity: "Short Size",
             price: "₱3.00/page"
-          },
-          {
+        },
+        {
             type: "Black and White (One Side)",
             quantity: "A4 Size",
             price: "₱3.00/page"
-          },
-          {
+    },
+    {
             type: "Black and White (One Side)",
             quantity: "Long Size",
             price: "₱4.00/page"
@@ -340,8 +340,8 @@ const productData = {
             type: "Partially Colored",
             quantity: "Short Size",
             price: "₱4.00/page"
-          },
-          {
+        },
+        {
             type: "Partially Colored",
             quantity: "A4 Size",
             price: "₱4.00/page"
@@ -374,78 +374,78 @@ const productData = {
         description: "Document printing for text with images",
         color: "blue",
         options: [
-          {
+        {
             type: "Black and White",
             quantity: "Short Size",
             price: "₱5.00/page"
-          },
-          {
+        },
+        {
             type: "Black and White",
             quantity: "A4 Size",
             price: "₱5.00/page"
-          },
-          {
+        },
+        {
             type: "Black and White",
             quantity: "Long Size",
             price: "₱7.00/page"
-          },
-          {
+        },
+        {
             type: "Full Colored",
             quantity: "Short Size",
             price: "₱6.00/page"
-          },
-          {
+        },
+        {
             type: "Full Colored",
             quantity: "A4 Size",
             price: "₱6.00/page"
-          },
-          {
+        },
+        {
             type: "Full Colored",
             quantity: "Long Size",
             price: "₱10.00/page"
-          }
-        ]
-      },
-      {
+        }
+      ]
+    },
+    {
         id: "image-only",
         name: "Image Only",
         description: "Document printing for image-only documents",
         color: "green",
         options: [
-          {
+        {
             type: "Black and White",
             quantity: "Short Size",
             price: "₱5.00/page"
-          },
-          {
+        },
+        {
             type: "Black and White",
             quantity: "A4 Size",
             price: "₱5.00/page"
-          },
-          {
+        },
+        {
             type: "Black and White",
             quantity: "Long Size",
             price: "₱7.00/page"
-          },
-          {
+        },
+        {
             type: "Full Colored",
             quantity: "Short Size",
             price: "₱10.00/page"
-          },
-          {
+        },
+        {
             type: "Full Colored",
             quantity: "A4 Size",
             price: "₱10.00/page"
-          },
-          {
+        },
+        {
             type: "Full Colored",
             quantity: "Long Size",
             price: "₱12.00/page"
-          }
-        ]
-      }
-    ]
-  }
+        }
+      ]
+    }
+  ]
+}
 };
 
 export default productData;
