@@ -42,9 +42,9 @@ function Header() {
         <div className="flex-shrink-0">
           <Link to="/" className="flex items-center space-x-2">
             <img 
-              src="/images/favicon.png" 
+              src="/AR-01.png" 
               alt="AR Prints Logo" 
-              className="w-8 h-8 rounded-full object-cover"
+              className="w-12 h-12 rounded-full object-cover"
             />
             <span className="text-2xl font-bold text-pink-600">AR Prints</span>
           </Link>

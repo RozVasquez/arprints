@@ -35,9 +35,15 @@ const ProductPricing = ({ selectedCategory, activeSubtype }) => {
         <p className="text-xs text-gray-600 mb-2 lg:mb-3">
           Take a screenshot of your preferred design and send it to us by clicking the button below
         </p>
-        <Button variant="primary" size="md">
-          {CONTACT.MESSAGE_CTA}
-        </Button>
+        <a 
+          href="https://www.facebook.com/profile.php?id=61576666357859" 
+          target="_blank" 
+          rel="noopener noreferrer"
+        >
+          <Button variant="primary" size="md">
+            {CONTACT.MESSAGE_CTA}
+          </Button>
+        </a>
       </div>
     </div>
   );

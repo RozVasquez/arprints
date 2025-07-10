@@ -24,6 +24,21 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
 
   const currentImages = getCurrentImages();
 
+  // Get multiplier based on category
+  const getDesignMultiplier = () => {
+    switch(selectedCategory) {
+      case 'instax':
+        return 10;
+      case 'strips':
+        return 4;
+      default:
+        return 4; // Default for photocards and other categories
+    }
+  };
+
+  const designMultiplier = getDesignMultiplier();
+  const totalDesigns = currentImages.length * designMultiplier;
+
   return (
     <div className="max-w-6xl mx-auto">
       {/* Card Container */}
@@ -85,7 +100,7 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
                 {categoryData.subtypes[activeSubtype]?.title} 
               </h4>
               <p className="text-gray-600 text-sm mt-1">
-                {currentImages.length} design{currentImages.length !== 1 ? 's' : ''} available
+                {totalDesigns} design{totalDesigns !== 1 ? 's' : ''} available
               </p>
             </div>
 
@@ -162,7 +177,7 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
                     </>
                   ) : (
                     <>
-                      View All {currentImages.length} Designs
+                      View All {currentImages.length} Images
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>

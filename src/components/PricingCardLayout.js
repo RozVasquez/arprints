@@ -258,9 +258,15 @@ function PricingCardLayout() {
                     <p className="text-gray-600 mb-4">
                       Contact us with your requirements and we'll get started on your order right away.
                     </p>
-                    <Button variant="primary" size="lg">
-                      {CONTACT.MESSAGE_CTA}
-                    </Button>
+                    <a 
+                      href="https://www.facebook.com/profile.php?id=61576666357859" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                    >
+                      <Button variant="primary" size="lg">
+                        {CONTACT.MESSAGE_CTA}
+                      </Button>
+                    </a>
                   </div>
                 </>
               )}
