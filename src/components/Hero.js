@@ -1,11 +1,20 @@
 import React from 'react';
+import { SplitText } from '../animations';
 
 function Hero() {
   return (
-    <section id="hero" className="min-h-screen flex items-center bg-gradient-to-br from-pink-100 via-purple-100 to-violet-200">
+    <section id="hero" className="h-screen flex items-center bg-white -mb-8 md:-mb-12">
       <div className="container mx-auto px-4 md:px-8 flex flex-col md:flex-row items-center md:items-center justify-between">
         <div className="text-center md:text-left md:w-1/2 mb-12 md:mb-0 md:-mt-20">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-800 leading-tight mb-4">Your Memories, Beautifully Printed.</h1>
+          <SplitText
+            className="text-4xl md:text-6xl font-bold text-gray-800 leading-tight mb-4"
+            delay={80}
+            duration={0.8}
+            splitType="words"
+            enableScrollTrigger={true}
+          >
+            Your Memories, Beautifully Printed.
+          </SplitText>
           <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-3xl mx-auto md:mx-0">Affordable handcrafted Photocards, Instax Inspired, and Strips delivered with love.</p>
           <a 
             href="https://www.facebook.com/profile.php?id=61576666357859" 

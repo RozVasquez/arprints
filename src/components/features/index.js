@@ -1,0 +1,1 @@
+export { default as ProductPricing } from './ProductPricing'; 

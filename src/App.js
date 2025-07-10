@@ -3,11 +3,10 @@ import { injectSpeedInsights } from '@vercel/speed-insights';
 import { Analytics } from '@vercel/analytics/react';
 import './App.css';
 import Header from './components/Header';
-import Hero from './components/Hero';
-import About from './components/About';
-import ProductTabs from './components/ProductTabs';
-import DesignGallery from './components/DesignGallery';
 import Footer from './components/Footer';
+import Home from './pages/Home';
+import Products from './pages/Products';
+import Pricing from './pages/Pricing';
 
 // Initialize Speed Insights
 injectSpeedInsights();
@@ -15,21 +14,19 @@ injectSpeedInsights();
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={
-          <div className="App">
-            <Header />
-            <main>
-              <Hero />
-              <ProductTabs />
-              <DesignGallery />
-              <About />
-            </main>
-            <Footer />
-            <Analytics />
-          </div>
-        } />
-      </Routes>
+      <div className="App bg-white min-h-screen">
+        <Header />
+        <main className="pt-20">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/products/:category" element={<Products />} />
+            <Route path="/pricing" element={<Pricing />} />
+          </Routes>
+        </main>
+        <Footer />
+        <Analytics />
+      </div>
     </Router>
   );
 }

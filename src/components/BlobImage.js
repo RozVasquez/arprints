@@ -1,13 +1,17 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 // Global storage tracking
 let totalStorageUsed = 0;
 const imageStorageMap = new Map();
 
+// Global cache for optimized images
+const optimizedImageCache = new Map();
+
 // Expose to window for the StorageMonitor component
 if (typeof window !== 'undefined') {
   window.totalStorageUsed = totalStorageUsed;
   window.imageStorageMap = imageStorageMap;
+  window.optimizedImageCache = optimizedImageCache;
 }
 
 // Helper function to get the correct path for images
@@ -28,15 +32,41 @@ const getPublicPath = (src) => {
   return src;
 };
 
-function BlobImage({ src, alt, className, onClick }) {
+// Helper function to check WebP support
+const supportsWebP = () => {
+  const canvas = document.createElement('canvas');
+  return canvas.toDataURL('image/webp').indexOf('webp') > -1;
+};
+
+// Helper function to clear the image cache
+const clearImageCache = () => {
+  optimizedImageCache.forEach((cachedData) => {
+    URL.revokeObjectURL(cachedData.blobUrl);
+  });
+  optimizedImageCache.clear();
+  console.log('Image cache cleared');
+};
+
+// Expose cache management to window for debugging
+if (typeof window !== 'undefined') {
+  window.clearImageCache = clearImageCache;
+}
+
+function BlobImage({ src, alt, className, onClick, priority = false, highQuality = false }) {
   const [blobUrl, setBlobUrl] = useState('');
-  const [directUrl, setDirectUrl] = useState(''); // Add direct URL for fallback
+  const [directUrl, setDirectUrl] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [blobSize, setBlobSize] = useState(0);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-  const [useFallback, setUseFallback] = useState(false); // Add fallback state
+  const [useFallback, setUseFallback] = useState(false);
+  const [isIntersecting, setIsIntersecting] = useState(priority); // Load immediately if priority
+  const [lowQualityUrl, setLowQualityUrl] = useState('');
+  const [showLowQuality, setShowLowQuality] = useState(true);
+  
+  const imgRef = useRef(null);
+  const observerRef = useRef(null);
 
   // Helper function to format file size
   const formatFileSize = (bytes) => {
@@ -46,6 +76,76 @@ function BlobImage({ src, alt, className, onClick }) {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
+
+  // Generate low-quality placeholder
+  const generateLowQualityPlaceholder = useCallback(async (resolvedSrc) => {
+    try {
+      const response = await fetch(resolvedSrc);
+      if (!response.ok) return '';
+      
+      const blob = await response.blob();
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      return new Promise((resolve) => {
+        img.onload = () => {
+          // Create very small placeholder maintaining aspect ratio
+          const aspectRatio = img.width / img.height;
+          let placeholderWidth, placeholderHeight;
+          
+          if (aspectRatio > 1) {
+            // Landscape
+            placeholderWidth = 64;
+            placeholderHeight = 64 / aspectRatio;
+          } else {
+            // Portrait or square
+            placeholderHeight = 64;
+            placeholderWidth = 64 * aspectRatio;
+          }
+          
+          canvas.width = placeholderWidth;
+          canvas.height = placeholderHeight;
+          ctx.fillStyle = '#f0f0f0';
+          ctx.fillRect(0, 0, placeholderWidth, placeholderHeight);
+          ctx.filter = 'blur(2px)';
+          ctx.drawImage(img, 0, 0, placeholderWidth, placeholderHeight);
+          resolve(canvas.toDataURL('image/jpeg', 0.1));
+        };
+        img.onerror = () => resolve('');
+        img.src = URL.createObjectURL(blob);
+      });
+    } catch (err) {
+      console.log('Failed to generate low-quality placeholder:', err);
+      return '';
+    }
+  }, []);
+
+  // Set up Intersection Observer
+  useEffect(() => {
+    if (priority || !imgRef.current) return;
+
+    observerRef.current = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsIntersecting(true);
+          observerRef.current?.disconnect();
+        }
+      },
+      {
+        rootMargin: '50px', // Start loading 50px before the image comes into view
+        threshold: 0.1
+      }
+    );
+
+    if (imgRef.current) {
+      observerRef.current.observe(imgRef.current);
+    }
+
+    return () => {
+      observerRef.current?.disconnect();
+    };
+  }, [priority]);
 
   // Log storage information - wrapped in useCallback to use in dependency array
   const logStorageInfo = useCallback((blob, path, width, height) => {
@@ -78,12 +178,31 @@ function BlobImage({ src, alt, className, onClick }) {
     console.log('-----------------------------------');
   }, []);
 
+  // Generate low-quality placeholder when component mounts
   useEffect(() => {
+    const resolvedSrc = getPublicPath(src);
+    if (resolvedSrc && priority) {
+      generateLowQualityPlaceholder(resolvedSrc).then(placeholder => {
+        if (placeholder) setLowQualityUrl(placeholder);
+      });
+    }
+  }, [src, priority, generateLowQualityPlaceholder]);
+
+  useEffect(() => {
+    if (!isIntersecting) return;
+
     const resolvedSrc = getPublicPath(src);
     console.log(`Attempting to load image: ${resolvedSrc} (original: ${src})`);
     
     // Set the direct URL immediately as a fallback option
     setDirectUrl(resolvedSrc);
+    
+    // Generate low-quality placeholder if not already done
+    if (!lowQualityUrl && resolvedSrc) {
+      generateLowQualityPlaceholder(resolvedSrc).then(placeholder => {
+        if (placeholder) setLowQualityUrl(placeholder);
+      });
+    }
     
     let isMounted = true;
     let currentBlobUrl = '';
@@ -98,6 +217,35 @@ function BlobImage({ src, alt, className, onClick }) {
         // Check if src is valid
         if (!resolvedSrc) {
           throw new Error('Image source is empty or undefined');
+        }
+        
+        // Create cache key that includes quality setting
+        const cacheKey = `${resolvedSrc}_${highQuality ? 'hq' : 'std'}`;
+        
+        // Check if image is already cached
+        if (optimizedImageCache.has(cacheKey)) {
+          console.log(`Using cached image: ${resolvedSrc} (${highQuality ? 'high quality' : 'standard'})`);
+          const cachedData = optimizedImageCache.get(cacheKey);
+          
+          if (isMounted) {
+            currentBlobUrl = cachedData.blobUrl;
+            setBlobUrl(cachedData.blobUrl);
+            setLoading(false);
+            setShowLowQuality(false);
+            setBlobSize(cachedData.size);
+            setDimensions({ width: cachedData.width, height: cachedData.height });
+            
+            // Update storage tracking for this instance
+            if (!imageStorageMap.has(cacheKey)) {
+              imageStorageMap.set(cacheKey, cachedData.size);
+              totalStorageUsed += cachedData.size;
+              
+              if (typeof window !== 'undefined') {
+                window.totalStorageUsed = totalStorageUsed;
+              }
+            }
+          }
+          return;
         }
         
         console.log(`Fetching image: ${resolvedSrc}`);
@@ -117,28 +265,70 @@ function BlobImage({ src, alt, className, onClick }) {
           throw new Error(`Failed to convert to blob: ${e.message}`);
         });
         
-        console.log(`Image fetched, optimizing: ${resolvedSrc}`);
-        // Optimize the image
-        const { blobUrl, resultBlob, width, height } = await optimizeImage(blob).catch(e => {
-          console.error(`Optimization error for ${resolvedSrc}:`, e);
-          throw new Error(`Failed to optimize image: ${e.message}`);
-        });
-        
-        if (isMounted) {
-          console.log(`Image loaded successfully: ${resolvedSrc}`);
-          currentBlobUrl = blobUrl;
-          setBlobUrl(blobUrl);
-          setLoading(false);
+        if (highQuality) {
+          console.log(`Using original image without compression: ${resolvedSrc}`);
+          // For high quality, use original image without any processing
+          const blobUrl = URL.createObjectURL(blob);
           
-          // Log storage consumption
-          logStorageInfo(resultBlob, resolvedSrc, width, height);
-        }
+          // Get original dimensions
+          const img = new Image();
+          await new Promise((resolve) => {
+            img.onload = resolve;
+            img.src = blobUrl;
+          });
+          
+          if (isMounted) {
+            console.log(`Original image loaded: ${resolvedSrc}`);
+            currentBlobUrl = blobUrl;
+            setBlobUrl(blobUrl);
+            setLoading(false);
+            setShowLowQuality(false);
+            
+            // Cache the original image
+            optimizedImageCache.set(cacheKey, {
+              blobUrl,
+              size: blob.size,
+              width: img.width,
+              height: img.height
+            });
+            
+            // Log storage consumption  
+            logStorageInfo(blob, cacheKey, img.width, img.height);
+          }
+        } else {
+          console.log(`Image fetched, optimizing: ${resolvedSrc} (standard quality)`);
+          // Optimize the image for gallery thumbnails
+          const { blobUrl, resultBlob, width, height } = await optimizeImage(blob, highQuality).catch(e => {
+            console.error(`Optimization error for ${resolvedSrc}:`, e);
+            throw new Error(`Failed to optimize image: ${e.message}`);
+          });
+          
+          if (isMounted) {
+            console.log(`Image loaded successfully: ${resolvedSrc}`);
+            currentBlobUrl = blobUrl;
+            setBlobUrl(blobUrl);
+            setLoading(false);
+            setShowLowQuality(false); // Hide low-quality placeholder
+            
+            // Cache the optimized image for future use
+            optimizedImageCache.set(cacheKey, {
+              blobUrl,
+              size: resultBlob.size,
+              width,
+              height
+            });
+            
+            // Log storage consumption  
+            logStorageInfo(resultBlob, cacheKey, width, height);
+                     }
+         }
       } catch (error) {
         console.error(`Error loading image ${resolvedSrc}:`, error);
         if (isMounted) {
           setError(true);
           setErrorMessage(error.message || 'Unknown error');
           setLoading(false);
+          setShowLowQuality(false);
           
           // Try using the direct URL as fallback
           console.log(`Trying fallback direct display for: ${resolvedSrc}`);
@@ -152,27 +342,13 @@ function BlobImage({ src, alt, className, onClick }) {
     // Cleanup function to revoke object URL and prevent memory leaks
     return () => {
       isMounted = false;
-      if (currentBlobUrl) {
-        URL.revokeObjectURL(currentBlobUrl);
-        
-        // Update storage tracking on unmount
-        if (imageStorageMap.has(resolvedSrc)) {
-          totalStorageUsed -= imageStorageMap.get(resolvedSrc);
-          imageStorageMap.delete(resolvedSrc);
-          console.log(`Image unloaded: ${resolvedSrc}`);
-          console.log(`Updated total storage: ${formatFileSize(totalStorageUsed)}`);
-          
-          // Update window variable
-          if (typeof window !== 'undefined') {
-            window.totalStorageUsed = totalStorageUsed;
-          }
-        }
-      }
+      // Note: We don't revoke cached blob URLs as they may be used by other instances
+      // The cache will manage URL lifecycle globally
     };
-  }, [src, logStorageInfo]);
+  }, [src, isIntersecting, logStorageInfo, lowQualityUrl, generateLowQualityPlaceholder]);
 
   // Function to optimize and compress image while preserving aspect ratio
-  const optimizeImage = async (blob) => {
+  const optimizeImage = async (blob, highQuality = false) => {
     return new Promise((resolve, reject) => {
       try {
         const reader = new FileReader();
@@ -200,44 +376,44 @@ function BlobImage({ src, alt, className, onClick }) {
                 
                 console.log(`Original image dimensions: ${originalWidth}x${originalHeight}`);
                 
-                // Target dimensions - maintain 3:2 container (landscape)
-                const TARGET_WIDTH = 1200; // Reduced for better performance
-                const TARGET_HEIGHT = 800; // 3:2 ratio
+                // Target dimensions based on quality setting
+                const TARGET_WIDTH = highQuality ? 2400 : 1200;  // Double resolution for high quality
+                const TARGET_HEIGHT = highQuality ? 1600 : 800;
                 
-                // Calculate dimensions to fit the entire image within the canvas
-                // without cropping, maintaining the original aspect ratio
-                let drawWidth, drawHeight;
-                let offsetX = 0, offsetY = 0;
+                // Calculate optimal dimensions while maintaining aspect ratio
+                // Fit to the larger dimension to avoid upscaling small images
+                let canvasWidth, canvasHeight;
                 
-                if (originalAspectRatio > 3/2) {
-                  // If image is wider than 3:2, fit to width
-                  drawWidth = TARGET_WIDTH;
-                  drawHeight = TARGET_WIDTH / originalAspectRatio;
-                  offsetY = (TARGET_HEIGHT - drawHeight) / 2; // Center vertically
+                if (originalWidth > originalHeight) {
+                  // Landscape or square image
+                  canvasWidth = Math.min(originalWidth, TARGET_WIDTH);
+                  canvasHeight = canvasWidth / originalAspectRatio;
                 } else {
-                  // If image is taller than 3:2, fit to height
-                  drawHeight = TARGET_HEIGHT;
-                  drawWidth = TARGET_HEIGHT * originalAspectRatio;
-                  offsetX = (TARGET_WIDTH - drawWidth) / 2; // Center horizontally
+                  // Portrait image
+                  canvasHeight = Math.min(originalHeight, TARGET_HEIGHT);
+                  canvasWidth = canvasHeight * originalAspectRatio;
                 }
                 
-                // Set canvas dimensions - always 3:2 ratio (landscape)
-                canvas.width = TARGET_WIDTH;
-                canvas.height = TARGET_HEIGHT;
+                // Set canvas dimensions to match the optimized image size
+                canvas.width = canvasWidth;
+                canvas.height = canvasHeight;
                 
                 // Use high quality image rendering
                 const ctx = canvas.getContext('2d');
                 ctx.imageSmoothingEnabled = true;
                 ctx.imageSmoothingQuality = 'high';
                 
-                // Fill background with white
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(0, 0, TARGET_WIDTH, TARGET_HEIGHT);
+                // Draw image to fill the entire canvas (no background needed)
+                ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
                 
-                // Draw image centered within canvas
-                ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+                // This optimization only runs for standard quality (gallery thumbnails)
+                // High quality images use the original file without processing
+                const format = supportsWebP() ? 'image/webp' : 'image/jpeg';
+                const quality = format === 'image/webp' ? 0.8 : 0.9;
                 
-                // Convert to blob with high quality compression
+                console.log(`Converting to ${format} format with ${Math.round(quality * 100)}% quality`);
+                
+                // Convert to blob with appropriate format and quality
                 canvas.toBlob((resultBlob) => {
                   if (!resultBlob) {
                     reject(new Error('Failed to create blob from canvas'));
@@ -248,10 +424,10 @@ function BlobImage({ src, alt, className, onClick }) {
                   resolve({ 
                     blobUrl, 
                     resultBlob, 
-                    width: TARGET_WIDTH, 
-                    height: TARGET_HEIGHT 
+                    width: canvasWidth, 
+                    height: canvasHeight 
                   });
-                }, 'image/jpeg', 0.9); // Slightly reduced quality for better performance
+                }, format, quality);
               } catch (err) {
                 reject(new Error(`Canvas operation error: ${err.message}`));
               }
@@ -270,18 +446,26 @@ function BlobImage({ src, alt, className, onClick }) {
     });
   };
 
-  if (loading && !useFallback) {
+  if (!isIntersecting && !priority) {
     return (
-      <div className={`flex justify-center items-center bg-gray-100 ${className}`}>
+      <div ref={imgRef} className={`flex justify-center items-center bg-gray-100 ${className}`}>
         <div className="animate-pulse w-8 h-8 rounded-full bg-pink-300"></div>
       </div>
     );
   }
 
-  if (error && !useFallback) {
+  if (loading && !useFallback && !showLowQuality) {
+    return (
+      <div ref={imgRef} className={`flex justify-center items-center bg-gray-100 ${className}`}>
+        <div className="animate-pulse w-8 h-8 rounded-full bg-pink-300"></div>
+      </div>
+    );
+  }
+
+  if (error && !useFallback && !showLowQuality) {
     console.error(`Error display for ${src}: ${errorMessage}`);
     return (
-      <div className={`flex flex-col justify-center items-center bg-gray-100 ${className}`}>
+      <div ref={imgRef} className={`flex flex-col justify-center items-center bg-gray-100 ${className}`}>
         <span className="text-gray-500 text-center px-2">Image not available</span>
         {process.env.NODE_ENV === 'development' && (
           <span className="text-red-500 text-xs text-center px-2 mt-1">{errorMessage}</span>
@@ -290,21 +474,42 @@ function BlobImage({ src, alt, className, onClick }) {
     );
   }
 
+  // Show low-quality placeholder while loading
+  if (showLowQuality && lowQualityUrl && loading) {
+    return (
+      <div ref={imgRef} className="relative w-full h-full">
+        <img 
+          src={lowQualityUrl} 
+          alt={alt || "Loading..."}
+          className={`${className} object-contain`} 
+          onClick={onClick}
+        />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="animate-pulse w-8 h-8 rounded-full bg-pink-300 bg-opacity-75"></div>
+        </div>
+        {process.env.NODE_ENV === 'development' && (
+          <div className="absolute bottom-0 right-0 bg-black bg-opacity-50 text-white text-xs px-1 py-0.5 rounded-tl">
+            Loading...
+          </div>
+        )}
+      </div>
+    );
+  }
+
   // Use direct URL as fallback if blob URL processing fails
   if (useFallback) {
     return (
-      <div className="relative w-full h-full">
+      <div ref={imgRef} className="relative w-full h-full">
         <img 
           src={directUrl} 
           alt={alt || "Image"}
-          className={className} 
+          className={`${className} object-contain`} 
           onClick={onClick}
           loading="lazy"
-          style={{ objectFit: 'contain', width: '100%', height: '100%' }}
           onError={(e) => {
             console.error(`Fallback image render error for ${src}`);
             setError(true);
-            setUseFallback(false); // Show error state instead
+            setUseFallback(false);
           }}
         />
         {process.env.NODE_ENV === 'development' && (
@@ -318,23 +523,21 @@ function BlobImage({ src, alt, className, onClick }) {
 
   // Default blob URL display
   return (
-    <div className="relative w-full h-full">
+    <div ref={imgRef} className="relative w-full h-full">
       <img 
         src={blobUrl} 
         alt={alt || "Image"} 
-        className={className}
+        className={`${className} object-contain`}
         onClick={onClick}
         loading="lazy"
-        style={{ objectFit: 'contain', width: '100%', height: '100%' }}
         onError={(e) => {
           console.error(`Image render error for ${src}`);
-          // If blob URL fails, try direct URL instead
           setUseFallback(true);
         }}
       />
       {process.env.NODE_ENV === 'development' && (
         <div className="absolute bottom-0 right-0 bg-black bg-opacity-50 text-white text-xs px-1 py-0.5 rounded-tl">
-          {formatFileSize(blobSize)} • {dimensions.width}×{dimensions.height}
+          {formatFileSize(blobSize)} • {dimensions.width}×{dimensions.height} • {supportsWebP() ? 'WebP' : 'JPEG'}
         </div>
       )}
     </div>

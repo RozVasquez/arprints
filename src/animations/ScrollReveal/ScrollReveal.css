@@ -1,0 +1,15 @@
+.scroll-reveal-element {
+  /* Transform origin for rotation effects */
+  transform-origin: center center;
+  
+  /* Ensure smooth transitions */
+  transition: transform 0.3s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .scroll-reveal-element {
+    /* Reduce intensity on mobile */
+    transform-origin: center center;
+  }
+} 
