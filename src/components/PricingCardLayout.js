@@ -249,7 +249,7 @@ function PricingCardLayout({ initialCategory = 'photocards' }) {
                       Ready to Order?
                     </h6>
                     <p className="text-gray-600 mb-4">
-                      Contact us with your requirements and we'll get started on your order right away.
+                      Contact us with your order details and we'll get started on your order right away.
                     </p>
                     <a 
                       href="https://www.facebook.com/profile.php?id=61576666357859" 

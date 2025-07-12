@@ -128,7 +128,7 @@ function Header() {
             className="mx-6 my-2 py-2 px-4 text-center bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition duration-300 font-medium"
             onClick={toggleMobileMenu}
           >
-            Contact
+            Order Now
           </a>
         </nav>
       </div>

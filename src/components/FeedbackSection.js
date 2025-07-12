@@ -1,8 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollReveal } from '../animations';
 import feedbackData from '../data/feedbackData.json';
+import FeedbackImageViewer from './FeedbackImageViewer';
 
 function FeedbackSection() {
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
+  // Track window size for desktop/mobile detection
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // Function to get initials from name
   const getInitials = (name) => {
     return name.split(' ').map(word => word[0]).join('').toUpperCase();
@@ -13,6 +25,18 @@ function FeedbackSection() {
       <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
     </svg>
   );
+
+  // Handle feedback click
+  const handleFeedbackClick = (feedback) => {
+    if (feedback.images && feedback.images.length > 0) {
+      setSelectedImage(`/images/Feedbacks/${feedback.images[0]}`);
+    }
+  };
+
+  // Close modal
+  const closeModal = () => {
+    setSelectedImage(null);
+  };
 
   return (
     <section className="w-full py-12 md:py-20 bg-gray-50">
@@ -40,7 +64,10 @@ function FeedbackSection() {
               baseRotation={1} 
               blurStrength={2}
             >
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 text-center h-full flex flex-col min-h-[280px]">
+              <div 
+                className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 text-center h-full flex flex-col min-h-[280px] cursor-pointer group"
+                onClick={() => handleFeedbackClick(feedback)}
+              >
                 {/* Avatar */}
                 <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-pink-600 font-semibold text-lg">{getInitials(feedback.name)}</span>
@@ -65,6 +92,12 @@ function FeedbackSection() {
           ))}
         </div>
       </div>
+
+      {/* Feedback Image Viewer Modal */}
+      <FeedbackImageViewer 
+        selectedImage={selectedImage} 
+        onClose={closeModal} 
+      />
     </section>
   );
 }

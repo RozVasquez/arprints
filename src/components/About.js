@@ -6,7 +6,8 @@ function About() {
   return (
     <>
       <section id="about" className="py-20 pb-16 bg-white">
-        <div className="container mx-auto px-6 text-center">
+      <FeedbackSection />
+        <div className="container mx-auto px-6 mt-20 text-center">
           <ScrollReveal enableBlur={true} baseOpacity={0.2} baseRotation={2} blurStrength={3}>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Handcrafted with Love <span className="text-pink-500">❤️</span></h2>
           </ScrollReveal>
@@ -18,7 +19,6 @@ function About() {
           </ScrollReveal>
         </div>
       </section>
-      <FeedbackSection />
     </>
   );
 }

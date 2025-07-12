@@ -118,6 +118,7 @@ function DesignGallery({ initialCategory = null }) {
     if (e.touches.length === 2) {
       // Pinch-to-zoom start
       e.preventDefault();
+      e.stopPropagation();
       const distance = getTouchDistance(e.touches);
       const center = getTouchCenter(e.touches);
       setLastTouchDistance(distance);
@@ -125,6 +126,7 @@ function DesignGallery({ initialCategory = null }) {
     } else if (e.touches.length === 1) {
       // Single touch - prepare for drag if zoomed
       e.preventDefault();
+      e.stopPropagation();
       const touch = e.touches[0];
       setLastPointerPosition({ x: touch.clientX, y: touch.clientY });
       if (imageTransform.scale > 1) {
@@ -138,6 +140,7 @@ function DesignGallery({ initialCategory = null }) {
     if (e.touches.length === 2) {
       // Pinch-to-zoom
       e.preventDefault();
+      e.stopPropagation();
       const distance = getTouchDistance(e.touches);
       const center = getTouchCenter(e.touches);
       
@@ -166,6 +169,7 @@ function DesignGallery({ initialCategory = null }) {
     } else if (e.touches.length === 1 && isDragging && imageTransform.scale > 1) {
       // Single finger drag when zoomed
       e.preventDefault();
+      e.stopPropagation();
       const touch = e.touches[0];
       
       const deltaX = touch.clientX - lastPointerPosition.x;
@@ -373,8 +377,17 @@ function DesignGallery({ initialCategory = null }) {
     setSelectedImage(imagePath);
     setSelectedImageIndex(imageIndex);
     setModalOpen(true);
-    // Prevent scrolling when modal is open
+    
+    // Save current scroll position and prevent scrolling
+    const scrollY = window.scrollY;
     document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = '100%';
+    document.documentElement.style.overflow = 'hidden';
+    
+    // Store scroll position for restoration
+    document.body.dataset.scrollY = scrollY.toString();
     
     // Preload adjacent images for smooth navigation
     const currentItems = getCurrentItems();
@@ -386,8 +399,20 @@ function DesignGallery({ initialCategory = null }) {
     setModalOpen(false);
     setSelectedImage(null);
     setSelectedImageIndex(null);
-    // Re-enable scrolling
-    document.body.style.overflow = 'auto';
+    
+    // Restore scroll position
+    const scrollY = parseInt(document.body.dataset.scrollY || '0', 10);
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    document.documentElement.style.overflow = '';
+    
+    // Restore scroll position
+    window.scrollTo(0, scrollY);
+    
+    // Clean up
+    delete document.body.dataset.scrollY;
   };
 
   // Navigation functions for modal
@@ -553,6 +578,8 @@ function DesignGallery({ initialCategory = null }) {
           <div 
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-40 backdrop-blur-sm" 
             onClick={closeModal}
+            onWheel={(e) => e.preventDefault()}
+            onTouchMove={(e) => e.preventDefault()}
             style={{
               WebkitOverflowScrolling: 'touch',
               overscrollBehavior: 'none', // Disable bounce on mobile
@@ -626,32 +653,56 @@ function DesignGallery({ initialCategory = null }) {
               )}
               
               {/* Image container with zoom and drag functionality */}
-              <div
-                ref={imageRef}
-                className="max-w-[95vw] max-h-[95vh]"
-                style={{
-                  transform: `scale(${imageTransform.scale}) translate(${imageTransform.x}px, ${imageTransform.y}px)`,
-                  transition: imageTransform.scale === 1 && !isDragging ? 'transform 0.3s ease-out' : 'none',
-                  transformOrigin: 'center center',
-                  touchAction: 'none', // Disable default touch behaviors
-                  userSelect: 'none',
-                  WebkitUserSelect: 'none',
-                  cursor: imageTransform.scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default'
-                }}
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
-                onMouseDown={handleMouseDown}
-                onWheel={handleWheel}
-                onDoubleClick={handleDoubleClick}
-              >
-                <BlobImage
-                  src={selectedImage}
-                  alt="Selected design"
-                  className="w-full h-full shadow"
-                  priority={true} // Always priority load modal images
-                  highQuality={true} // Use high quality for modal display
-                />
+              <div className="flex items-center justify-center w-full h-full">
+                <div
+                  ref={imageRef}
+                  className="flex items-center justify-center"
+                  style={{
+                    width: 'min(90vw, 90vh * 1.193)', // Constrain by aspect ratio and screen
+                    height: 'min(90vh, 90vw * 0.838)', // 1717/2048 = 0.838
+                    maxWidth: '90vw',
+                    maxHeight: '90vh',
+                    transform: `scale(${imageTransform.scale}) translate(${imageTransform.x}px, ${imageTransform.y}px)`,
+                    transition: imageTransform.scale === 1 && !isDragging ? 'transform 0.3s ease-out' : 'none',
+                    transformOrigin: 'center center',
+                    touchAction: 'none', // Disable default touch behaviors
+                    userSelect: 'none',
+                    WebkitUserSelect: 'none',
+                    cursor: imageTransform.scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default'
+                  }}
+                  onTouchStart={(e) => {
+                    e.stopPropagation();
+                    handleTouchStart(e);
+                  }}
+                  onTouchMove={(e) => {
+                    e.stopPropagation();
+                    handleTouchMove(e);
+                  }}
+                  onTouchEnd={(e) => {
+                    e.stopPropagation();
+                    handleTouchEnd(e);
+                  }}
+                  onMouseDown={(e) => {
+                    e.stopPropagation();
+                    handleMouseDown(e);
+                  }}
+                  onWheel={(e) => {
+                    e.stopPropagation();
+                    handleWheel(e);
+                  }}
+                  onDoubleClick={(e) => {
+                    e.stopPropagation();
+                    handleDoubleClick(e);
+                  }}
+                >
+                  <BlobImage
+                    src={selectedImage}
+                    alt="Selected design"
+                    className="w-full h-full object-contain shadow-2xl rounded-lg"
+                    priority={true} // Always priority load modal images
+                    highQuality={true} // Use high quality for modal display
+                  />
+                </div>
               </div>
             </div>
           </div>
