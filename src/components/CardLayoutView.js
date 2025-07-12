@@ -1,10 +1,12 @@
 import React, { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import BlobImage from './BlobImage';
 import { ProductPricing } from './features';
 
 function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
   const [activeSubtype, setActiveSubtype] = useState(Object.keys(categoryData.subtypes)[0]);
   const [showAllImages, setShowAllImages] = useState(false);
+  const navigate = useNavigate();
 
   // Get current images based on selected subtype
   const getCurrentImages = useCallback(() => {
@@ -22,22 +24,25 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
     setShowAllImages(!showAllImages);
   };
 
-  const currentImages = getCurrentImages();
-
-  // Get multiplier based on category
-  const getDesignMultiplier = () => {
-    switch(selectedCategory) {
-      case 'instax':
-        return 10;
-      case 'strips':
-        return 4;
-      default:
-        return 4; // Default for photocards and other categories
-    }
+  // Handle navigation to pricing page
+  const handleViewPricing = () => {
+    // Map gallery categories to pricing categories
+    const categoryMapping = {
+      'instax': 'instaxInspired',
+      'strips': 'photoStrips',
+      'photocard': 'photocards'
+    };
+    
+    const pricingCategory = categoryMapping[selectedCategory] || 'photocards';
+    
+    navigate('/pricing', { 
+      state: { 
+        initialCategory: pricingCategory 
+      } 
+    });
   };
 
-  const designMultiplier = getDesignMultiplier();
-  const totalDesigns = currentImages.length * designMultiplier;
+  const currentImages = getCurrentImages();
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -85,11 +90,37 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
                 ))}
               </div>
               
-              {/* Pricing Component */}
-              <ProductPricing 
-                selectedCategory={selectedCategory} 
-                activeSubtype={activeSubtype} 
-              />
+              {/* Separator between category selection and pricing */}
+              <div className="hidden lg:block mt-4 mb-2">
+                <div className="border-b border-gray-200"></div>
+              </div>
+              
+              {/* Pricing Component - Only show on desktop */}
+              <div className="hidden lg:block">
+                <ProductPricing 
+                  selectedCategory={selectedCategory} 
+                  activeSubtype={activeSubtype} 
+                  onViewPricing={handleViewPricing}
+                />
+                
+                {/* Instructions and Call-to-Action - Below left nav */}
+                <div className="mt-4 text-center">
+                  <p className="text-xs text-gray-600 mb-2 lg:mb-3">
+                    Take a screenshot of your preferred design and send it to us by clicking the button below
+                  </p>
+                  <a 
+                    href="https://www.facebook.com/profile.php?id=61576666357859" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-full inline-flex items-center justify-center px-6 py-3 bg-pink-600 text-white font-medium rounded-lg hover:bg-pink-700 transition-colors duration-200"
+                  >
+                    Message AR Prints
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -99,9 +130,6 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
               <h4 className="text-xl font-semibold text-gray-800">
                 {categoryData.subtypes[activeSubtype]?.title} 
               </h4>
-              <p className="text-gray-600 text-sm mt-1">
-                {totalDesigns} design{totalDesigns !== 1 ? 's' : ''} available
-              </p>
             </div>
 
             {/* Image Grid - Responsive */}
@@ -161,31 +189,64 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
               </div>
             )}
 
-            {/* Toggle View Button */}
-            {currentImages.length > 4 && (
-              <div className="mt-6 text-center">
+            {/* Mobile/Tablet Pricing Section - Show below images on smaller screens */}
+            <div className="lg:hidden mt-6">
+              {/* Separator before pricing on mobile/tablet */}
+              <div className="mb-2">
+                <div className="border-b border-gray-200"></div>
+              </div>
+              
+              <ProductPricing 
+                selectedCategory={selectedCategory} 
+                activeSubtype={activeSubtype} 
+                onViewPricing={handleViewPricing}
+              />
+              
+              {/* Instructions and Call-to-Action - Below left nav on mobile/tablet */}
+              <div className="mt-4 text-center">
+                <p className="text-xs text-gray-600 mb-4 lg:mb-3">
+                  Take a screenshot of your preferred design and send it to us by clicking the button below
+                </p>
+                <a 
+                  href="https://www.facebook.com/profile.php?id=61576666357859" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center px-6 py-3 bg-pink-600 text-white font-medium rounded-lg hover:bg-pink-700 transition-colors duration-200"
+                >
+                  Message AR Prints
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="mt-6 flex flex-col gap-3 justify-center">
+              {/* Toggle View Button - Only show if more than 4 images */}
+              {currentImages.length > 4 && (
                 <button 
                   onClick={handleViewAllToggle}
-                  className="inline-flex items-center px-6 py-3 bg-pink-600 text-white font-medium rounded-lg hover:bg-pink-700 transition-colors duration-200"
+                  className="inline-flex items-center justify-center px-6 py-3 bg-pink-600 text-white font-medium rounded-lg hover:bg-pink-700 transition-colors duration-200"
                 >
                   {showAllImages ? (
                     <>
                       Show Less
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="white">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                       </svg>
                     </>
                   ) : (
                     <>
-                      View All {currentImages.length} Images
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      View All Images
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="white">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
                     </>
                   )}
                 </button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>

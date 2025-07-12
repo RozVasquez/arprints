@@ -3,15 +3,14 @@ import productData from '../data/products';
 import { CONTACT } from '../constants';
 import { Button } from './ui';
 
-function PricingCardLayout() {
-  const [selectedCategory, setSelectedCategory] = useState('photocards');
+function PricingCardLayout({ initialCategory = 'photocards' }) {
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [selectedItem, setSelectedItem] = useState(null);
 
   // Get categories for the left sidebar
   const categories = Object.entries(productData).map(([key, category]) => ({
     id: key,
-    title: category.title,
-    itemCount: category.items.length
+    title: category.title
   }));
 
   // Get current category data
@@ -132,9 +131,6 @@ function PricingCardLayout() {
                     >
                       <div>
                         <span className="block">{category.title}</span>
-                        <span className="text-xs text-gray-500">
-                          {category.itemCount} service{category.itemCount !== 1 ? 's' : ''}
-                        </span>
                       </div>
                       <div className="w-6 h-6 flex items-center justify-center">
                         {selectedCategory === category.id ? (
@@ -165,9 +161,6 @@ function PricingCardLayout() {
                     <h4 className="text-2xl font-semibold text-gray-800">
                       {currentCategoryData.title}
                     </h4>
-                    <p className="text-gray-600 text-sm mt-1">
-                      {currentCategoryData.items.length} service{currentCategoryData.items.length !== 1 ? 's' : ''} available
-                    </p>
                   </div>
 
                   {/* Pricing Items Grid */}

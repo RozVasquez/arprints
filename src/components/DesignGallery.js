@@ -10,8 +10,6 @@ function DesignGallery({ initialCategory = null }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [autoHoverIndex, setAutoHoverIndex] = useState(0);
-  const [isUserHovering, setIsUserHovering] = useState(false);
   const navigate = useNavigate();
   const cardLayoutRef = useRef(null);
 
@@ -67,28 +65,22 @@ function DesignGallery({ initialCategory = null }) {
     }
   }, [selectedCategory]);
 
-  // Auto-hover animation for category cards
-  useEffect(() => {
-    if (!selectedCategory && !isUserHovering) {
-      const interval = setInterval(() => {
-        setAutoHoverIndex((prevIndex) => 
-          (prevIndex + 1) % productCategories.length
-        );
-      }, 2000); // Change every 2 seconds
 
-      return () => clearInterval(interval);
-    }
-  }, [selectedCategory, isUserHovering, productCategories.length]);
 
-  // Mobile zoom and drag states
+  // Zoom and drag states for both mobile and desktop
   const [imageTransform, setImageTransform] = useState({ scale: 1, x: 0, y: 0 });
   const [lastTouchDistance, setLastTouchDistance] = useState(0);
+  const [lastTouchCenter, setLastTouchCenter] = useState({ x: 0, y: 0 });
+  const [lastPointerPosition, setLastPointerPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStartPos, setDragStartPos] = useState({ x: 0, y: 0 });
   const imageRef = useRef(null);
 
   // Reset image transform when modal opens/closes
   useEffect(() => {
     if (modalOpen) {
       setImageTransform({ scale: 1, x: 0, y: 0 });
+      setIsDragging(false);
     }
   }, [modalOpen, selectedImage]);
 
@@ -107,16 +99,38 @@ function DesignGallery({ initialCategory = null }) {
     };
   };
 
+  // Helper function to constrain pan within boundaries
+  const constrainPan = useCallback((x, y, scale) => {
+    if (scale <= 1) return { x: 0, y: 0 };
+    
+    // Calculate maximum pan distance based on scale
+    const maxPanX = (window.innerWidth * (scale - 1)) / (2 * scale);
+    const maxPanY = (window.innerHeight * (scale - 1)) / (2 * scale);
+    
+    return {
+      x: Math.max(-maxPanX, Math.min(maxPanX, x)),
+      y: Math.max(-maxPanY, Math.min(maxPanY, y))
+    };
+  }, []);
+
   // Touch event handlers for mobile zoom and drag
   const handleTouchStart = useCallback((e) => {
     if (e.touches.length === 2) {
       // Pinch-to-zoom start
       e.preventDefault();
       const distance = getTouchDistance(e.touches);
+      const center = getTouchCenter(e.touches);
       setLastTouchDistance(distance);
-    } else if (e.touches.length === 1 && imageTransform.scale > 1) {
-      // Single touch drag when zoomed
+      setLastTouchCenter(center);
+    } else if (e.touches.length === 1) {
+      // Single touch - prepare for drag if zoomed
       e.preventDefault();
+      const touch = e.touches[0];
+      setLastPointerPosition({ x: touch.clientX, y: touch.clientY });
+      if (imageTransform.scale > 1) {
+        setIsDragging(true);
+        setDragStartPos({ x: touch.clientX, y: touch.clientY });
+      }
     }
   }, [imageTransform.scale]);
 
@@ -131,31 +145,55 @@ function DesignGallery({ initialCategory = null }) {
         const scaleFactor = distance / lastTouchDistance;
         const newScale = Math.min(Math.max(imageTransform.scale * scaleFactor, 0.5), 4);
         
-        setImageTransform(prev => ({
-          ...prev,
-          scale: newScale
-        }));
+        // Calculate pan adjustment to keep zoom centered on pinch point
+        const centerDx = center.x - lastTouchCenter.x;
+        const centerDy = center.y - lastTouchCenter.y;
+        
+        const constrainedPan = constrainPan(
+          imageTransform.x + centerDx * 0.1,
+          imageTransform.y + centerDy * 0.1,
+          newScale
+        );
+        
+        setImageTransform({
+          scale: newScale,
+          x: constrainedPan.x,
+          y: constrainedPan.y
+        });
       }
       setLastTouchDistance(distance);
-    } else if (e.touches.length === 1 && imageTransform.scale > 1) {
+      setLastTouchCenter(center);
+    } else if (e.touches.length === 1 && isDragging && imageTransform.scale > 1) {
       // Single finger drag when zoomed
       e.preventDefault();
       const touch = e.touches[0];
       
-      // Calculate drag sensitivity based on scale
-      const sensitivity = 1 / imageTransform.scale;
+      const deltaX = touch.clientX - lastPointerPosition.x;
+      const deltaY = touch.clientY - lastPointerPosition.y;
+      
+      const constrainedPan = constrainPan(
+        imageTransform.x + deltaX * 0.8,
+        imageTransform.y + deltaY * 0.8,
+        imageTransform.scale
+      );
       
       setImageTransform(prev => ({
         ...prev,
-        x: prev.x + (touch.clientX - (touch.pageX || touch.clientX)) * sensitivity,
-        y: prev.y + (touch.clientY - (touch.pageY || touch.clientY)) * sensitivity
+        x: constrainedPan.x,
+        y: constrainedPan.y
       }));
+      
+      setLastPointerPosition({ x: touch.clientX, y: touch.clientY });
     }
-  }, [lastTouchDistance, imageTransform.scale]);
+  }, [lastTouchDistance, lastTouchCenter, lastPointerPosition, isDragging, imageTransform, constrainPan]);
 
   const handleTouchEnd = useCallback((e) => {
     if (e.touches.length < 2) {
       setLastTouchDistance(0);
+    }
+    
+    if (e.touches.length === 0) {
+      setIsDragging(false);
     }
     
     // Reset zoom if scale is too small
@@ -164,7 +202,80 @@ function DesignGallery({ initialCategory = null }) {
     }
   }, [imageTransform.scale]);
 
-  // Double tap to zoom
+  // Mouse event handlers for desktop zoom and drag
+  const handleMouseDown = useCallback((e) => {
+    if (imageTransform.scale > 1) {
+      e.preventDefault();
+      setIsDragging(true);
+      setLastPointerPosition({ x: e.clientX, y: e.clientY });
+      setDragStartPos({ x: e.clientX, y: e.clientY });
+    }
+  }, [imageTransform.scale]);
+
+  const handleMouseMove = useCallback((e) => {
+    if (isDragging && imageTransform.scale > 1) {
+      e.preventDefault();
+      
+      const deltaX = e.clientX - lastPointerPosition.x;
+      const deltaY = e.clientY - lastPointerPosition.y;
+      
+      const constrainedPan = constrainPan(
+        imageTransform.x + deltaX,
+        imageTransform.y + deltaY,
+        imageTransform.scale
+      );
+      
+      setImageTransform(prev => ({
+        ...prev,
+        x: constrainedPan.x,
+        y: constrainedPan.y
+      }));
+      
+      setLastPointerPosition({ x: e.clientX, y: e.clientY });
+    }
+  }, [isDragging, lastPointerPosition, imageTransform, constrainPan]);
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
+  // Mouse wheel zoom for desktop
+  const handleWheel = useCallback((e) => {
+    e.preventDefault();
+    
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    const newScale = Math.min(Math.max(imageTransform.scale * delta, 0.5), 4);
+    
+    // Get mouse position relative to image for zoom center
+    const rect = e.currentTarget.getBoundingClientRect();
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    
+    // Calculate offset from center
+    const offsetX = (mouseX - centerX) * 0.1;
+    const offsetY = (mouseY - centerY) * 0.1;
+    
+    const constrainedPan = constrainPan(
+      imageTransform.x + offsetX * (delta - 1),
+      imageTransform.y + offsetY * (delta - 1),
+      newScale
+    );
+    
+    setImageTransform({
+      scale: newScale,
+      x: constrainedPan.x,
+      y: constrainedPan.y
+    });
+    
+    // Reset to center if scale returns to 1
+    if (newScale <= 1) {
+      setImageTransform({ scale: 1, x: 0, y: 0 });
+    }
+  }, [imageTransform, constrainPan]);
+
+  // Double tap/click to zoom
   const handleDoubleClick = useCallback((e) => {
     e.preventDefault();
     if (imageTransform.scale === 1) {
@@ -173,6 +284,23 @@ function DesignGallery({ initialCategory = null }) {
       setImageTransform({ scale: 1, x: 0, y: 0 });
     }
   }, [imageTransform.scale]);
+
+  // Add global mouse event listeners for desktop drag
+  useEffect(() => {
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'grabbing';
+      document.body.style.userSelect = 'none';
+      
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+      };
+    }
+  }, [isDragging, handleMouseMove, handleMouseUp]);
 
 
 
@@ -316,19 +444,15 @@ function DesignGallery({ initialCategory = null }) {
         {!selectedCategory && (
           <div>
             <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-              Choose a product category to view our available designs
+              Choose a product category to explore our designs
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 max-w-7xl mx-auto">
               {productCategories.map((category, index) => (
                 <div 
                   key={category.id}
-                  className={`group cursor-pointer transform transition-all duration-500 hover:-translate-y-2 hover:scale-105 ${
-                    autoHoverIndex === index && !isUserHovering ? '-translate-y-2 scale-105' : ''
-                  }`}
+                  className="group cursor-pointer transform transition-all duration-500 hover:-translate-y-2 hover:scale-105"
                   onClick={() => handleCategorySelect(category.id)}
-                  onMouseEnter={() => setIsUserHovering(true)}
-                  onMouseLeave={() => setIsUserHovering(false)}
                 >
                   <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
                     {/* Image Container */}
@@ -340,9 +464,7 @@ function DesignGallery({ initialCategory = null }) {
                         priority={true}
                       />
                       {/* Overlay */}
-                      <div className={`absolute inset-0 bg-pink-600 transition-all duration-500 rounded-t-xl ${
-                        autoHoverIndex === index && !isUserHovering ? 'bg-opacity-20' : 'bg-opacity-0 group-hover:bg-opacity-20'
-                      }`}></div>
+                      <div className="absolute inset-0 bg-pink-600 transition-all duration-500 rounded-t-xl bg-opacity-0 group-hover:bg-opacity-20"></div>
                     </div>
                     
                     {/* Content */}
@@ -418,7 +540,7 @@ function DesignGallery({ initialCategory = null }) {
                 {/* Show message if no items found */}
                 {getCurrentItems().length === 0 && (
                   <div className="text-center py-12">
-                    <p className="text-gray-500 text-lg">No designs available in this category yet.</p>
+                    <p className="text-gray-500 text-lg">Coming soon! We're working on new designs for this category.</p>
                   </div>
                 )}
               </div>
@@ -487,10 +609,19 @@ function DesignGallery({ initialCategory = null }) {
                 </div>
               )}
 
-              {/* Instructions for mobile users */}
+              {/* Instructions for users */}
               {imageTransform.scale === 1 && (
-                <div className="fixed bottom-4 left-4 z-10 bg-black bg-opacity-50 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs md:hidden" style={{ margin: '16px' }}>
-                  Pinch to zoom • Double tap
+                <div className="fixed bottom-4 left-4 z-10 bg-black bg-opacity-50 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs" style={{ margin: '16px' }}>
+                  <span className="md:hidden">Pinch to zoom • Double tap</span>
+                  <span className="hidden md:inline">Mouse wheel to zoom • Drag to pan • Double click</span>
+                </div>
+              )}
+
+              {/* Pan instructions when zoomed */}
+              {imageTransform.scale > 1 && (
+                <div className="fixed bottom-4 left-4 z-10 bg-black bg-opacity-50 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs" style={{ margin: '16px' }}>
+                  <span className="md:hidden">Drag to move around</span>
+                  <span className="hidden md:inline">Drag to pan • Wheel to zoom</span>
                 </div>
               )}
               
@@ -500,15 +631,18 @@ function DesignGallery({ initialCategory = null }) {
                 className="max-w-[95vw] max-h-[95vh]"
                 style={{
                   transform: `scale(${imageTransform.scale}) translate(${imageTransform.x}px, ${imageTransform.y}px)`,
-                  transition: imageTransform.scale === 1 ? 'transform 0.3s ease-out' : 'none',
+                  transition: imageTransform.scale === 1 && !isDragging ? 'transform 0.3s ease-out' : 'none',
                   transformOrigin: 'center center',
                   touchAction: 'none', // Disable default touch behaviors
                   userSelect: 'none',
-                  WebkitUserSelect: 'none'
+                  WebkitUserSelect: 'none',
+                  cursor: imageTransform.scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default'
                 }}
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
+                onMouseDown={handleMouseDown}
+                onWheel={handleWheel}
                 onDoubleClick={handleDoubleClick}
               >
                 <BlobImage

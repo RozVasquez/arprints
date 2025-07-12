@@ -36,3 +36,13 @@
     transform: rotate(360deg);
   }
 }
+
+/* Continuous scroll animation for Leverage component */
+@keyframes scrollLeft {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}

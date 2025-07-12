@@ -21,3 +21,12 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Admin panel and security files
+/src/admin
+/src/components/admin
+/src/pages/admin
+.env.admin
+admin.config.js
+security.config.js
+admin-*.js

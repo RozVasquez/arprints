@@ -121,6 +121,44 @@ const productData = {
     title: "Instax Inspired",
     items: [
       {
+        id: "instax-mini",
+        name: "MINI",
+        description: "1.2\" x 3.5\"",
+        color: "yellow",
+        options: [
+          {
+            type: "Classic White",
+            quantity: "10 pcs",
+            price: "₱50.00"
+          },
+          {
+            type: "Classic White",
+            quantity: "30 pcs",
+            price: "₱100.00"
+          },
+          {
+            type: "Classic Colored",
+            quantity: "10 pcs",
+            price: "₱60.00"
+          },
+          {
+            type: "Classic Colored",
+            quantity: "30 pcs",
+            price: "₱120.00"
+          },
+          {
+            type: "Instax Design",
+            quantity: "10 pcs",
+            price: "₱70.00"
+          },
+          {
+            type: "Instax Design",
+            quantity: "30 pcs",
+            price: "₱150.00"
+          }
+        ]
+      },
+      {
         id: "instax-square",
         name: "SQUARE",
         description: "2.8\" x 3.4\"",
@@ -196,44 +234,6 @@ const productData = {
           }
         ]
       },
-      {
-        id: "instax-mini",
-        name: "MINI",
-        description: "1.2\" x 3.5\"",
-        color: "yellow",
-        options: [
-          {
-            type: "Classic White",
-            quantity: "10 pcs",
-            price: "₱50.00"
-          },
-          {
-            type: "Classic White",
-            quantity: "30 pcs",
-            price: "₱100.00"
-          },
-          {
-            type: "Classic Colored",
-            quantity: "10 pcs",
-            price: "₱60.00"
-          },
-          {
-            type: "Classic Colored",
-            quantity: "30 pcs",
-            price: "₱120.00"
-          },
-          {
-            type: "Instax Design",
-            quantity: "10 pcs",
-            price: "₱70.00"
-          },
-          {
-            type: "Instax Design",
-            quantity: "30 pcs",
-            price: "₱150.00"
-          }
-        ]
-      }
     ]
   },
   photoStrips: {

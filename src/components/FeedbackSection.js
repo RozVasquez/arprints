@@ -31,7 +31,7 @@ function FeedbackSection() {
           </ScrollReveal>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto items-start">
           {feedbackData.map((feedback, index) => (
             <ScrollReveal 
               key={feedback.id} 
@@ -40,7 +40,7 @@ function FeedbackSection() {
               baseRotation={1} 
               blurStrength={2}
             >
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 text-center h-full flex flex-col">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 text-center h-full flex flex-col min-h-[280px]">
                 {/* Avatar */}
                 <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-pink-600 font-semibold text-lg">{getInitials(feedback.name)}</span>
@@ -57,7 +57,7 @@ function FeedbackSection() {
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">{feedback.name}</h3>
                 
                 {/* Description */}
-                <p className="text-gray-600 flex-grow leading-relaxed">
+                <p className="text-gray-600 flex-grow leading-relaxed text-sm break-words hyphens-auto overflow-wrap-anywhere">
                   "{feedback.description}"
                 </p>
               </div>

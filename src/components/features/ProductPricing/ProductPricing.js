@@ -3,13 +3,13 @@ import { usePricing } from '../../../hooks';
 import { Button } from '../../ui';
 import { CONTACT } from '../../../constants';
 
-const ProductPricing = ({ selectedCategory, activeSubtype }) => {
+const ProductPricing = ({ selectedCategory, activeSubtype, onViewPricing }) => {
   const { compactPricing } = usePricing(selectedCategory, activeSubtype);
 
   if (compactPricing.length === 0) return null;
 
   return (
-    <div className="mt-3 lg:mt-6 py-8 lg:py-20">
+    <div className="mt-2 lg:mt-3 py-3 lg:py-4">
       <h6 className="text-sm font-medium text-gray-700 mb-2 lg:mb-3">Starting Prices</h6>
       <div className="bg-white rounded-lg p-3 lg:p-4 shadow-md">
         {compactPricing.map((item, index) => (
@@ -30,20 +30,22 @@ const ProductPricing = ({ selectedCategory, activeSubtype }) => {
         ))}
       </div>
       
-      {/* Instructions and Call-to-Action */}
-      <div className="mt-3 lg:mt-4 text-center">
-        <p className="text-xs text-gray-600 mb-2 lg:mb-3">
-          Take a screenshot of your preferred design and send it to us by clicking the button below
-        </p>
-        <a 
-          href="https://www.facebook.com/profile.php?id=61576666357859" 
-          target="_blank" 
-          rel="noopener noreferrer"
+      {/* View All Prices Button */}
+      <div className="mt-3 lg:mt-4">
+        <button 
+          onClick={onViewPricing}
+          className="w-full inline-flex items-center justify-center px-6 py-3 bg-transparent border-2 border-pink-600 text-pink-600 font-medium rounded-lg hover:bg-pink-50 transition-colors duration-200"
         >
-          <Button variant="primary" size="md">
-            {CONTACT.MESSAGE_CTA}
-          </Button>
-        </a>
+          View All Prices
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+      
+      {/* Separator between View All Prices and Take a screenshot */}
+      <div className="mt-4 mb-2">
+        <div className="border-b border-gray-200"></div>
       </div>
     </div>
   );

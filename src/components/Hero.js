@@ -7,7 +7,7 @@ function Hero() {
       <div className="container mx-auto px-4 md:px-8 flex flex-col md:flex-row items-center md:items-center justify-between">
         <div className="text-center md:text-left md:w-1/2 mb-12 md:mb-0 md:-mt-20">
           <SplitText
-            className="text-4xl md:text-6xl font-bold text-gray-800 leading-tight mb-4"
+            className="text-4xl md:text-6xl font-bold text-gray-800 leading-tight mt-4 mb-4"
             delay={80}
             duration={0.8}
             splitType="words"
