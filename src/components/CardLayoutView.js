@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import BlobImage from './BlobImage';
 import { ProductPricing } from './features';
 
@@ -106,19 +106,17 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
                 {/* Instructions and Call-to-Action - Below left nav */}
                 <div className="mt-4 text-center">
                   <p className="text-xs text-gray-600 mb-2 lg:mb-3">
-                    Take a screenshot of your preferred design and send it to us by clicking the button below
+                    Take a screenshot of your preferred design and place your order by clicking the button below
                   </p>
-                  <a 
-                    href="https://www.facebook.com/profile.php?id=61576666357859" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
+                  <Link 
+                    to="/order"
                     className="w-full inline-flex items-center justify-center px-6 py-3 bg-pink-600 text-white font-medium rounded-lg hover:bg-pink-700 transition-colors duration-200"
                   >
-                    Message AR Prints
+                    Order Now
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                     </svg>
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -205,19 +203,17 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
               {/* Instructions and Call-to-Action - Below left nav on mobile/tablet */}
               <div className="mt-4 text-center">
                 <p className="text-xs text-gray-600 mb-4 lg:mb-3">
-                  Take a screenshot of your preferred design and send it to us by clicking the button below
+                  Take a screenshot of your preferred design and place your order by clicking the button below
                 </p>
-                <a 
-                  href="https://www.facebook.com/profile.php?id=61576666357859" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
+                <Link 
+                  to="/order"
                   className="w-full inline-flex items-center justify-center px-6 py-3 bg-pink-600 text-white font-medium rounded-lg hover:bg-pink-700 transition-colors duration-200"
                 >
-                  Message AR Prints
+                  Order Now
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                   </svg>
-                </a>
+                </Link>
               </div>
             </div>
 

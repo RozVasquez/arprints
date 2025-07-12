@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import productData from '../data/products';
 
 function ProductTabs() {
@@ -320,14 +321,12 @@ function ProductTabs() {
         </div>
         
         <div className="text-center mt-10 bg-white">
-          <a
-            href="https://www.facebook.com/profile.php?id=61576666357859"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to="/order"
             className="inline-block bg-pink-600 text-white font-bold text-lg px-8 py-4 rounded-lg shadow-lg hover:bg-pink-700 transform hover:-translate-y-1 transition-all duration-300"
           >
-            Order Now on Facebook
-          </a>
+            Order Now
+          </Link>
         </div>
       </div>
     </section>

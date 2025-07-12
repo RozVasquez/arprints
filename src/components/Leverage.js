@@ -73,7 +73,7 @@ function Leverage() {
   const duplicatedFeatures = [...features, ...features];
 
   return (
-    <section className="py-20 md:py-16 bg-white">
+    <section className="pt-2 pb-20 md:pt-0 md:pb-16 bg-white">
       <div className="container mx-auto px-4">
         
         {/* Mobile: Traditional Grid Layout with increased spacing */}

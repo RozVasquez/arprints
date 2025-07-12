@@ -61,5 +61,5 @@ export const PRICING_TYPES = {
 // Contact information
 export const CONTACT = {
   BUSINESS_NAME: 'AR Prints',
-  MESSAGE_CTA: 'Message AR Prints'
+  MESSAGE_CTA: 'Order Now'
 }; 

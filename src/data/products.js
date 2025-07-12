@@ -91,11 +91,11 @@ const productData = {
         options: [
           {
             quantity: "9 cards",
-            price: "₱70.00"
+            price: "₱80.00"
           },
           {
             quantity: "18 cards",
-            price: "₱120.00"
+            price: "₱140.00"
           }
         ]
       },
@@ -107,11 +107,11 @@ const productData = {
         options: [
           {
             quantity: "9 cards",
-            price: "₱60.00"
+            price: "₱70.00"
           },
           {
             quantity: "18 cards",
-            price: "₱100.00"
+            price: "₱120.00"
           }
         ]
       }
@@ -280,8 +280,8 @@ const productData = {
           },
           {
             type: "Classic",
-            quantity: "10 pcs",
-            price: "₱60.00"
+            quantity: "8 pcs",
+            price: "₱50.00"
           },
           {
             type: "with Design",

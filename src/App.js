@@ -7,6 +7,7 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 import Products from './pages/Products';
 import Pricing from './pages/Pricing';
+import Order from './pages/Order';
 
 // Initialize Speed Insights
 injectSpeedInsights();
@@ -22,6 +23,7 @@ function App() {
             <Route path="/products" element={<Products />} />
             <Route path="/products/:category" element={<Products />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/order" element={<Order />} />
           </Routes>
         </main>
         <Footer />

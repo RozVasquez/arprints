@@ -654,22 +654,22 @@ function DesignGallery({ initialCategory = null }) {
               
               {/* Image container with zoom and drag functionality */}
               <div className="flex items-center justify-center w-full h-full">
-                <div
-                  ref={imageRef}
+              <div
+                ref={imageRef}
                   className="flex items-center justify-center"
-                  style={{
+                style={{
                     width: 'min(90vw, 90vh * 1.193)', // Constrain by aspect ratio and screen
                     height: 'min(90vh, 90vw * 0.838)', // 1717/2048 = 0.838
                     maxWidth: '90vw',
                     maxHeight: '90vh',
-                    transform: `scale(${imageTransform.scale}) translate(${imageTransform.x}px, ${imageTransform.y}px)`,
-                    transition: imageTransform.scale === 1 && !isDragging ? 'transform 0.3s ease-out' : 'none',
-                    transformOrigin: 'center center',
-                    touchAction: 'none', // Disable default touch behaviors
-                    userSelect: 'none',
-                    WebkitUserSelect: 'none',
-                    cursor: imageTransform.scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default'
-                  }}
+                  transform: `scale(${imageTransform.scale}) translate(${imageTransform.x}px, ${imageTransform.y}px)`,
+                  transition: imageTransform.scale === 1 && !isDragging ? 'transform 0.3s ease-out' : 'none',
+                  transformOrigin: 'center center',
+                  touchAction: 'none', // Disable default touch behaviors
+                  userSelect: 'none',
+                  WebkitUserSelect: 'none',
+                  cursor: imageTransform.scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default'
+                }}
                   onTouchStart={(e) => {
                     e.stopPropagation();
                     handleTouchStart(e);
@@ -694,14 +694,14 @@ function DesignGallery({ initialCategory = null }) {
                     e.stopPropagation();
                     handleDoubleClick(e);
                   }}
-                >
-                  <BlobImage
-                    src={selectedImage}
-                    alt="Selected design"
+              >
+                <BlobImage
+                  src={selectedImage}
+                  alt="Selected design"
                     className="w-full h-full object-contain shadow-2xl rounded-lg"
-                    priority={true} // Always priority load modal images
-                    highQuality={true} // Use high quality for modal display
-                  />
+                  priority={true} // Always priority load modal images
+                  highQuality={true} // Use high quality for modal display
+                />
                 </div>
               </div>
             </div>

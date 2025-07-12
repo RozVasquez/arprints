@@ -61,18 +61,24 @@ function Header() {
           <Link to="/pricing" className={getLinkClasses('/pricing')}>
             Pricing
           </Link>
+          <a 
+            href="https://www.facebook.com/arprintservices/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="py-2 px-3 transition duration-300 flex items-center text-pink-600 hover:text-pink-300"
+          >
+            Contact Us
+          </a>
         </nav>
 
         {/* Order Now Button */}
         <div className="hidden md:flex flex-shrink-0">
-          <a 
-            href="https://www.facebook.com/profile.php?id=61576666357859" 
-            target="_blank" 
-            rel="noopener noreferrer"
+          <Link 
+            to="/order"
             className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition duration-300 font-medium"
           >
             Order Now
-          </a>
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}
@@ -122,13 +128,13 @@ function Header() {
             Pricing
           </Link>
           <a 
-            href="https://www.facebook.com/profile.php?id=61576666357859" 
+            href="https://www.facebook.com/arprintservices/" 
             target="_blank" 
             rel="noopener noreferrer"
             className="mx-6 my-2 py-2 px-4 text-center bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition duration-300 font-medium"
             onClick={toggleMobileMenu}
           >
-            Order Now
+            Contact Us
           </a>
         </nav>
       </div>
