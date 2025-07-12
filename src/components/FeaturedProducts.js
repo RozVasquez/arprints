@@ -90,11 +90,18 @@ function FeaturedProducts() {
           ))}
         </div>
         
-        {/* View All Products Button */}
-        <div className="text-center mt-10">
+        {/* View All Products & See Pricing Buttons */}
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-10">
+          <Link
+            to="/pricing"
+            className="inline-flex items-center text-pink-600 font-medium text-base px-8 py-3 bg-transparent hover:bg-pink-50 hover:text-pink-700 transform hover:-translate-y-1 transition-all duration-300 rounded-lg"
+            style={{ fontSize: '14px' }}
+          >
+            See Pricing
+          </Link>
           <Link
             to="/products"
-            className="inline-flex items-center text-pink-500 font-medium text-base px-8 py-3 rounded-lg shadow-sm border border-pink-500 hover:bg-pink-500 hover:text-white transform hover:-translate-y-1 transition-all duration-300"
+            className="inline-flex items-center text-white font-medium text-base px-8 py-3 rounded-lg shadow-sm border bg-pink-400 hover:bg-pink-500 hover:text-white transform hover:-translate-y-1 transition-all duration-300"
             style={{ fontSize: '14px' }}
           >
             View All Products
@@ -102,7 +109,7 @@ function FeaturedProducts() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </Link>
-        </div>
+          </div>
       </div>
     </section>
   );
