@@ -43,6 +43,12 @@ admin-*.js
 /src/utils/adminUtils.js
 /src/services/adminService.js
 
+# Cache and development monitoring components
+/src/components/ImagePreloadProgress.js
+/src/components/StorageMonitor.js
+/src/hooks/useImagePreloading.js
+/src/services/imageCacheService.js
+
 # ========================================
 # ENVIRONMENT VARIABLES (KEEP LOCAL)
 # ========================================

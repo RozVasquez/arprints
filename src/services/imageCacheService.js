@@ -2,9 +2,7 @@ import { getDynamicGalleryData } from './galleryService';
 import { getPreviewUrl, getThumbnailUrl } from './supabase';
 
 // Check if we're in development/local environment
-const isDevelopment = process.env.NODE_ENV === 'development' || 
-                     window.location.hostname === 'localhost' || 
-                     window.location.hostname === '127.0.0.1';
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 // Global cache for preloaded images (only in development)
 const preloadedImageCache = new Map();

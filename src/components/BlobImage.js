@@ -1,25 +1,13 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { isImagePreloaded, getPreloadedImage } from '../services/imageCacheService';
 import { getOptimizedImageUrl, getPreviewUrl, getThumbnailUrl } from '../services/supabase';
 import LoadingSpinner from './ui/LoadingSpinner';
 
-// Global storage tracking
-let totalStorageUsed = 0;
-const imageStorageMap = new Map();
-
-// Global cache for optimized images
+// Global cache for optimized images (simplified)
 const optimizedImageCache = new Map();
-
-// Expose to window for the StorageMonitor component
-if (typeof window !== 'undefined') {
-  window.totalStorageUsed = totalStorageUsed;
-  window.imageStorageMap = imageStorageMap;
-  window.optimizedImageCache = optimizedImageCache;
-}
 
 // Helper function to get the correct path for images
 const getPublicPath = (src) => {
-  if (!src) return '';
+  if (!src) return null;
   
   // If it's already an absolute URL, return it as is
   if (src.startsWith('http://') || src.startsWith('https://')) {
@@ -46,15 +34,8 @@ const supportsWebP = () => {
 // Function to clear image cache
 const clearImageCache = () => {
   optimizedImageCache.clear();
-  totalStorageUsed = 0;
-  imageStorageMap.clear();
-  console.log('🗑️ Image cache cleared');
-};
 
-// Expose cache management to window for debugging
-if (typeof window !== 'undefined') {
-  window.clearImageCache = clearImageCache;
-}
+};
 
 function BlobImage({ src, alt, className, onClick, priority = false, highQuality = false, size = 'medium' }) {
   const [blobUrl, setBlobUrl] = useState('');
@@ -113,59 +94,70 @@ function BlobImage({ src, alt, className, onClick, priority = false, highQuality
     };
   }, [size]);
 
-  // Progressive loading: preview → thumbnail → medium → high
+    // Progressive loading: preview → thumbnail → medium → high
   const loadNextQuality = useCallback(async (resolvedSrc, targetQuality = 'medium') => {
     const urls = getOptimizedUrls(resolvedSrc);
     const qualityOrder = ['preview', 'thumbnail', 'medium', 'high', 'original'];
     const currentIndex = qualityOrder.indexOf(currentQuality);
     const targetIndex = qualityOrder.indexOf(targetQuality);
     
-    for (let i = currentIndex + 1; i <= targetIndex; i++) {
-      const quality = qualityOrder[i];
-      const url = urls[quality];
-      
-      if (!url) continue;
-      
+    // Since all URLs are the same now (no transformations), just load the original
+    const url = urls.original || resolvedSrc;
+    
+    if (!url) return;
+    
+    try {
+      // Try to load with CORS first
+      let response;
       try {
-        const response = await fetch(url);
-        if (!response.ok) continue;
-      
-      const blob = await response.blob();
-        const blobUrl = URL.createObjectURL(blob);
-        
-        setBlobUrl(blobUrl);
-        setCurrentQuality(quality);
-        setBlobSize(blob.size);
-        
-        // Get dimensions
-      const img = new Image();
-        await new Promise((resolve) => {
-          img.onload = resolve;
-          img.src = blobUrl;
+        response = await fetch(url, {
+          mode: 'cors',
+          credentials: 'omit'
         });
-        
-        setDimensions({ width: img.width, height: img.height });
-        
-        // Hide preview when we have a better quality
-        if (quality !== 'preview') {
-          setShowPreview(false);
-        }
-        
-        // Cache the result
-        const cacheKey = `${resolvedSrc}_${quality}`;
-        optimizedImageCache.set(cacheKey, {
-          blobUrl,
-          size: blob.size,
-          width: img.width,
-          height: img.height,
-          quality
-        });
-        
-        console.log(`✅ Loaded ${quality} quality: ${formatFileSize(blob.size)}`);
-        
-      } catch (error) {
-        console.warn(`⚠️ Failed to load ${quality} quality:`, error);
+      } catch (corsError) {
+        // If CORS fails, try without CORS mode (for same-origin requests)
+        response = await fetch(url);
       }
+      
+      if (!response.ok) {
+        throw new Error(`Failed to load image: ${response.status} ${response.statusText}`);
+      }
+    
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      
+      setBlobUrl(blobUrl);
+      setCurrentQuality('original');
+      setBlobSize(blob.size);
+      
+      // Get dimensions
+      const img = new Image();
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+        img.src = blobUrl;
+      });
+      
+      setDimensions({ width: img.width, height: img.height });
+      
+      // Hide preview when we have the image
+      setShowPreview(false);
+      
+      // Cache the result
+      const cacheKey = `${resolvedSrc}_original`;
+      optimizedImageCache.set(cacheKey, {
+        blobUrl,
+        size: blob.size,
+        width: img.width,
+        height: img.height,
+        quality: 'original'
+      });
+      
+    } catch (error) {
+      console.error('Error loading image:', error);
+      // If blob loading fails, fall back to direct URL
+      setUseFallback(true);
+      throw error;
     }
   }, [currentQuality, getOptimizedUrls]);
 
@@ -195,32 +187,13 @@ function BlobImage({ src, alt, className, onClick, priority = false, highQuality
     };
   }, [priority]);
 
-  // Log storage information
-  const logStorageInfo = useCallback((blob, path, width, height) => {
+  // Log image information
+  const logImageInfo = useCallback((blob, path, width, height) => {
     const size = blob.size;
     setBlobSize(size);
     setDimensions({ width, height });
     
-    // Remove previous size for this image if it exists
-    if (imageStorageMap.has(path)) {
-      totalStorageUsed -= imageStorageMap.get(path);
-    }
-    
-    // Update storage tracking
-    imageStorageMap.set(path, size);
-    totalStorageUsed += size;
-    
-    // Update window variables for StorageMonitor
-    if (typeof window !== 'undefined') {
-      window.totalStorageUsed = totalStorageUsed;
-    }
-    
-    console.log(`Image: ${path}`);
-    console.log(`Size: ${formatFileSize(size)}`);
-    console.log(`Dimensions: ${width}x${height}`);
-    console.log(`Total gallery storage: ${formatFileSize(totalStorageUsed)}`);
-    console.log(`Number of images loaded: ${imageStorageMap.size}`);
-    console.log('-----------------------------------');
+
   }, []);
 
   // Initialize preview URL
@@ -228,7 +201,8 @@ function BlobImage({ src, alt, className, onClick, priority = false, highQuality
     const resolvedSrc = getPublicPath(src);
     if (resolvedSrc) {
       const urls = getOptimizedUrls(resolvedSrc);
-      setPreviewUrl(urls.preview);
+      // Since all URLs are the same now, use the original
+      setPreviewUrl(urls.original || resolvedSrc);
     }
   }, [src, getOptimizedUrls]);
 
@@ -237,7 +211,7 @@ function BlobImage({ src, alt, className, onClick, priority = false, highQuality
     if (!isIntersecting) return;
 
     const resolvedSrc = getPublicPath(src);
-    console.log(`Attempting to load image: ${resolvedSrc}`);
+
     
     // Set the direct URL immediately as a fallback option
     setDirectUrl(resolvedSrc);
@@ -256,31 +230,7 @@ function BlobImage({ src, alt, className, onClick, priority = false, highQuality
           throw new Error('Image source is empty or undefined');
         }
         
-        // Check if image is preloaded
-        if (isImagePreloaded(resolvedSrc)) {
-          console.log(`Using preloaded image: ${resolvedSrc}`);
-          const preloadedData = getPreloadedImage(resolvedSrc);
-          
-          if (isMounted) {
-            setBlobUrl(resolvedSrc);
-            setLoading(false);
-            setShowPreview(false);
-            setDimensions({ width: preloadedData.width, height: preloadedData.height });
-            
-            const estimatedSize = preloadedData.width * preloadedData.height * 4;
-            setBlobSize(estimatedSize);
-            
-            if (!imageStorageMap.has(resolvedSrc)) {
-              imageStorageMap.set(resolvedSrc, estimatedSize);
-              totalStorageUsed += estimatedSize;
-              
-              if (typeof window !== 'undefined') {
-                window.totalStorageUsed = totalStorageUsed;
-              }
-            }
-          }
-          return;
-        }
+
         
         // Start progressive loading
         const targetQuality = highQuality ? 'high' : 'medium';
@@ -291,7 +241,7 @@ function BlobImage({ src, alt, className, onClick, priority = false, highQuality
         }
         
       } catch (error) {
-        console.error(`Error loading image ${resolvedSrc}:`, error);
+
         if (isMounted) {
           setError(true);
           setErrorMessage(error.message || 'Unknown error');
@@ -309,16 +259,34 @@ function BlobImage({ src, alt, className, onClick, priority = false, highQuality
     };
   }, [src, isIntersecting, highQuality, loadNextQuality]);
 
+  // Don't render anything if src is null or empty
+  if (!src) {
+    return (
+      <div ref={imgRef} className={`bg-gray-100 ${className}`}>
+        <div className="flex items-center justify-center h-full text-gray-400">
+          <span className="text-sm">No image</span>
+        </div>
+      </div>
+    );
+  }
+
   // Show preview while loading
   if (showPreview && previewUrl && loading) {
     return (
       <div ref={imgRef} className="relative w-full h-full">
-        <img 
-          src={previewUrl} 
-          alt={alt || "Loading..."}
-          className={`${className} object-contain blur-sm`} 
-          onClick={onClick}
-        />
+        {previewUrl ? (
+          <img 
+            src={previewUrl} 
+            alt={alt || "Loading..."}
+            className={`${className} object-contain blur-sm`} 
+            onClick={onClick}
+            crossOrigin="anonymous"
+          />
+        ) : (
+          <div className="flex items-center justify-center h-full text-gray-400">
+            <span className="text-sm">No image</span>
+          </div>
+        )}
         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-10">
           <LoadingSpinner color="gray" />
         </div>
@@ -363,18 +331,25 @@ function BlobImage({ src, alt, className, onClick, priority = false, highQuality
   if (useFallback) {
     return (
       <div ref={imgRef} className="relative w-full h-full">
-        <img 
-          src={directUrl} 
-          alt={alt || "Image"}
-          className={`${className} object-contain`} 
-          onClick={onClick}
-          loading="lazy"
-          onError={(e) => {
-            console.error(`Fallback image render error for ${src}`);
-            setError(true);
-            setUseFallback(false);
-          }}
-        />
+        {directUrl ? (
+          <img 
+            src={directUrl} 
+            alt={alt || "Image"}
+            className={`${className} object-contain`} 
+            onClick={onClick}
+            loading="lazy"
+            crossOrigin="anonymous"
+            onError={(e) => {
+      
+              setError(true);
+              setUseFallback(false);
+            }}
+          />
+        ) : (
+          <div className="flex items-center justify-center h-full text-gray-400">
+            <span className="text-sm">No image</span>
+          </div>
+        )}
         {process.env.NODE_ENV === 'development' && (
           <div className="absolute bottom-0 right-0 bg-black bg-opacity-50 text-white text-xs px-1 py-0.5 rounded-tl">
             Fallback
@@ -387,17 +362,24 @@ function BlobImage({ src, alt, className, onClick, priority = false, highQuality
   // Default blob URL display
   return (
     <div ref={imgRef} className="relative w-full h-full">
-      <img 
-        src={blobUrl} 
-        alt={alt || "Image"} 
-        className={`${className} object-contain`}
-        onClick={onClick}
-        loading="lazy"
-        onError={(e) => {
-          console.error(`Image render error for ${src}`);
-          setUseFallback(true);
-        }}
-      />
+      {blobUrl ? (
+        <img 
+          src={blobUrl} 
+          alt={alt || "Image"} 
+          className={`${className} object-contain`}
+          onClick={onClick}
+          loading="lazy"
+          crossOrigin="anonymous"
+          onError={(e) => {
+            console.error(`Image render error for ${src}`);
+            setUseFallback(true);
+          }}
+        />
+      ) : (
+        <div className="flex items-center justify-center h-full text-gray-400">
+          <span className="text-sm">No image</span>
+        </div>
+      )}
       {process.env.NODE_ENV === 'development' && (
         <div className="absolute bottom-0 right-0 bg-black bg-opacity-50 text-white text-xs px-1 py-0.5 rounded-tl">
           {formatFileSize(blobSize)} • {dimensions.width}×{dimensions.height} • {currentQuality}

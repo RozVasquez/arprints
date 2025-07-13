@@ -1,12 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { ScrollReveal } from '../animations';
-import feedbackData from '../data/feedbackData.json';
 import FeedbackImageViewer from './FeedbackImageViewer';
-import { getPublicUrl } from '../services/supabase';
+import { getPublicFeedbacks } from '../services/feedbackService';
+import LoadingSpinner from './ui/LoadingSpinner';
 
 function FeedbackSection() {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [feedbacks, setFeedbacks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
+  
+  // Load feedbacks on component mount
+  useEffect(() => {
+    const loadFeedbacks = async () => {
+      try {
+        setLoading(true);
+        const data = await getPublicFeedbacks();
+        setFeedbacks(data);
+      } catch (error) {
+        console.error('Error loading feedbacks:', error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadFeedbacks();
+  }, []);
+
   // Track window size for desktop/mobile detection
   useEffect(() => {
     const handleResize = () => {
@@ -29,8 +51,8 @@ function FeedbackSection() {
 
   // Handle feedback click
   const handleFeedbackClick = (feedback) => {
-    if (feedback.images && feedback.images.length > 0) {
-      setSelectedImage(getPublicUrl(`feedbacks/${feedback.images[0]}`));
+    if (feedback.image_path) {
+      setSelectedImage(`https://kpaneqlgslxckvkccaej.supabase.co/storage/v1/object/public/product-images/${feedback.image_path}`);
     }
   };
 
@@ -38,6 +60,52 @@ function FeedbackSection() {
   const closeModal = () => {
     setSelectedImage(null);
   };
+
+  // Show loading state
+  if (loading) {
+    return (
+      <section className="w-full py-12 md:py-20 bg-gray-50">
+        <div className="container mx-auto px-6">
+          <div className="text-center">
+            <LoadingSpinner size="lg" className="mb-4" />
+            <p className="text-gray-600">Loading feedbacks...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <section className="w-full py-12 md:py-20 bg-gray-50">
+        <div className="container mx-auto px-6">
+          <div className="text-center">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
+              <h3 className="text-lg font-semibold text-red-800 mb-2">Unable to Load Feedbacks</h3>
+              <p className="text-red-700">{error}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Show no feedbacks state
+  if (feedbacks.length === 0) {
+    return (
+      <section className="w-full py-12 md:py-20 bg-gray-50">
+        <div className="container mx-auto px-6">
+          <div className="text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800">
+              What Our Customers Say
+            </h2>
+            <p className="text-gray-600">No feedbacks available at the moment.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="w-full py-12 md:py-20 bg-gray-50">
@@ -57,7 +125,7 @@ function FeedbackSection() {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto items-start">
-          {feedbackData.map((feedback, index) => (
+          {feedbacks.map((feedback, index) => (
             <ScrollReveal 
               key={feedback.id} 
               enableBlur={true} 
@@ -86,7 +154,7 @@ function FeedbackSection() {
                 
                 {/* Description */}
                 <p className="text-gray-600 flex-grow leading-relaxed text-sm break-words hyphens-auto overflow-wrap-anywhere">
-                  "{feedback.description}"
+                  "{feedback.text}"
                 </p>
               </div>
             </ScrollReveal>

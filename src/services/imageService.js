@@ -69,29 +69,19 @@ export class ImageService {
   
   // Bulk upload images for a category
   static async bulkUploadImages(files, category) {
-    console.log('🔄 Starting bulk upload...')
-    console.log('📁 Files to upload:', files.length)
-    console.log('📂 Category:', category)
-    
     try {
       const folder = STORAGE_FOLDERS[category.toUpperCase()]
       if (!folder) {
-        console.error('❌ Invalid category:', category)
         throw new Error(`Invalid category: ${category}`)
       }
       
-      console.log('📂 Target folder:', folder)
-      
       const uploadPromises = files.map(async (file, index) => {
-        console.log(`📤 Uploading file ${index + 1}/${files.length}:`, file.name)
         
         const path = `${folder}/${file.name}`
-        console.log('📍 Upload path:', path)
         
         const result = await uploadImage(file, path)
         
         if (result.success) {
-          console.log(`✅ File ${index + 1} uploaded successfully:`, file.name)
           return {
             success: true,
             filename: file.name,
@@ -99,7 +89,6 @@ export class ImageService {
             path: path
           }
         } else {
-          console.error(`❌ File ${index + 1} upload failed:`, file.name, result.error)
           return {
             success: false,
             filename: file.name,
@@ -108,17 +97,10 @@ export class ImageService {
         }
       })
       
-      console.log('⏳ Waiting for all uploads to complete...')
       const results = await Promise.all(uploadPromises)
       
       const successful = results.filter(r => r.success).length
       const failed = results.filter(r => !r.success).length
-      
-      console.log('📊 Upload summary:', {
-        total: files.length,
-        successful: successful,
-        failed: failed
-      })
       
       return {
         success: true,

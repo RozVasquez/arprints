@@ -78,16 +78,12 @@ const buildGalleryData = (structure) => {
   const galleryData = {};
 
   // Use local cover images instead of Supabase
-  console.log('🔍 Using local cover images from public folder');
-  
   const coverImages = {
     'instax': getLocalCoverUrl('instax'),
     'strips': getLocalCoverUrl('strips'),
     'photocards': getLocalCoverUrl('photocards'),
     'photocard': getLocalCoverUrl('photocard')
   };
-  
-  console.log('📊 Local cover images mapping:', coverImages);
 
   for (const folder of structure.folders) {
     const folderName = folder.name.toLowerCase();
@@ -106,20 +102,13 @@ const buildGalleryData = (structure) => {
         subtypes: {}
       };
 
-      console.log(`🏷️ Processing category: ${folderName}`);
-      console.log(`📊 Folder stats: ${folder.contents.files.length} files, ${folder.contents.folders.length} subfolders`);
-      
       // Use local cover images
       if (coverImages[folderName]) {
-        console.log(`✅ Found local cover for ${folderName}: ${coverImages[folderName]}`);
         categoryData.categoryImage = coverImages[folderName];
-      } else {
-        console.log(`❌ No local cover found for ${folderName}`);
       }
 
       // Process subfolders if they exist
       if (hasSubfolders) {
-        console.log(`📁 Processing ${folder.contents.folders.length} subfolders for ${folderName}`);
         
         // Create an ordered array to maintain FIFO order
         const orderedSubtypes = [];
@@ -169,7 +158,7 @@ const buildGalleryData = (structure) => {
                                fileName.includes('category');
             
             if (isCoverImage) {
-              console.log(`🚫 Filtered out cover image: ${file.name}`);
+              // Filtered out cover image
             }
             
             return !isCoverImage;
@@ -184,7 +173,7 @@ const buildGalleryData = (structure) => {
             }))
           });
           
-          console.log(`✅ Added subtype '${subfolderName}' as "${subtypeTitle}" with ${productImages.length} product items (filtered from ${subfolder.contents.files.length} total files)`);
+
         }
         
         // Create subtypes object with ordered keys
@@ -199,7 +188,7 @@ const buildGalleryData = (structure) => {
         // Add ordered keys array for UI to maintain order
         categoryData.subtypeOrder = orderedSubtypes.map(subtype => subtype.key);
         
-        console.log(`📋 Subtype order (FIFO): ${categoryData.subtypeOrder.join(' → ')}`);
+
       }
 
       // If no subtypes but has files, create a default subtype with all files
@@ -214,13 +203,13 @@ const buildGalleryData = (structure) => {
                              fileName.includes('category');
           
           if (isCoverImage) {
-            console.log(`🚫 Filtered out cover image: ${file.name}`);
+            // Filtered out cover image
           }
           
           return !isCoverImage;
         });
         
-        console.log(`📄 Creating default subtype for ${folderName} with ${productImages.length} product files (filtered from ${folder.contents.files.length} total files)`);
+
         categoryData.subtypes.default = {
           title: 'All',
           items: productImages.map(file => ({
@@ -233,54 +222,25 @@ const buildGalleryData = (structure) => {
           path: file.url
         }));
         
-        console.log(`✅ Added ${categoryData.items.length} items directly to ${folderName}`);
+
       }
 
       galleryData[folderName] = categoryData;
-      console.log(`✅ Successfully processed category: ${folderName}`);
     } else {
-      console.log(`⏭️ Skipping folder ${folderName} (no images or subfolders)`);
+      // Skipping folder (no images or subfolders)
     }
   }
 
-  console.log('📊 Final gallery data structure:', Object.keys(galleryData));
   return galleryData;
 };
 
 // Main function to get dynamic gallery data
 export const getDynamicGalleryData = async () => {
-  console.log('🔄 Loading dynamic gallery data from folder structure...');
-  
   try {
     const structure = await getFolderStructure();
-    console.log('📁 Raw folder structure:', structure);
-    console.log('📁 Available folders:', structure.folders.map(f => f.name));
-    
     const galleryData = buildGalleryData(structure);
-    
-    console.log('✅ Dynamic gallery data loaded:', galleryData);
-    console.log('📊 Available categories:', Object.keys(galleryData));
-    
-    // Log details for each category
-    Object.keys(galleryData).forEach(categoryId => {
-      const category = galleryData[categoryId];
-      console.log(`📋 Category: ${categoryId}`);
-      console.log(`   - Title: ${category.title}`);
-      console.log(`   - Use Card Layout: ${category.useCardLayout}`);
-      console.log(`   - Has Cover Image: ${!!category.categoryImage}`);
-      console.log(`   - Subtypes: ${Object.keys(category.subtypes).length}`);
-      console.log(`   - Direct Items: ${category.items?.length || 0}`);
-      
-      if (category.subtypes) {
-        Object.keys(category.subtypes).forEach(subtype => {
-          console.log(`     - ${subtype}: ${category.subtypes[subtype].items.length} items`);
-        });
-      }
-    });
-    
     return galleryData;
   } catch (error) {
-    console.error('❌ Error loading dynamic gallery data:', error);
     return {};
   }
 };

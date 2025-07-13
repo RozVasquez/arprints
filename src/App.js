@@ -8,7 +8,6 @@ import Home from './pages/Home';
 import Products from './pages/Products';
 import Pricing from './pages/Pricing';
 import Order from './pages/Order';
-import ImagePreloadProgress from './components/ImagePreloadProgress';
 import ScrollToTop from './components/ScrollToTop';
 
 // Initialize Speed Insights
@@ -38,14 +37,12 @@ const AppContent = () => {
               const Admin = require('./pages/Admin').default;
               return <Route path="/admin" element={<Admin />} />;
             } catch (error) {
-              console.log('Admin component not available in production');
               return null;
             }
           })()}
         </Routes>
       </main>
       {!isAdminPage && <Footer />}
-      <ImagePreloadProgress />
       <Analytics />
     </div>
   );

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BlobImage from './BlobImage';
-import StorageMonitor from './StorageMonitor';
 import CardLayoutView from './CardLayoutView';
 import LoadingSpinner from './ui/LoadingSpinner';
 import { getGalleryData } from '../data/galleryData';
@@ -366,39 +365,31 @@ function DesignGallery({ initialCategory = null }) {
 
   // Get current items to display based on selected category
   const getCurrentItems = useCallback(() => {
-    if (!selectedCategory) return [];
-    
-    const categoryData = galleryData?.[selectedCategory];
-    if (!categoryData) return [];
-    
-    // For categories with card layout (like instax and strips), combine all subtypes
-    if (categoryData.useCardLayout) {
-      let allItems = [];
-      Object.keys(categoryData.subtypes || {}).forEach(subtype => {
-        allItems = [...allItems, ...categoryData.subtypes[subtype].items];
+    if (!selectedCategory || !galleryData) {
+      return [];
+    }
+
+    const categoryData = galleryData[selectedCategory];
+    if (!categoryData) {
+      return [];
+    }
+
+    // If category has direct items (for single-folder categories like photocards)
+    if (categoryData.items && categoryData.items.length > 0) {
+      return categoryData.items;
+    }
+
+    // If category has subtypes, collect all items from all subtypes
+    if (categoryData.subtypes && Object.keys(categoryData.subtypes).length > 0) {
+      const allItems = [];
+      Object.values(categoryData.subtypes).forEach(subtype => {
+        if (subtype.items) {
+          allItems.push(...subtype.items);
+        }
       });
       return allItems;
     }
-    
-    // For single-folder categories (like photocards), use direct items array
-    if (categoryData.items && categoryData.items.length > 0) {
-      console.log(`📄 Using direct items for ${selectedCategory}: ${categoryData.items.length} items`);
-      return categoryData.items;
-    }
-    
-    // Fallback: check subtypes for any items
-    if (categoryData.subtypes) {
-      let allItems = [];
-      Object.keys(categoryData.subtypes).forEach(subtype => {
-        allItems = [...allItems, ...categoryData.subtypes[subtype].items];
-      });
-      if (allItems.length > 0) {
-        console.log(`📄 Using subtype items for ${selectedCategory}: ${allItems.length} items`);
-        return allItems;
-      }
-    }
-    
-    console.log(`❌ No items found for category: ${selectedCategory}`);
+
     return [];
   }, [selectedCategory, galleryData]);
 
@@ -644,7 +635,7 @@ function DesignGallery({ initialCategory = null }) {
             {/* Conditional Layout based on useCardLayout flag */}
             {galleryData?.[selectedCategory]?.useCardLayout ? (
               // Card Layout for Instax and Strips
-              <div ref={cardLayoutRef} className="pt-8">
+              <div ref={cardLayoutRef} className="pt-8 flex justify-center">
                 <CardLayoutView 
                   categoryData={galleryData?.[selectedCategory]}
                   onImageClick={openModal}

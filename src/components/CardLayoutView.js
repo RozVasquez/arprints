@@ -48,7 +48,7 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
   const currentImages = getCurrentImages();
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="w-full max-w-6xl">
       {/* Card Container */}
       <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
         <div className="flex flex-col lg:flex-row min-h-[400px] lg:min-h-[600px]">

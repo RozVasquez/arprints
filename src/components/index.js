@@ -18,5 +18,4 @@ export { default as CardLayoutView } from './CardLayoutView';
 export { default as PricingCardLayout } from './PricingCardLayout';
 export { default as Hero } from './Hero';
 export { default as About } from './About';
-export { default as StorageMonitor } from './StorageMonitor';
 export { default as FeaturedProducts } from './FeaturedProducts'; 
