@@ -38,6 +38,9 @@ export const supabase = supabaseClient;
 // Storage bucket name for product images
 export const STORAGE_BUCKET = 'product-images'
 
+// Storage bucket name for feedback images
+export const FEEDBACK_STORAGE_BUCKET = 'feedback-images'
+
 // Storage folders structure
 export const STORAGE_FOLDERS = {
   INSTAX: 'instax',

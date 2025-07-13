@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ScrollReveal } from '../animations';
 import FeedbackImageViewer from './FeedbackImageViewer';
-import { getPublicFeedbacks } from '../services/feedbackService';
+import { getPublicFeedbacks, getFeedbackImageUrl } from '../services/feedbackService';
 import LoadingSpinner from './ui/LoadingSpinner';
 
 function FeedbackSection() {
@@ -52,7 +52,7 @@ function FeedbackSection() {
   // Handle feedback click
   const handleFeedbackClick = (feedback) => {
     if (feedback.image_path) {
-      setSelectedImage(`https://kpaneqlgslxckvkccaej.supabase.co/storage/v1/object/public/product-images/${feedback.image_path}`);
+      setSelectedImage(getFeedbackImageUrl(feedback.image_path));
     }
   };
 

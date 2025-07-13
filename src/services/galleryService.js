@@ -24,6 +24,15 @@ const isImageFile = (filename) => {
   return imageExtensions.some(ext => lowerFilename.endsWith(ext));
 };
 
+// Helper function to check if a path is feedback-related
+const isFeedbackPath = (path) => {
+  const lowerPath = path.toLowerCase();
+  return lowerPath.includes('feedback') || 
+         lowerPath.includes('feedbacks') || 
+         lowerPath.includes('testimonial') ||
+         lowerPath.includes('review');
+};
+
 // Helper function to get folder structure recursively
 const getFolderStructure = async (basePath = '') => {
   try {
@@ -47,6 +56,9 @@ const getFolderStructure = async (basePath = '') => {
       
       // Skip .folder files (our placeholder files)
       if (item.name === '.folder') continue;
+      
+      // Skip feedback-related paths
+      if (isFeedbackPath(itemPath)) continue;
       
       if (!item.name.includes('.') || item.name.endsWith('/')) {
         // This is a folder, get its contents recursively
