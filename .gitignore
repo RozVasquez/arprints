@@ -13,6 +13,7 @@
 
 # misc
 .DS_Store
+.env
 .env.local
 .env.development.local
 .env.test.local
@@ -22,11 +23,39 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Admin panel and security files
-/src/admin
-/src/components/admin
-/src/pages/admin
+# ========================================
+# LOCAL DEVELOPMENT ONLY (NOT DEPLOYED)
+# ========================================
+
+# Admin panel components and pages
+/src/components/admin/
+/src/pages/Admin.js
+/src/config/development.js
+/src/utils/supabaseTest.js
+
+# Admin configuration files
 .env.admin
 admin.config.js
 security.config.js
 admin-*.js
+
+# Local development utilities
+/src/utils/adminUtils.js
+/src/services/adminService.js
+
+# ========================================
+# ENVIRONMENT VARIABLES (KEEP LOCAL)
+# ========================================
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ========================================
+# DEVELOPMENT TOOLS (OPTIONAL)
+# ========================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

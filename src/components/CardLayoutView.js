@@ -1,10 +1,12 @@
 import React, { useState, useCallback } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import BlobImage from './BlobImage';
 import { ProductPricing } from './features';
 
 function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
-  const [activeSubtype, setActiveSubtype] = useState(Object.keys(categoryData.subtypes)[0]);
+  // Use ordered subtype keys if available, otherwise fall back to alphabetical
+  const orderedSubtypeKeys = categoryData.subtypeOrder || Object.keys(categoryData.subtypes);
+  const [activeSubtype, setActiveSubtype] = useState(orderedSubtypeKeys[0]);
   const [showAllImages, setShowAllImages] = useState(false);
   const navigate = useNavigate();
 
@@ -30,7 +32,8 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
     const categoryMapping = {
       'instax': 'instaxInspired',
       'strips': 'photoStrips',
-      'photocard': 'photocards'
+      'photocard': 'photocards',
+      'photocards': 'photocards'
     };
     
     const pricingCategory = categoryMapping[selectedCategory] || 'photocards';
@@ -58,36 +61,39 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
               
               {/* Mobile: Horizontal menu, Desktop: Vertical menu */}
               <div className="flex flex-row lg:flex-col gap-2 lg:space-y-2 lg:gap-0 overflow-x-auto lg:overflow-x-visible">
-                {Object.entries(categoryData.subtypes).map(([key, subtype]) => (
-                  <button
-                    key={key}
-                    onClick={() => handleSubtypeClick(key)}
-                    className={`flex-shrink-0 lg:flex-shrink lg:w-full text-left px-4 py-3 rounded-lg font-medium transition-all duration-200 whitespace-nowrap lg:whitespace-normal flex items-center justify-between group ${
-                      activeSubtype === key
-                        ? 'bg-pink-100 text-pink-700 border border-pink-200'
-                        : 'text-gray-600 hover:bg-white hover:text-gray-800 border border-transparent'
-                    }`}
-                  >
-                    <span>{subtype.title}</span>
-                    <div className="w-6 h-6 flex items-center justify-center">
-                      {activeSubtype === key ? (
-                        // Selected: Small pink circle
-                        <div className="w-3 h-3 bg-pink-500 rounded-full"></div>
-                      ) : (
-                        // Unselected: Arrow on hover, nothing by default
-                        <svg 
-                          xmlns="http://www.w3.org/2000/svg" 
-                          className="h-4 w-4 text-pink-500 transition-opacity duration-200 opacity-0 group-hover:opacity-100" 
-                          fill="none" 
-                          viewBox="0 0 24 24" 
-                          stroke="currentColor"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      )}
-                    </div>
-                  </button>
-                ))}
+                {orderedSubtypeKeys.map((key) => {
+                  const subtype = categoryData.subtypes[key];
+                  return (
+                    <button
+                      key={key}
+                      onClick={() => handleSubtypeClick(key)}
+                      className={`flex-shrink-0 lg:flex-shrink lg:w-full text-left px-4 py-3 rounded-lg font-medium transition-all duration-200 whitespace-nowrap lg:whitespace-normal flex items-center justify-between group ${
+                        activeSubtype === key
+                          ? 'bg-pink-100 text-pink-700 border border-pink-200'
+                          : 'text-gray-600 hover:bg-white hover:text-gray-800 border border-transparent'
+                      }`}
+                    >
+                      <span>{subtype.title}</span>
+                      <div className="w-6 h-6 flex items-center justify-center">
+                        {activeSubtype === key ? (
+                          // Selected: Small pink circle
+                          <div className="w-3 h-3 bg-pink-500 rounded-full"></div>
+                        ) : (
+                          // Unselected: Arrow on hover, nothing by default
+                          <svg 
+                            xmlns="http://www.w3.org/2000/svg" 
+                            className="h-4 w-4 text-pink-500 transition-opacity duration-200 opacity-0 group-hover:opacity-100" 
+                            fill="none" 
+                            viewBox="0 0 24 24" 
+                            stroke="currentColor"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
               
               {/* Separator between category selection and pricing */}
@@ -108,15 +114,17 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
                   <p className="text-xs text-gray-600 mb-2 lg:mb-3">
                     Take a screenshot of your preferred design and place your order by clicking the button below
                   </p>
-                  <Link 
-                    to="/order"
+                  <a 
+                    href="https://www.facebook.com/arprintservices/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
                     className="w-full inline-flex items-center justify-center px-6 py-3 bg-pink-600 text-white font-medium rounded-lg hover:bg-pink-700 transition-colors duration-200"
                   >
                     Order Now
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                     </svg>
-                  </Link>
+                  </a>
                 </div>
               </div>
             </div>
@@ -205,15 +213,17 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
                 <p className="text-xs text-gray-600 mb-4 lg:mb-3">
                   Take a screenshot of your preferred design and place your order by clicking the button below
                 </p>
-                <Link 
-                  to="/order"
+                <a 
+                  href="https://www.facebook.com/arprintservices/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
                   className="w-full inline-flex items-center justify-center px-6 py-3 bg-pink-600 text-white font-medium rounded-lg hover:bg-pink-700 transition-colors duration-200"
                 >
                   Order Now
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                   </svg>
-                </Link>
+                </a>
               </div>
             </div>
 

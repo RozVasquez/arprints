@@ -1,39 +1,63 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import BlobImage from './BlobImage';
-import galleryData from '../data/galleryData';
+import LoadingSpinner from './ui/LoadingSpinner';
+import { getGalleryData } from '../data/galleryData';
 
 function FeaturedProducts() {
   const [autoHoverIndex, setAutoHoverIndex] = useState(0);
   const [isUserHovering, setIsUserHovering] = useState(false);
+  const [galleryData, setGalleryData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Load gallery data on component mount
+  useEffect(() => {
+    const loadGalleryData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await getGalleryData();
+        setGalleryData(data);
+      } catch (error) {
+        console.error('Error loading gallery data:', error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadGalleryData();
+  }, []);
+
   // Product categories with their details and URL slugs
-  const productCategories = [
+  const productCategories = galleryData ? [
     {
       id: 'photocard',
       title: 'Photo Cards',
       description: 'High-quality printed photo cards',
-      categoryImage: galleryData.photocard.categoryImage,
+      categoryImage: galleryData.photocard?.categoryImage,
       slug: 'photo-cards'
     },
     {
       id: 'instax',
       title: 'Instax',
       description: 'Instax Inspired Prints',
-      categoryImage: galleryData.instax.categoryImage,
+      categoryImage: galleryData.instax?.categoryImage,
       slug: 'instax'
     },
     {
       id: 'strips',
       title: 'Photo Strips',
       description: 'Classic and Designed Photo Strips',
-      categoryImage: galleryData.strips.categoryImage,
+      categoryImage: galleryData.strips?.categoryImage,
       slug: 'photo-strips'
     }
-  ];
+  ] : [];
 
   // Auto-hover animation for category cards
   useEffect(() => {
-    if (!isUserHovering) {
+    if (!isUserHovering && productCategories.length > 0) {
       const interval = setInterval(() => {
         setAutoHoverIndex((prevIndex) => 
           (prevIndex + 1) % productCategories.length
@@ -43,6 +67,58 @@ function FeaturedProducts() {
       return () => clearInterval(interval);
     }
   }, [isUserHovering, productCategories.length]);
+
+  // Show loading state
+  if (loading) {
+    return (
+      <section id="featured-products" className="py-12 md:py-16 bg-white">
+        <div className="container mx-auto px-4 md:px-8">
+          <div className="text-center">
+            <LoadingSpinner size="lg" className="mb-4" />
+            <p className="text-gray-600">Loading featured products...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <section id="featured-products" className="py-12 md:py-16 bg-white">
+        <div className="container mx-auto px-4 md:px-8">
+          <div className="text-center">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-red-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+              <h3 className="text-lg font-semibold text-red-800 mb-2">Unable to Load Featured Products</h3>
+              <p className="text-red-700 mb-4">{error}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Show no data state
+  if (!galleryData || Object.keys(galleryData).length === 0) {
+    return (
+      <section id="featured-products" className="py-12 md:py-16 bg-white">
+        <div className="container mx-auto px-4 md:px-8">
+          <div className="text-center">
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 max-w-md mx-auto">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-yellow-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+              <h3 className="text-lg font-semibold text-yellow-800 mb-2">No Featured Products Available</h3>
+              <p className="text-yellow-700 mb-4">No products found. Please check your Supabase storage or contact support.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="featured-products" className="py-12 md:py-16 bg-white">

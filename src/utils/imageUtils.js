@@ -1,6 +1,8 @@
 /**
- * Image optimization and handling utilities
+ * Image optimization and handling utilities with Supabase integration
  */
+
+import { ImageService } from '../services/imageService';
 
 export const IMAGE_FORMATS = {
   WEBP: 'webp',
@@ -27,18 +29,30 @@ export const supportsWebP = () => {
 
 /**
  * Generate optimized image URLs based on quality requirements
+ * Now integrates with Supabase for remote images
  */
 export const getOptimizedImageUrl = (originalPath, quality = QUALITY_LEVELS.MEDIUM) => {
   if (!originalPath) return null;
   
-  const useWebP = supportsWebP();
-  const extension = useWebP ? '.webp' : '.jpg';
-  const qualityString = quality === QUALITY_LEVELS.HIGH ? 'high' : 'medium';
+  // Use Supabase image service for URL generation
+  const imageUrl = ImageService.getImageUrl(originalPath);
   
-  // For now, return original path as we don't have actual optimization service
-  // In production, this would generate URLs like:
-  // `/optimized/${qualityString}/${originalPath.replace(/\.[^/.]+$/, extension)}`
-  return originalPath;
+  // For future optimization, we can add query parameters to Supabase URLs
+  // Currently returns the Supabase URL or original path
+  return imageUrl;
+};
+
+/**
+ * Get product image URL with fallback support
+ * Handles both local and Supabase-hosted images
+ */
+export const getProductImageUrl = (imagePath, fallbackPath = null) => {
+  try {
+    return ImageService.getImageUrl(imagePath, fallbackPath);
+  } catch (error) {
+    console.error('Error getting product image URL:', error);
+    return fallbackPath;
+  }
 };
 
 /**
@@ -51,6 +65,19 @@ export const preloadImage = (src) => {
     img.onerror = reject;
     img.src = src;
   });
+};
+
+/**
+ * Preload multiple images
+ */
+export const preloadImages = async (imageUrls) => {
+  try {
+    const promises = imageUrls.map(url => preloadImage(url));
+    return await Promise.all(promises);
+  } catch (error) {
+    console.error('Error preloading images:', error);
+    return [];
+  }
 };
 
 /**
@@ -71,3 +98,81 @@ export const getResponsiveDimensions = (containerWidth, aspectRatio = 4/3) => {
   const height = width / aspectRatio;
   return { width: Math.round(width), height: Math.round(height) };
 }; 
+
+/**
+ * Validate image file before upload
+ */
+export const validateImageFile = (file) => {
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+  const maxSize = 5 * 1024 * 1024; // 5MB
+  
+  if (!file) {
+    return { valid: false, error: 'No file provided' };
+  }
+  
+  if (!allowedTypes.includes(file.type)) {
+    return { valid: false, error: 'Invalid file type. Only JPEG, PNG, and WebP are allowed.' };
+  }
+  
+  if (file.size > maxSize) {
+    return { valid: false, error: 'File too large. Maximum size is 5MB.' };
+  }
+  
+  return { valid: true };
+};
+
+/**
+ * Generate a unique filename for uploaded images
+ */
+export const generateUniqueFilename = (originalName) => {
+  const timestamp = Date.now();
+  const randomString = Math.random().toString(36).substring(2, 8);
+  const extension = originalName.split('.').pop();
+  return `${timestamp}-${randomString}.${extension}`;
+};
+
+/**
+ * Compress image before upload
+ */
+export const compressImage = (file, quality = QUALITY_LEVELS.MEDIUM) => {
+  return new Promise((resolve) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    
+    img.onload = () => {
+      // Set canvas dimensions
+      canvas.width = img.width;
+      canvas.height = img.height;
+      
+      // Draw and compress
+      ctx.drawImage(img, 0, 0);
+      canvas.toBlob((blob) => {
+        const compressedFile = new File([blob], file.name, {
+          type: file.type,
+          lastModified: Date.now()
+        });
+        resolve(compressedFile);
+      }, file.type, quality);
+    };
+    
+    img.src = URL.createObjectURL(file);
+  });
+};
+
+/**
+ * Create image preview URL
+ */
+export const createPreviewUrl = (file) => {
+  return URL.createObjectURL(file);
+};
+
+/**
+ * Clean up preview URL
+ */
+export const cleanupPreviewUrl = (url) => {
+  URL.revokeObjectURL(url);
+};
+
+// Export ImageService for direct access
+export { ImageService }; 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ScrollReveal } from '../animations';
 import feedbackData from '../data/feedbackData.json';
 import FeedbackImageViewer from './FeedbackImageViewer';
+import { getPublicUrl } from '../services/supabase';
 
 function FeedbackSection() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -29,7 +30,7 @@ function FeedbackSection() {
   // Handle feedback click
   const handleFeedbackClick = (feedback) => {
     if (feedback.images && feedback.images.length > 0) {
-      setSelectedImage(`/images/Feedbacks/${feedback.images[0]}`);
+      setSelectedImage(getPublicUrl(`feedbacks/${feedback.images[0]}`));
     }
   };
 

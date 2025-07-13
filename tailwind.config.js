@@ -4,17 +4,15 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      aspectRatio: {
+        '2048/1717': '2048 / 1717',
+      },
+    },
   },
   plugins: [],
   corePlugins: {
     preflight: true,
-  },
-  // Add custom utility classes
-  theme: {
-    extend: {
-      // Add any custom colors, fonts, etc. here
-    },
   },
 }
 

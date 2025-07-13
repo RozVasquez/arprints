@@ -7,25 +7,27 @@ function Footer() {
     <footer className="bg-gradient-to-br from-pink-500 via-pink-600 to-pink-700 text-white">
       {/* Main Footer Content */}
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="flex flex-col lg:flex-row lg:justify-between gap-8">
           
           {/* Brand Section */}
-          <div className="space-y-4 mr-8">
-            <div className="flex items-center space-x-2 mb-4">
+          <div className="space-y-4 text-center md:text-left lg:max-w-sm">
+            <div className="flex items-center justify-center md:justify-start space-x-2 mb-4">
               <h3 className="text-2xl font-bold">AR Prints</h3>
             </div>
-            <p className="text-pink-100 text-sm leading-relaxed mb-4 text-left">
+            <p className="text-pink-100 text-sm leading-relaxed mb-4">
               Creating beautiful memories, one print at a time. Handcrafted photocards, instax prints, and photo strips made with love.
             </p>
-            <div className="flex items-center space-x-1 text-pink-100">
+            <div className="flex items-center justify-center md:justify-start space-x-1 text-pink-100">
               <span className="text-sm">Made with</span>
               <Heart className="h-4 w-4 fill-current" />
               <span className="text-sm">since 2024</span>
             </div>
           </div>
 
+          {/* Links Section - Grouped */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6">
           {/* Quick Links */}
-          <div className="space-y-4">
+            <div className="space-y-4 text-center md:text-left">
             <h4 className="text-lg font-semibold mb-4">
               <Sparkles className="h-5 w-5 inline-block mr-2" />
               Quick Links
@@ -50,7 +52,7 @@ function Footer() {
           </div>
 
           {/* Products */}
-          <div className="space-y-4">
+            <div className="space-y-4 text-center md:text-left">
             <h4 className="text-lg font-semibold mb-4">
               <Printer className="h-5 w-5 inline-block mr-2" />
               Our Products
@@ -72,12 +74,12 @@ function Footer() {
           </div>
 
           {/* Contact Info */}
-          <div className="space-y-3">
-            <h4 className="text-lg font-semibold mb-4 ml-10">Get in Touch</h4>
+            <div className="space-y-3 text-center md:text-left">
+              <h4 className="text-lg font-semibold mb-4">Get in Touch</h4>
             <ul className="space-y-2">
               
               {/* Email */}
-              <li className="flex items-center space-x-2 py-1 px-20">
+                <li className="flex items-center justify-center md:justify-start space-x-2 py-1">
                 <div className="bg-white/20 p-2 rounded-full">
                   <Mail className="h-4 w-4" />
                 </div>
@@ -90,7 +92,7 @@ function Footer() {
               </li>
 
               {/* Phone */}
-              <li className="flex items-center space-x-2 py-1 px-20">
+                <li className="flex items-center justify-center md:justify-start space-x-2 py-1">
                 <div className="bg-white/20 p-2 rounded-full">
                   <Phone className="h-4 w-4" />
                 </div>
@@ -103,7 +105,7 @@ function Footer() {
               </li>
 
               {/* Location */}
-              <li className="flex items-center space-x-2 py-1 px-20">
+                <li className="flex items-center justify-center md:justify-start space-x-2 py-1">
                 <div className="bg-white/20 p-2 rounded-full">
                   <MapPin className="h-4 w-4" />
                 </div>
@@ -113,6 +115,7 @@ function Footer() {
               </li>
               
             </ul>
+            </div>
           </div>
         </div>
 
@@ -181,7 +184,7 @@ function Footer() {
                   aria-label="TikTok"
                 >
                   <svg className="h-4 w-4 group-hover:scale-110 transition-transform duration-200" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.10z"/>
                   </svg>
                 </a>
               </div>

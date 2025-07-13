@@ -3,37 +3,69 @@ import { useNavigate } from 'react-router-dom';
 import BlobImage from './BlobImage';
 import StorageMonitor from './StorageMonitor';
 import CardLayoutView from './CardLayoutView';
-import galleryData from '../data/galleryData';
+import LoadingSpinner from './ui/LoadingSpinner';
+import { getGalleryData } from '../data/galleryData';
 
 function DesignGallery({ initialCategory = null }) {
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [galleryData, setGalleryData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const cardLayoutRef = useRef(null);
 
-  // Product categories with their details (moved up to avoid initialization error)
-  const productCategories = [
-    {
-      id: 'photocard',
-      title: 'Photo Cards',
-      description: 'High-quality printed photo cards',
-      categoryImage: galleryData.photocard.categoryImage
-    },
-    {
-      id: 'instax',
-      title: 'Instax',
-      description: 'Instant camera style prints',
-      categoryImage: galleryData.instax.categoryImage
-    },
-    {
-      id: 'strips',
-      title: 'Photo Strips',
-      description: 'Classic photo strip designs',
-      categoryImage: galleryData.strips.categoryImage
-    }
-  ];
+  // Load gallery data on component mount
+  useEffect(() => {
+    const loadGalleryData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await getGalleryData();
+        setGalleryData(data);
+      } catch (error) {
+        console.error('Error loading gallery data:', error);
+        setError(error.message);
+        // Set empty data to prevent crashes
+        setGalleryData({});
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadGalleryData();
+  }, []);
+
+  // Product categories with their details (dynamically generated from gallery data)
+  const productCategories = galleryData ? Object.keys(galleryData).map(categoryId => {
+    const categoryData = galleryData[categoryId];
+    const categoryName = categoryId.charAt(0).toUpperCase() + categoryId.slice(1);
+    
+    // Map category IDs to display names
+    const displayNames = {
+      'photocard': 'Photo Cards',
+      'photocards': 'Photo Cards',
+      'instax': 'Instax',
+      'strips': 'Photo Strips'
+    };
+    
+    // Map category IDs to descriptions
+    const descriptions = {
+      'photocard': 'High-quality printed photo cards',
+      'photocards': 'High-quality printed photo cards',
+      'instax': 'Instant camera style prints',
+      'strips': 'Classic photo strip designs'
+    };
+    
+    return {
+      id: categoryId,
+      title: displayNames[categoryId] || categoryName + ' Designs',
+      description: descriptions[categoryId] || `${categoryName} designs and products`,
+      categoryImage: categoryData?.categoryImage
+    };
+  }) : [];
   
   // Set initial category when component mounts or initialCategory changes
   useEffect(() => {
@@ -315,6 +347,7 @@ function DesignGallery({ initialCategory = null }) {
     // Update URL based on category
     const categoryMapping = {
       'photocard': 'photo-cards',
+      'photocards': 'photo-cards',
       'instax': 'instax',
       'strips': 'photo-strips'
     };
@@ -335,18 +368,39 @@ function DesignGallery({ initialCategory = null }) {
   const getCurrentItems = useCallback(() => {
     if (!selectedCategory) return [];
     
-    // For categories with card layout, we'll handle items differently
-    if (galleryData[selectedCategory]?.useCardLayout) {
-      // Combine all items from all subtypes for modal navigation
+    const categoryData = galleryData?.[selectedCategory];
+    if (!categoryData) return [];
+    
+    // For categories with card layout (like instax and strips), combine all subtypes
+    if (categoryData.useCardLayout) {
       let allItems = [];
-      Object.keys(galleryData[selectedCategory].subtypes).forEach(subtype => {
-        allItems = [...allItems, ...galleryData[selectedCategory].subtypes[subtype].items];
+      Object.keys(categoryData.subtypes || {}).forEach(subtype => {
+        allItems = [...allItems, ...categoryData.subtypes[subtype].items];
       });
       return allItems;
     }
     
-    return galleryData[selectedCategory]?.items || [];
-  }, [selectedCategory]);
+    // For single-folder categories (like photocards), use direct items array
+    if (categoryData.items && categoryData.items.length > 0) {
+      console.log(`📄 Using direct items for ${selectedCategory}: ${categoryData.items.length} items`);
+      return categoryData.items;
+    }
+    
+    // Fallback: check subtypes for any items
+    if (categoryData.subtypes) {
+      let allItems = [];
+      Object.keys(categoryData.subtypes).forEach(subtype => {
+        allItems = [...allItems, ...categoryData.subtypes[subtype].items];
+      });
+      if (allItems.length > 0) {
+        console.log(`📄 Using subtype items for ${selectedCategory}: ${allItems.length} items`);
+        return allItems;
+      }
+    }
+    
+    console.log(`❌ No items found for category: ${selectedCategory}`);
+    return [];
+  }, [selectedCategory, galleryData]);
 
   // Preload adjacent images for better navigation experience
   const preloadAdjacentImages = useCallback((currentIndex, items) => {
@@ -456,6 +510,64 @@ function DesignGallery({ initialCategory = null }) {
     return () => document.removeEventListener('keydown', handleKeyPress);
   }, [modalOpen, navigateToNext, navigateToPrevious]);
 
+  // Show loading state
+  if (loading) {
+    return (
+      <section id="gallery" className="py-16 md:py-20">
+        <div className="container mx-auto px-4 md:px-8">
+          <div className="text-center">
+            <LoadingSpinner size="lg" className="mb-4" />
+            <p className="text-gray-600">Loading gallery...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <section id="gallery" className="py-16 md:py-20">
+        <div className="container mx-auto px-4 md:px-8">
+          <div className="text-center">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-red-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+              <h3 className="text-lg font-semibold text-red-800 mb-2">Unable to Load Gallery</h3>
+              <p className="text-red-700 mb-4">{error}</p>
+              <button 
+                onClick={() => window.location.reload()} 
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Show no data state
+  if (!galleryData || Object.keys(galleryData).length === 0) {
+    return (
+      <section id="gallery" className="py-16 md:py-20">
+        <div className="container mx-auto px-4 md:px-8">
+          <div className="text-center">
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 max-w-md mx-auto">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-yellow-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+              <h3 className="text-lg font-semibold text-yellow-800 mb-2">No Products Available</h3>
+              <p className="text-yellow-700 mb-4">No products found in the gallery. Please check your Supabase storage or contact support.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="gallery" className="py-16 md:py-20">
       <div className="container mx-auto px-4 md:px-8">
@@ -530,11 +642,11 @@ function DesignGallery({ initialCategory = null }) {
             </button>
             
             {/* Conditional Layout based on useCardLayout flag */}
-            {galleryData[selectedCategory]?.useCardLayout ? (
+            {galleryData?.[selectedCategory]?.useCardLayout ? (
               // Card Layout for Instax and Strips
               <div ref={cardLayoutRef} className="pt-8">
                 <CardLayoutView 
-                  categoryData={galleryData[selectedCategory]}
+                  categoryData={galleryData?.[selectedCategory]}
                   onImageClick={openModal}
                   selectedCategory={selectedCategory}
                 />

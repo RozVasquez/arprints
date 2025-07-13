@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from 'react';
-import { Link } from 'react-router-dom';
 import productData from '../data/products';
 import { CONTACT } from '../constants';
 import { Button } from './ui';
@@ -252,12 +251,14 @@ function PricingCardLayout({ initialCategory = 'photocards' }) {
                     <p className="text-gray-600 mb-4">
                       Contact us with your order details and we'll get started on your order right away.
                     </p>
-                    <Link
-            to="/order"
+                    <a
+            href="https://www.facebook.com/arprintservices/" 
+            target="_blank" 
+            rel="noopener noreferrer"
             className="inline-block bg-pink-600 text-white font-bold text-lg px-8 py-4 rounded-lg shadow-lg hover:bg-pink-700 transform hover:-translate-y-1 transition-all duration-300"
           >
             Order Now
-          </Link>
+          </a>
                   </div>
                 </>
               )}
