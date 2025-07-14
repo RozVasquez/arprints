@@ -84,6 +84,22 @@ const productData = {
     title: "Photo Cards",
     items: [
       {
+        id: "photocard-3d",
+        name: "3D",
+        description: "2.1\" x 3.4\"",
+        color: "red",
+        options: [
+          {
+            quantity: "9 cards",
+            price: "₱80.00"
+          },
+          {
+            quantity: "18 cards",
+            price: "₱140.00"
+          }
+        ]
+      },
+      {
         id: "photocard-glittered",
         name: "Glittered Finish",
         description: "2.1\" x 3.4\"",
@@ -101,7 +117,7 @@ const productData = {
       },
       {
         id: "photocard-matte-glossy",
-        name: "Matte / Glossy Finish",
+        name: "Matte or Glossy Finish",
         description: "2.1\" x 3.4\"",
         color: "violet",
         options: [
@@ -129,7 +145,7 @@ const productData = {
           {
             type: "Classic White",
             quantity: "10 pcs",
-            price: "₱50.00"
+            price: "₱60.00"
           },
           {
             type: "Classic White",

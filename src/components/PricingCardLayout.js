@@ -1,22 +1,22 @@
-import React, { useState, useCallback } from 'react';
+// PricingCardLayoutStatic.js
+import React, { useState, useMemo } from 'react';
 import productData from '../data/products';
-import { CONTACT } from '../constants';
-import { Button } from './ui';
+import { formatPrice, getStartingOption } from '../utils';
 
-function PricingCardLayout({ initialCategory = 'photocards' }) {
+function PricingCardLayoutStatic({ initialCategory = 'photocards' }) {
+  // Get all categories from products.js
+  const categories = useMemo(() => {
+    return Object.entries(productData).map(([key, category]) => ({
+      id: key,
+      title: category.title
+    }));
+  }, []);
+
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [selectedItem, setSelectedItem] = useState(null);
 
-  // Get categories for the left sidebar
-  const categories = Object.entries(productData).map(([key, category]) => ({
-    id: key,
-    title: category.title
-  }));
-
   // Get current category data
-  const getCurrentCategoryData = useCallback(() => {
-    return productData[selectedCategory] || null;
-  }, [selectedCategory]);
+  const currentCategoryData = productData[selectedCategory] || null;
 
   // Handle category selection
   const handleCategoryClick = (categoryId) => {
@@ -32,68 +32,25 @@ function PricingCardLayout({ initialCategory = 'photocards' }) {
   // Group options by type (Classic, Colored, Designed)
   const groupOptionsByType = (options) => {
     const groups = {};
-    
     options.forEach((option) => {
-      let groupKey = 'Standard'; // Default group
-      
-      if (option.type) {
-        const lowerType = option.type.toLowerCase();
-        
-        // Special handling for document printing - group by size instead of type
-        if (selectedCategory === 'documentPrinting') {
-          const lowerQuantity = option.quantity.toLowerCase();
-          if (lowerQuantity.includes('short')) {
-            groupKey = 'Short Size';
-          } else if (lowerQuantity.includes('a4')) {
-            groupKey = 'A4 Size';
-          } else if (lowerQuantity.includes('long')) {
-            groupKey = 'Long Size';
-          } else {
-            groupKey = option.quantity; // Use quantity as-is if it doesn't match patterns
-          }
-        } else {
-          // Original grouping logic for other categories
-          // Check for specific combinations first
-          if (lowerType.includes('classic colored')) {
-            groupKey = 'Classic Colored';
-          } else if (lowerType.includes('classic white') || lowerType.includes('classic colors') || (lowerType.includes('classic') && !lowerType.includes('colored'))) {
-            groupKey = 'Classic';
-          } else if (lowerType.includes('colored') || lowerType.includes('full colored') || lowerType.includes('partially colored')) {
-            groupKey = 'Colored';
-          } else if (lowerType.includes('design')) {
-            groupKey = 'Designed';
-          } else if (lowerType.includes('black and white')) {
-            groupKey = 'Black & White';
-          } else {
-            groupKey = option.type; // Use the type as-is if it doesn't match patterns
-          }
-        }
-      }
-      
+      let groupKey = option.type || 'Standard';
       if (!groups[groupKey]) {
         groups[groupKey] = [];
       }
       groups[groupKey].push(option);
     });
-    
     return groups;
   };
 
-  // Get color class based on item color
-  const getColorClasses = (color) => {
-    const colorMap = {
-      purple: 'bg-purple-50 border-purple-200 text-purple-700',
-      green: 'bg-green-50 border-green-200 text-green-700',
-      violet: 'bg-violet-50 border-violet-200 text-violet-700',
-      orange: 'bg-orange-50 border-orange-200 text-orange-700',
-      blue: 'bg-blue-50 border-blue-200 text-blue-700',
-      yellow: 'bg-yellow-50 border-yellow-200 text-yellow-700',
-      gray: 'bg-gray-50 border-gray-200 text-gray-700'
-    };
-    return colorMap[color] || 'bg-gray-50 border-gray-200 text-gray-700';
-  };
-
-  const currentCategoryData = getCurrentCategoryData();
+  if (!currentCategoryData) {
+    return (
+      <div className="min-h-screen bg-gray-50 pt-24 pb-12 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600">No pricing information available.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 pt-24 pb-12">
@@ -109,14 +66,12 @@ function PricingCardLayout({ initialCategory = 'photocards' }) {
         {/* Card Container */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
           <div className="flex flex-col lg:flex-row min-h-[600px]">
-            
             {/* Left Sidebar - Categories */}
             <div className="lg:w-1/4 bg-white border-b lg:border-b-0 lg:border-r border-gray-200">
               <div className="p-4 lg:p-6">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">
                   Service Categories
                 </h3>
-                
                 {/* Category Menu */}
                 <div className="flex flex-row lg:flex-col gap-2 lg:space-y-2 lg:gap-0 overflow-x-auto lg:overflow-x-visible">
                   {categories.map((category) => (
@@ -132,21 +87,19 @@ function PricingCardLayout({ initialCategory = 'photocards' }) {
                       <div>
                         <span className="block">{category.title}</span>
                       </div>
-                      <div className="w-6 h-6 flex items-center justify-center">
-                        {selectedCategory === category.id ? (
-                          <div className="w-3 h-3 bg-pink-500 rounded-full"></div>
-                        ) : (
-                          <svg 
-                            xmlns="http://www.w3.org/2000/svg" 
-                            className="h-4 w-4 text-pink-500 transition-opacity duration-200 opacity-0 group-hover:opacity-100" 
-                            fill="none" 
-                            viewBox="0 0 24 24" 
-                            stroke="currentColor"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        )}
-                      </div>
+                      {selectedCategory === category.id ? (
+                        <div className="w-3 h-3 bg-pink-500 rounded-full"></div>
+                      ) : (
+                        <svg 
+                          xmlns="http://www.w3.org/2000/svg" 
+                          className="h-4 w-4 text-pink-500 transition-opacity duration-200 opacity-0 group-hover:opacity-100" 
+                          fill="none" 
+                          viewBox="0 0 24 24" 
+                          stroke="currentColor"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      )}
                     </button>
                   ))}
                 </div>
@@ -154,114 +107,113 @@ function PricingCardLayout({ initialCategory = 'photocards' }) {
             </div>
 
             {/* Right Content - Pricing Items */}
-            <div className="lg:w-3/4 p-4 lg:p-6">
-              {currentCategoryData && (
-                <>
-                  <div className="mb-6">
-                    <h4 className="text-2xl font-semibold text-gray-800">
-                      {currentCategoryData.title}
-                    </h4>
-                  </div>
+            <div className="flex-1 p-6">
+              <div className="mb-6">
+                <h4 className="text-2xl font-semibold text-gray-800">
+                  {currentCategoryData.title}
+                </h4>
+              </div>
 
-                  {/* Pricing Items Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                    {currentCategoryData.items.map((item) => {
-                      const isExpanded = selectedItem?.id === item.id;
-                      const optionsToShow = isExpanded ? item.options : item.options.slice(0, 3);
-                      const groupedOptions = groupOptionsByType(optionsToShow);
-                      const groupKeys = Object.keys(groupedOptions);
+              {/* Pricing Items Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                {currentCategoryData.items.map((item) => {
+                  const isExpanded = selectedItem?.id === item.id;
+                  const optionsToShow = isExpanded ? item.options : item.options.slice(0, 3);
+                  const groupedOptions = groupOptionsByType(optionsToShow);
+                  const groupKeys = Object.keys(groupedOptions);
+                  // Use getStartingOption to always get the lowest price option
+                  const startingOption = getStartingOption(item.options);
 
-                      return (
-                        <div
-                          key={item.id}
-                          className={`border rounded-lg p-4 cursor-pointer transition-all duration-300 hover:shadow-md border-gray-200 hover:border-gray-300`}
-                          onClick={() => handleItemClick(item)}
-                        >
-                          {/* Item Header */}
-                          <div className="flex items-start justify-between mb-3">
-                            <div className="flex-1 text-left">
-                              <h5 className="text-lg font-bold text-gray-800 text-left">
-                                {item.name}
-                              </h5>
-                              <p className="text-sm text-gray-600 text-left">
-                                {item.description}
-                              </p>
+                  return (
+                    <div
+                      key={item.id}
+                      className={`border rounded-lg p-4 cursor-pointer transition-all duration-300 hover:shadow-md border-gray-200 hover:border-gray-300`}
+                      onClick={() => handleItemClick(item)}
+                    >
+                      {/* Item Header */}
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1 text-left">
+                          <h5 className="text-lg font-bold text-gray-800 text-left">
+                            {item.name}
+                          </h5>
+                          <p className="text-sm text-gray-600 text-left">
+                            {item.description}
+                          </p>
+                        </div>
+                        <div className="flex items-center ml-4">
+                          <span className="text-xs font-medium text-gray-500">
+                            {item.options.length} option{item.options.length !== 1 ? 's' : ''}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Starting Price */}
+                      <div className="flex items-center mb-2">
+                        <span className="text-xs font-semibold text-pink-600 bg-pink-50 px-2 py-1 rounded">
+                          {startingOption
+                            ? `Starting at ${formatPrice(startingOption.price)}${startingOption.quantity ? ` • ${startingOption.quantity}` : ''}`
+                            : ''}
+                        </span>
+                      </div>
+
+                      {/* Pricing Options */}
+                      {groupKeys.map((groupKey, groupIndex) => (
+                        <div key={`${item.id}-${groupKey}-${groupIndex}`}>
+                          {/* Options in this group */}
+                          {groupedOptions[groupKey].map((option, optionIndex) => (
+                            <div key={`${item.id}-${groupKey}-${optionIndex}-${option.quantity}-${option.type}`} className="flex justify-between items-center py-2 px-3 bg-gray-50 rounded">
+                              <div className="flex-1 text-left">
+                                <p className="text-sm font-medium text-gray-700">
+                                  {option.type || 'Standard'}
+                                </p>
+                                <p className="text-xs text-gray-600">{option.quantity}</p>
+                              </div>
+                              <div className="text-right ml-4">
+                                <p className="text-sm font-semibold text-pink-600">{formatPrice(option.price)}</p>
+                              </div>
                             </div>
-                            <div className="flex items-center ml-4">
-                              <span className="text-xs font-medium text-gray-500">
-                                {item.options.length} option{item.options.length !== 1 ? 's' : ''}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Pricing Options */}
-                          <div className="space-y-2">
-                            {(() => {
-                              const groupedOptions = groupOptionsByType(optionsToShow);
-                              const groupKeys = Object.keys(groupedOptions);
-                              
-                              return groupKeys.map((groupKey, groupIndex) => (
-                                <div key={groupKey}>
-                                  {/* Options in this group */}
-                                  {groupedOptions[groupKey].map((option, optionIndex) => (
-                                    <div key={optionIndex} className="flex justify-between items-center py-2 px-3 bg-gray-50 rounded">
-                                      <div className="flex-1 text-left">
-                                        <p className="text-sm font-medium text-gray-700">
-                                          {option.type || 'Standard'}
-                                        </p>
-                                        <p className="text-xs text-gray-600">{option.quantity}</p>
-                                      </div>
-                                      <div className="text-right ml-4">
-                                        <p className="text-sm font-semibold text-pink-600">{option.price}</p>
-                                      </div>
-                                    </div>
-                                  ))}
-                                  
-                                  {/* Separator line between groups (except for last group) */}
-                                  {groupIndex < groupKeys.length - 1 && (
-                                    <div className="my-3 border-t border-gray-300"></div>
-                                  )}
-                                </div>
-                              ));
-                            })()}
-                          </div>
-                          
-                          {/* Show More/Less Button */}
-                          {item.options.length > 3 && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleItemClick(item);
-                              }}
-                              className="w-full text-center py-2 mt-3 text-sm text-pink-600 hover:text-pink-700 font-medium"
-                            >
-                              {isExpanded ? 'Show Less' : 'Show More'}
-                            </button>
+                          ))}
+                          {/* Separator line between groups (except for last group) */}
+                          {groupIndex < groupKeys.length - 1 && (
+                            <div className="my-3 border-t border-gray-300"></div>
                           )}
                         </div>
-                      );
-                    })}
-                  </div>
+                      ))}
 
-                  {/* Call to Action */}
-                  <div className="mt-8 text-center p-6 bg-pink-50 rounded-lg border border-pink-200">
-                    <h6 className="text-lg font-semibold text-gray-800 mb-2">
-                      Ready to Order?
-                    </h6>
-                    <p className="text-gray-600 mb-4">
-                      Contact us with your order details and we'll get started on your order right away.
-                    </p>
-                    <a
-            href="https://www.facebook.com/arprintservices/" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="inline-block bg-pink-600 text-white font-bold text-lg px-8 py-4 rounded-lg shadow-lg hover:bg-pink-700 transform hover:-translate-y-1 transition-all duration-300"
-          >
-            Order Now
-          </a>
-                  </div>
-                </>
-              )}
+                      {/* Show More/Less Button */}
+                      {item.options.length > 3 && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleItemClick(item);
+                          }}
+                          className="w-full text-center py-2 mt-3 text-sm text-pink-600 hover:text-pink-700 font-medium"
+                        >
+                          {isExpanded ? 'Show Less' : 'Show More'}
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Call to Action */}
+              <div className="mt-8 text-center p-6 bg-pink-50 rounded-lg border border-pink-200">
+                <h6 className="text-lg font-semibold text-gray-800 mb-2">
+                  Ready to Order?
+                </h6>
+                <p className="text-gray-600 mb-4">
+                  Contact us with your order details and we'll get started on your order right away.
+                </p>
+                <a
+                  href="https://www.facebook.com/arprintservices/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-block bg-pink-600 text-white font-bold text-lg px-8 py-4 rounded-lg shadow-lg hover:bg-pink-700 transform hover:-translate-y-1 transition-all duration-300"
+                >
+                  Order Now
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -270,4 +222,4 @@ function PricingCardLayout({ initialCategory = 'photocards' }) {
   );
 }
 
-export default PricingCardLayout; 
+export default PricingCardLayoutStatic; 

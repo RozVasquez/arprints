@@ -38,7 +38,7 @@ function DesignGallery({ initialCategory = null }) {
   }, []);
 
   // Product categories with their details (dynamically generated from gallery data)
-  const productCategories = galleryData ? Object.keys(galleryData).map(categoryId => {
+  let productCategories = galleryData ? Object.keys(galleryData).map(categoryId => {
     const categoryData = galleryData[categoryId];
     const categoryName = categoryId.charAt(0).toUpperCase() + categoryId.slice(1);
     
@@ -65,6 +65,10 @@ function DesignGallery({ initialCategory = null }) {
       categoryImage: categoryData?.categoryImage
     };
   }) : [];
+  // Deduplicate by title (e.g., only one 'Photo Cards')
+  productCategories = productCategories.filter((cat, idx, arr) =>
+    arr.findIndex(c => c.title === cat.title) === idx
+  );
   
   // Set initial category when component mounts or initialCategory changes
   useEffect(() => {
@@ -564,7 +568,7 @@ function DesignGallery({ initialCategory = null }) {
       <div className="container mx-auto px-4 md:px-8">
         {!selectedCategory && (
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
-            AR Products
+            Available Products
           </h2>
         )}
         

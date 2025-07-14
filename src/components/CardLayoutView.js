@@ -103,8 +103,15 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
               
               {/* Pricing Component - Only show on desktop */}
               <div className="hidden lg:block">
+                {/* Map photocard-like folder names to 'photocards' for pricing */}
                 <ProductPricing 
-                  selectedCategory={selectedCategory} 
+                  selectedCategory={(() => {
+                    const name = selectedCategory?.toLowerCase?.() || '';
+                    if (name.includes('card')) return 'photocards';
+                    if (name === 'instax') return 'instax';
+                    if (name === 'strips') return 'strips';
+                    return selectedCategory;
+                  })()} 
                   activeSubtype={activeSubtype} 
                   onViewPricing={handleViewPricing}
                 />
@@ -201,9 +208,15 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
               <div className="mb-2">
                 <div className="border-b border-gray-200"></div>
               </div>
-              
+              {/* Map photocard-like folder names to 'photocards' for pricing */}
               <ProductPricing 
-                selectedCategory={selectedCategory} 
+                selectedCategory={(() => {
+                  const name = selectedCategory?.toLowerCase?.() || '';
+                  if (name.includes('card')) return 'photocards';
+                  if (name === 'instax') return 'instax';
+                  if (name === 'strips') return 'strips';
+                  return selectedCategory;
+                })()} 
                 activeSubtype={activeSubtype} 
                 onViewPricing={handleViewPricing}
               />

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronLeft, ChevronRight, Check } from 'lucide-react';
 import productData from '../data/products';
+import { formatPrice } from '../utils';
 
 function Order() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -322,8 +323,8 @@ Order Information:
 - Type: ${formData.orderType}${formData.orderDetails !== 'Photo Cards' ? `\n- Design: ${formData.designChoice}` : ''}
 - Quantity: ${formData.quantity} piece(s)
 
-Total Amount: ₱${total.toLocaleString()}
-50% Down Payment: ₱${downPayment.toLocaleString()}
+Total Amount: ${formatPrice(total)}
+50% Down Payment: ${formatPrice(downPayment)}
 
 Instructions:
 1. Upload the payment receipt.
@@ -582,7 +583,7 @@ Thank you
                     <div className="border-t pt-2 mt-2">
                       <div className="flex justify-between text-lg font-bold text-gray-900">
                         <span>Total:</span>
-                        <span>₱{calculateTotal().toLocaleString()}</span>
+                        <span>{formatPrice(calculateTotal())}</span>
                       </div>
                     </div>
                   </div>

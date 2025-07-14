@@ -1,124 +1,66 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import BlobImage from './BlobImage';
 import LoadingSpinner from './ui/LoadingSpinner';
-import { getGalleryData } from '../data/galleryData';
 
 function FeaturedProducts() {
-  const [autoHoverIndex, setAutoHoverIndex] = useState(0);
-  const [isUserHovering, setIsUserHovering] = useState(false);
-  const [galleryData, setGalleryData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
-  // Load gallery data on component mount
-  useEffect(() => {
-    const loadGalleryData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await getGalleryData();
-        setGalleryData(data);
-      } catch (error) {
-        console.error('Error loading gallery data:', error);
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadGalleryData();
-  }, []);
-
-  // Product categories with their details and URL slugs
-  const productCategories = galleryData ? [
+  // Hardcoded product categories with manual images
+  const productCategories = [
     {
-      id: 'photocard',
+      id: 'photocards',
       title: 'Photo Cards',
-      description: 'High-quality printed photo cards',
-      categoryImage: galleryData.photocard?.categoryImage,
+      description: 'High-quality printed photo cards with premium finishes',
+      categoryImage: '/images/designs/Covers/Cards.png',
       slug: 'photo-cards'
     },
     {
       id: 'instax',
       title: 'Instax',
-      description: 'Instax Inspired Prints',
-      categoryImage: galleryData.instax?.categoryImage,
+      description: 'Instax Inspired Prints with vibrant colors',
+      categoryImage: '/images/designs/Covers/Instax.png',
       slug: 'instax'
     },
     {
       id: 'strips',
       title: 'Photo Strips',
-      description: 'Classic and Designed Photo Strips',
-      categoryImage: galleryData.strips?.categoryImage,
+      description: 'Classic and Designed Photo Strips for memories',
+      categoryImage: '/images/designs/Covers/Strips.png',
       slug: 'photo-strips'
     }
-  ] : [];
+  ];
 
-  // Auto-hover animation for category cards
+  // Auto-play carousel
   useEffect(() => {
-    if (!isUserHovering && productCategories.length > 0) {
-      const interval = setInterval(() => {
-        setAutoHoverIndex((prevIndex) => 
-          (prevIndex + 1) % productCategories.length
-        );
-      }, 2000); // Change every 2 seconds
+    if (!isAutoPlaying || productCategories.length <= 1) return;
 
-      return () => clearInterval(interval);
-    }
-  }, [isUserHovering, productCategories.length]);
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % productCategories.length);
+    }, 4000); // Change every 4 seconds
 
-  // Show loading state
-  if (loading) {
-    return (
-      <section id="featured-products" className="py-12 md:py-16 bg-white">
-        <div className="container mx-auto px-4 md:px-8">
-          <div className="text-center">
-            <LoadingSpinner size="lg" className="mb-4" />
-            <p className="text-gray-600">Loading featured products...</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
+    return () => clearInterval(interval);
+  }, [isAutoPlaying, productCategories.length]);
 
-  // Show error state
-  if (error) {
-    return (
-      <section id="featured-products" className="py-12 md:py-16 bg-white">
-        <div className="container mx-auto px-4 md:px-8">
-          <div className="text-center">
-            <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-red-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-              </svg>
-              <h3 className="text-lg font-semibold text-red-800 mb-2">Unable to Load Featured Products</h3>
-              <p className="text-red-700 mb-4">{error}</p>
-            </div>
-          </div>
-        </div>
-      </section>
-    );
-  }
+  // Navigation functions
+  const goToSlide = useCallback((index) => {
+    setCurrentSlide(index);
+    setIsAutoPlaying(false);
+    // Resume auto-play after 5 seconds of inactivity
+    setTimeout(() => setIsAutoPlaying(true), 5000);
+  }, []);
 
-  // Show no data state
-  if (!galleryData || Object.keys(galleryData).length === 0) {
-    return (
-      <section id="featured-products" className="py-12 md:py-16 bg-white">
-        <div className="container mx-auto px-4 md:px-8">
-          <div className="text-center">
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 max-w-md mx-auto">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-yellow-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-              </svg>
-              <h3 className="text-lg font-semibold text-yellow-800 mb-2">No Featured Products Available</h3>
-              <p className="text-yellow-700 mb-4">No products found. Please check your Supabase storage or contact support.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-    );
-  }
+  const goToNext = useCallback(() => {
+    setCurrentSlide((prev) => (prev + 1) % productCategories.length);
+    setIsAutoPlaying(false);
+    setTimeout(() => setIsAutoPlaying(true), 5000);
+  }, [productCategories.length]);
+
+  const goToPrev = useCallback(() => {
+    setCurrentSlide((prev) => (prev - 1 + productCategories.length) % productCategories.length);
+    setIsAutoPlaying(false);
+    setTimeout(() => setIsAutoPlaying(true), 5000);
+  }, [productCategories.length]);
 
   return (
     <section id="featured-products" className="py-12 md:py-16 bg-white">
@@ -128,42 +70,95 @@ function FeaturedProducts() {
           Discover our most popular printing services, each crafted with attention to detail and premium materials.
         </p>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {productCategories.map((category, index) => (
-            <Link
-              key={category.id}
-              to={`/products/${category.slug}`}
-              className={`group cursor-pointer transform transition-all duration-500 hover:-translate-y-2 hover:scale-105 ${
-                autoHoverIndex === index && !isUserHovering ? '-translate-y-2 scale-105' : ''
-              }`}
-              onMouseEnter={() => setIsUserHovering(true)}
-              onMouseLeave={() => setIsUserHovering(false)}
+        {/* Carousel Container */}
+        <div className="relative max-w-4xl mx-auto">
+          {/* Carousel */}
+          <div className="relative overflow-hidden rounded-2xl shadow-lg">
+            <div 
+              className="flex transition-transform duration-500 ease-in-out"
+              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
             >
-              <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-                {/* Image Container */}
-                <div className="relative w-full aspect-[16/9] overflow-hidden rounded-t-xl">
-                  <BlobImage
-                    src={category.categoryImage}
-                    alt={category.title}
-                    className={`w-full h-full transition-transform duration-500 ${
-                      autoHoverIndex === index && !isUserHovering ? 'scale-110' : 'group-hover:scale-110'
-                    }`}
-                    priority={true}
-                  />
-                  {/* Overlay */}
-                  <div className={`absolute inset-0 bg-pink-600 transition-all duration-500 rounded-t-xl ${
-                    autoHoverIndex === index && !isUserHovering ? 'bg-opacity-20' : 'bg-opacity-0 group-hover:bg-opacity-20'
-                  }`}></div>
+              {productCategories.map((category, index) => (
+                <div key={category.id} className="w-full flex-shrink-0">
+                  <Link
+                    to={`/products/${category.slug}`}
+                    className="block group"
+                  >
+                    <div className="relative">
+                      {/* Image */}
+                      <div className="relative w-full aspect-[16/9] overflow-hidden">
+                        <img
+                          src={category.categoryImage}
+                          alt={category.title}
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                          loading={index === currentSlide ? "eager" : "lazy"}
+                        />
+                        {/* Gradient Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+                      </div>
+                      
+                      {/* Content Overlay */}
+                      <div className="absolute bottom-0 left-0 right-0 p-8 text-white hidden md:block">
+                        <h3 className="text-2xl md:text-3xl font-bold mb-3">{category.title}</h3>
+                        <p className="text-lg opacity-90 mb-4">{category.description}</p>
+                        <div className="flex items-center justify-end text-pink-300 font-medium group-hover:text-pink-200 transition-colors">
+                          Learn More
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
                 </div>
-                
-                {/* Content */}
-                <div className="p-6 rounded-b-xl">
-                  <h3 className="text-xl font-bold text-gray-800 mb-2">{category.title}</h3>
-                  <p className="text-gray-600 text-sm">{category.description}</p>
-                </div>
-              </div>
-            </Link>
-          ))}
+              ))}
+            </div>
+          </div>
+
+          {/* Navigation Arrows */}
+          {productCategories.length > 1 && (
+            <>
+              {/* Previous Button */}
+              <button
+                onClick={goToPrev}
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 hover:text-pink-600 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-10"
+                aria-label="Previous slide"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+
+              {/* Next Button */}
+              <button
+                onClick={goToNext}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 hover:text-pink-600 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-10"
+                aria-label="Next slide"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </>
+          )}
+
+          {/* Dots Indicator */}
+          {productCategories.length > 1 && (
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
+              {productCategories.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => goToSlide(index)}
+                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                    index === currentSlide 
+                      ? 'bg-white scale-125' 
+                      : 'bg-white/50 hover:bg-white/75'
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
         
         {/* View All Products & See Pricing Buttons */}
@@ -185,7 +180,7 @@ function FeaturedProducts() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </Link>
-          </div>
+        </div>
       </div>
     </section>
   );

@@ -238,11 +238,18 @@ const buildGalleryData = (structure) => {
       }
 
       galleryData[folderName] = categoryData;
+      // Alias photocard and photocards to the same data
+      if (folderName === 'photocard') {
+        galleryData['photocards'] = categoryData;
+      } else if (folderName === 'photocards') {
+        galleryData['photocard'] = categoryData;
+      }
     } else {
       // Skipping folder (no images or subfolders)
     }
   }
 
+  // Remove the merging logic for 'photocard' and 'photocards'. Only use the 'photocards' folder for the gallery display.
   return galleryData;
 };
 
@@ -305,3 +312,13 @@ export const getImagesFromFolder = async (folderPath) => {
 export const getFolderStructureForPath = async (path = '') => {
   return await getFolderStructure(path);
 }; 
+
+// List folders in the 'product-images' bucket under 'ProductCollection/'
+export async function listProductFolders() {
+  const { data, error } = await supabase.storage
+    .from('product-images')
+    .list('ProductCollection', { limit: 100, offset: 0 });
+  if (error) throw error;
+  // Only return folders (type === 'folder')
+  return data.filter(item => item.type === 'folder').map(item => item.name);
+} 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import productData from '../data/products';
+import { formatPrice } from '../utils';
 
 function ProductTabs() {
   const [activeTab, setActiveTab] = useState('photos');
@@ -120,7 +121,7 @@ function ProductTabs() {
                         className={`${index < groupedOptions[type].length - 1 ? 'border-b border-gray-100' : ''} hover:bg-gray-50 transition-colors duration-200 bg-white`}
               >
                         <td className="py-4 px-4 text-left bg-white">{option.quantity}</td>
-                        <td className="py-4 px-4 font-semibold text-right bg-white">{option.price}</td>
+                        <td className="py-4 px-4 font-semibold text-right bg-white">{formatPrice(option.price)}</td>
               </tr>
             ))}
           </tbody>
@@ -151,7 +152,7 @@ function ProductTabs() {
                 className={`${index < product.options.length - 1 ? 'border-b border-gray-100' : ''} hover:bg-gray-50 transition-colors duration-200 bg-white`}
             >
                 <td className="py-4 px-4 text-left bg-white">{option.quantity}</td>
-                <td className="py-4 px-4 font-semibold text-right bg-white">{option.price}</td>
+                <td className="py-4 px-4 font-semibold text-right bg-white">{formatPrice(option.price)}</td>
             </tr>
           ))}
         </tbody>

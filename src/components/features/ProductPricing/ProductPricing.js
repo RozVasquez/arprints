@@ -2,6 +2,7 @@ import React from 'react';
 import { usePricing } from '../../../hooks';
 import { Button } from '../../ui';
 import { CONTACT } from '../../../constants';
+import { formatPrice } from '../../../utils';
 
 const ProductPricing = ({ selectedCategory, activeSubtype, onViewPricing }) => {
   const { compactPricing } = usePricing(selectedCategory, activeSubtype);
@@ -10,14 +11,14 @@ const ProductPricing = ({ selectedCategory, activeSubtype, onViewPricing }) => {
 
   return (
     <div className="mt-2 lg:mt-3 py-3 lg:py-4">
-      <h6 className="text-sm font-medium text-gray-700 mb-2 lg:mb-3">Starting Prices</h6>
+      <h6 className="text-sm font-medium text-gray-700 mb-2 lg:mb-3">{selectedCategory === 'photocards' ? 'Photocard Starting Prices' : 'Starting Prices'}</h6>
       <div className="bg-white rounded-lg p-3 lg:p-4 shadow-md">
         {compactPricing.map((item, index) => (
           <div key={index}>
             <div className="flex justify-between items-center py-1.5 lg:py-2">
               <div className="text-left">
                 <p className="text-sm font-medium text-gray-800">{item.name}</p>
-                <p className="text-xs text-gray-600">{item.quantity}</p>
+                <p className="text-xs text-gray-600">{item.quantity ? `Starting at ${item.quantity}` : ''}</p>
               </div>
               <div className="text-right">
                 <p className="text-sm font-semibold text-pink-600">{item.price}</p>

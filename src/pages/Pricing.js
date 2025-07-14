@@ -1,14 +1,10 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
-import { PricingCardLayout } from '../components';
+import PricingCardLayoutStatic from '../components/PricingCardLayout';
 
 function Pricing() {
-  const location = useLocation();
-  const initialCategory = location.state?.initialCategory;
-
   return (
     <div>
-      <PricingCardLayout initialCategory={initialCategory} />
+      <PricingCardLayoutStatic />
     </div>
   );
 }
