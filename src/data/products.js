@@ -12,12 +12,20 @@ const productData = {
         options: [
           {
             quantity: "9 cards",
-            price: "₱80.00"
+            price: "₱85.00"
           },
           {
             quantity: "18 cards",
+            price: "₱150.00"
+          },
+          {
+            quantity: "9 cards (Back to back)",
             price: "₱140.00"
-          }
+          },
+          {
+            quantity: "18 cards (Back to back)",
+            price: "₱250.00"
+          } 
         ]
       },
       {
@@ -32,7 +40,15 @@ const productData = {
           },
           {
             quantity: "18 cards",
+            price: "₱130.00"
+          },
+          {
+            quantity: "9 cards (Back to back)",
             price: "₱140.00"
+          },
+          {
+            quantity: "18 cards (Back to back)",
+            price: "₱240.00"
           }
         ]
       },
@@ -49,6 +65,14 @@ const productData = {
           {
             quantity: "18 cards",
             price: "₱120.00"
+          },
+          {
+            quantity: "9 cards (Back to back)",
+            price: "₱130.00"
+          },
+          {
+            quantity: "18 cards (Back to back)",
+            price: "₱230.00"
           }
         ]
       }
@@ -66,12 +90,12 @@ const productData = {
           {
             type: "Classic White",
             quantity: "10 pcs",
-            price: "₱60.00"
+            price: "₱50.00"
           },
           {
             type: "Classic White",
             quantity: "30 pcs",
-            price: "₱100.00"
+            price: "₱120.00"
           },
           {
             type: "Classic Colored",
