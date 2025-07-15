@@ -9,7 +9,6 @@ import Products from './pages/Products';
 import Pricing from './pages/Pricing';
 import Order from './pages/Order';
 import ScrollToTop from './components/ScrollToTop';
-import Admin from './pages/Admin';
 
 // Initialize Speed Insights
 injectSpeedInsights();
@@ -31,8 +30,6 @@ const AppContent = () => {
           <Route path="/products/:category" element={<Products />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/order" element={<Order />} />
-          {/* Admin route */}
-          <Route path="/admin" element={<Admin />} />
 
         </Routes>
       </main>
