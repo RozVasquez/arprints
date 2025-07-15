@@ -106,7 +106,7 @@ function PricingCardLayoutStatic({ initialCategory = 'photocards' }) {
             <div className="lg:w-1/4 bg-white border-b lg:border-b-0 lg:border-r border-gray-200">
               <div className="p-4 lg:p-6">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                  Service Categories
+                  Select a product
                 </h3>
                 {/* Category Menu */}
                 <div className="flex flex-row lg:flex-col gap-2 lg:space-y-2 lg:gap-0 overflow-x-auto lg:overflow-x-visible">
