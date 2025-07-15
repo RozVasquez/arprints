@@ -90,7 +90,7 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
                   );
                 })}
               </div>
-
+              
               {/* Separator above starting prices */}
               <div className="my-4 border-b border-gray-200"></div>
 
@@ -162,19 +162,19 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
               {/* Order Now instructions and button outside the collapsible card */}
               <div className="mt-6">
                 <p className="text-xs text-gray-600 mb-3 text-center">
-                  Take a screenshot of your preferred design and place your order by clicking the button below
-                </p>
-                <a
-                  href="https://www.facebook.com/arprintservices/"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                    Take a screenshot of your preferred design and place your order by clicking the button below
+                  </p>
+                  <a 
+                    href="https://www.facebook.com/arprintservices/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
                   className="w-full inline-flex items-center justify-center px-6 py-3 bg-pink-600 text-white font-medium rounded-lg hover:bg-pink-700 transition-colors duration-200 shadow-lg gap-2"
-                >
+                  >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M22.675 0h-21.35C.595 0 0 .592 0 1.326v21.348C0 23.408.595 24 1.325 24h11.495v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.797.143v3.24l-1.918.001c-1.504 0-1.797.715-1.797 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116C23.406 24 24 23.408 24 22.674V1.326C24 .592 23.406 0 22.675 0"/>
                   </svg>
-                  Order Now
-                </a>
+                    Order Now
+                  </a>
               </div>
 
               {/* Separator below starting prices */}
