@@ -117,9 +117,9 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
                   })()}
                 </ul>
                 <button
-                  className="mt-4 w-full flex items-center justify-between text-pink-600 font-medium hover:text-pink-700 transition-colors duration-200 text-sm px-2 py-2 rounded"
+                  className="mt-4 w-full flex items-center justify-center text-pink-600 font-medium hover:text-pink-700 transition-colors duration-200 text-sm px-2 py-2 rounded"
                   type="button"
-                  onClick={() => { /* TODO: Implement view all prices action */ }}
+                  onClick={handleViewPricing}
                 >
                   <span>View All Prices</span>
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
