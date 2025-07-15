@@ -50,18 +50,25 @@ export const STORAGE_FOLDERS = {
   DESIGNS: 'designs'
 }
 
-// Helper function to get public URL for an image
-export const getPublicUrl = (path) => {
+/**
+ * Get public URL for an image in a given bucket
+ * @param {string} path - Path to the file in the bucket
+ * @param {string} [bucket=STORAGE_BUCKET] - Bucket name (default: STORAGE_BUCKET)
+ */
+export const getPublicUrl = (path, bucket = STORAGE_BUCKET) => {
   const { data } = supabase.storage
-    .from(STORAGE_BUCKET)
+    .from(bucket)
     .getPublicUrl(path)
-  
   return data.publicUrl
 }
 
-// Helper function to upload image
-export const uploadImage = async (file, path) => {
-  
+/**
+ * Upload image to a given bucket
+ * @param {File|Blob} file - File to upload
+ * @param {string} path - Path in the bucket
+ * @param {string} [bucket=STORAGE_BUCKET] - Bucket name (default: STORAGE_BUCKET)
+ */
+export const uploadImage = async (file, path, bucket = STORAGE_BUCKET) => {
   // Validate file type
   const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
   if (!allowedTypes.includes(file.type)) {
@@ -70,22 +77,18 @@ export const uploadImage = async (file, path) => {
       error: { message: `Invalid file type: ${file.type}. Only JPEG, PNG, and WebP are allowed.` }
     }
   }
-  
   try {
     const { data, error } = await supabase.storage
-      .from(STORAGE_BUCKET)
+      .from(bucket)
       .upload(path, file, {
         cacheControl: '3600',
         upsert: false // Don't overwrite existing files
       })
-    
     if (error) {
       return { success: false, error }
     }
-    
     // Get the public URL
-    const publicUrl = getPublicUrl(path)
-    
+    const publicUrl = getPublicUrl(path, bucket)
     return { 
       success: true, 
       data: {
@@ -98,34 +101,38 @@ export const uploadImage = async (file, path) => {
   }
 }
 
-// Helper function to delete image
-export const deleteImage = async (path) => {
+/**
+ * Delete image from a given bucket
+ * @param {string} path - Path to the file in the bucket
+ * @param {string} [bucket=STORAGE_BUCKET] - Bucket name (default: STORAGE_BUCKET)
+ */
+export const deleteImage = async (path, bucket = STORAGE_BUCKET) => {
   try {
     const { error } = await supabase.storage
-      .from(STORAGE_BUCKET)
+      .from(bucket)
       .remove([path])
-    
     if (error) {
       return { success: false, error }
     }
-    
     return { success: true }
   } catch (error) {
     return { success: false, error }
   }
 }
 
-// Helper function to list images in a folder
-export const listImages = async (folder = '') => {
+/**
+ * List images in a folder in a given bucket
+ * @param {string} folder - Folder path in the bucket
+ * @param {string} [bucket=STORAGE_BUCKET] - Bucket name (default: STORAGE_BUCKET)
+ */
+export const listImages = async (folder = '', bucket = STORAGE_BUCKET) => {
   try {
     const { data, error } = await supabase.storage
-      .from(STORAGE_BUCKET)
+      .from(bucket)
       .list(folder)
-    
     if (error) {
       return { success: false, error }
     }
-    
     return { success: true, data }
   } catch (error) {
     return { success: false, error }

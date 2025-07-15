@@ -1,47 +1,111 @@
-import { useMemo } from 'react';
-import productData from '../data/products';
-import { getStartingOption, formatPrice } from '../utils';
+import { useState, useEffect } from 'react';
+import { getPricingDataByCategory, getLowestPrice, formatPrice } from '../services/pricingService';
 
-export const usePricing = (selectedCategory, activeSubtype) => {
-  const compactPricing = useMemo(() => {
-    if (selectedCategory === 'instax') {
-      const instaxData = productData.instaxInspired.items;
-      const miniClassic = getStartingOption(instaxData[0]?.options, 'Classic White');
-      const squareClassic = getStartingOption(instaxData[1]?.options, 'Classic White');
-      const wideClassic = getStartingOption(instaxData[2]?.options, 'Classic White');
-      return [
-        { name: 'Mini', price: formatPrice(miniClassic?.price), quantity: miniClassic?.quantity },
-        { name: 'Square', price: formatPrice(squareClassic?.price), quantity: squareClassic?.quantity },
-        { name: 'Wide', price: formatPrice(wideClassic?.price), quantity: wideClassic?.quantity }
-      ].filter(item => item.price);
-    } else if (selectedCategory === 'strips') {
-      const stripsData = productData.photoStrips.items;
-      const classicStrip = getStartingOption(stripsData[0]?.options, 'Classic');
-      const classicMini = getStartingOption(stripsData[1]?.options, 'Classic');
-      return [
-        { name: 'Classic Strip', price: formatPrice(classicStrip?.price), quantity: classicStrip?.quantity },
-        { name: 'Mini Strip', price: formatPrice(classicMini?.price), quantity: classicMini?.quantity }
-      ].filter(item => item.price);
-    } else if (selectedCategory === 'photocards' || selectedCategory === 'photocard') {
-      const photocardData = productData.photocards.items;
-      // For each card type, get its lowest price option
-      return photocardData.map(card => {
-        const starting = card.options.reduce((min, curr) => {
-          const getNumericPrice = (price) => {
-            if (!price) return Infinity;
-            const match = String(price).replace(/₱|,/g, '').match(/\d+(\.\d+)?/);
-            return match ? parseFloat(match[0]) : Infinity;
-          };
-          return getNumericPrice(curr.price) < getNumericPrice(min.price) ? curr : min;
-        }, card.options[0]);
-        return {
-          name: card.name,
-          price: formatPrice(starting.price),
-          quantity: starting.quantity
-        };
-      }).filter(item => item.price);
+export const usePricing = (categoryName = null, activeSubtype = null) => {
+  const [pricingData, setPricingData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (categoryName) {
+      loadPricingData(categoryName);
     }
-    return [];
-  }, [selectedCategory]);
-  return { compactPricing };
+  }, [categoryName]);
+
+  const loadPricingData = async (category) => {
+    setLoading(true);
+    setError('');
+    
+    try {
+      const { data, error } = await getPricingDataByCategory(category);
+      if (error) throw error;
+      
+      setPricingData(data);
+    } catch (err) {
+      setError(err.message);
+      console.error('Error loading pricing data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getStartingPrice = (productTypeName) => {
+    if (!pricingData || !pricingData.product_types) return null;
+    
+    const productType = pricingData.product_types.find(type => 
+      type.name.toLowerCase().includes(productTypeName.toLowerCase()) ||
+      productTypeName.toLowerCase().includes(type.name.toLowerCase())
+    );
+    
+    if (!productType || !productType.pricing_options) return null;
+    
+    const lowestPrice = getLowestPrice(productType.pricing_options);
+    return lowestPrice ? formatPrice(lowestPrice.price) : null;
+  };
+
+  const getPricingForType = (productTypeName) => {
+    if (!pricingData || !pricingData.product_types) return null;
+    
+    const productType = pricingData.product_types.find(type => 
+      type.name.toLowerCase().includes(productTypeName.toLowerCase()) ||
+      productTypeName.toLowerCase().includes(type.name.toLowerCase())
+    );
+    
+    return productType ? productType.pricing_options : null;
+  };
+
+  // Generate compact pricing data for display
+  // If activeSubtype is provided, filter to show only that type's pricing
+  // Otherwise, show all types (for overview)
+  const compactPricing = pricingData?.product_types
+    ?.filter(type => {
+      if (!activeSubtype) return true; // Show all if no subtype selected
+      
+      // Match the subtype name with the product type name
+      const typeName = type.name.toLowerCase();
+      const subtypeName = activeSubtype.toLowerCase();
+      
+      // Direct match
+      const directMatch = typeName.includes(subtypeName) || subtypeName.includes(typeName);
+      if (directMatch) return true;
+      
+      // Smart mapping for common cases
+      const subtypeMappings = {
+        'plain': ['matte', 'glossy', 'standard', 'classic'],
+        'designed': ['design', '3d', 'glittered'],
+        'colored': ['colored', 'color'],
+        'classic': ['classic', 'standard'],
+        'mini': ['mini', 'small'],
+        'wide': ['wide', 'large']
+      };
+      
+      // Check if subtype has a mapping
+      const mappedTypes = subtypeMappings[subtypeName] || [];
+      const hasMappedMatch = mappedTypes.some(mappedType => 
+        typeName.includes(mappedType)
+      );
+      
+      if (hasMappedMatch) return true;
+      
+      // If no match found, don't show any pricing to avoid confusion
+      return false;
+    })
+    ?.map(type => {
+      const lowestPrice = getLowestPrice(type.pricing_options || []);
+      return {
+        name: type.name,
+        quantity: type.pricing_options?.[0]?.quantity || '',
+        price: lowestPrice ? formatPrice(lowestPrice.price) : 'Contact for pricing'
+      };
+    }) || [];
+
+  return {
+    pricingData,
+    loading,
+    error,
+    getStartingPrice,
+    getPricingForType,
+    compactPricing,
+    reload: () => categoryName && loadPricingData(categoryName)
+  };
 }; 

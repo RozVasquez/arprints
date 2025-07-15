@@ -1,92 +1,13 @@
+
+
 const productData = {
-  photos: {
-    title: "Photos",
-    items: [
-      {
-        id: "photo-prints",
-        name: "Photo Prints",
-        description: "High-quality photo prints in various sizes",
-        color: "purple",
-        options: [
-          {
-            type: "3R",
-            quantity: "2 pc",
-            price: "₱45.00"
-          },
-          {
-            type: "4R",
-            quantity: "2 pc",
-            price: "₱60.00"
-          },
-          {
-            type: "5R",
-            quantity: "1 pc",
-            price: "₱40.00"
-          },
-          {
-            type: "A4",
-            quantity: "1 pc",
-            price: "₱60.00"
-          },
-          {
-            type: "A4 + Matte / Glossy Photo Top",
-            quantity: "1 pc",
-            price: "₱75.00"
-          },
-          {
-            type: "Add-Ons: Matte / Glossy Photo Top",
-            quantity: "1 pc",
-            price: "₱15.00"
-          }
-        ]
-      },
-      {
-        id: "rush-id",
-        name: "Rush ID",
-        description: "Quick and quality ID pictures for various purposes",
-        color: "purple",
-        options: [
-          {
-            type: "Package 1",
-            quantity: "8 pcs 1x1",
-            price: "₱30.00"
-          },
-          {
-            type: "Package 2",
-            quantity: "4 pcs 1x1 + 4 pcs 2x2",
-            price: "₱35.00"
-          },
-          {
-            type: "Package 3",
-            quantity: "8 pcs 1x1 + 4 pcs 2x2",
-            price: "₱65.00"
-          },
-          {
-            type: "Package 4",
-            quantity: "6 pcs Passport",
-            price: "₱40.00"
-          },
-          {
-            type: "Package 5",
-            quantity: "4 pcs 2x2 + 2 pcs Passport",
-            price: "₱45.00"
-          },
-          {
-            type: "Package 6",
-            quantity: "8 pcs Passport with name",
-            price: "₱65.00"
-          }
-        ]
-      }
-    ]
-  },
   photocards: {
     title: "Photo Cards",
     items: [
       {
         id: "photocard-3d",
-        name: "3D",
-        description: "2.1\" x 3.4\"",
+        name: "3D Design",
+        size: "2.1\" x 3.4\"",
         color: "red",
         options: [
           {
@@ -102,7 +23,7 @@ const productData = {
       {
         id: "photocard-glittered",
         name: "Glittered Finish",
-        description: "2.1\" x 3.4\"",
+        size: "2.1\" x 3.4\"",
         color: "green",
         options: [
           {
@@ -118,7 +39,7 @@ const productData = {
       {
         id: "photocard-matte-glossy",
         name: "Matte or Glossy Finish",
-        description: "2.1\" x 3.4\"",
+        size: "2.1\" x 3.4\"",
         color: "violet",
         options: [
           {
@@ -139,7 +60,7 @@ const productData = {
       {
         id: "instax-mini",
         name: "MINI",
-        description: "1.2\" x 3.5\"",
+        size: "1.2\" x 3.5\"",
         color: "yellow",
         options: [
           {
@@ -177,8 +98,7 @@ const productData = {
       {
         id: "instax-square",
         name: "SQUARE",
-        description: "2.8\" x 3.4\"",
-        color: "orange",
+        size: "2.8\" x 3.4\"",
         options: [
           {
             type: "Classic White",
@@ -215,8 +135,7 @@ const productData = {
       {
         id: "instax-wide",
         name: "WIDE",
-        description: "4.25\" x 3.4\"",
-        color: "blue",
+        size: "4.25\" x 3.4\"",
         options: [
           {
             type: "Classic White",
@@ -258,8 +177,7 @@ const productData = {
       {
         id: "strips-classic",
         name: "Classic Strips",
-        description: "2\" x 6\"",
-        color: "blue",
+        size: "2\" x 6\"",
         options: [
           {
             type: "Classic Colors",
@@ -286,8 +204,7 @@ const productData = {
       {
         id: "strips-mini",
         name: "Classic Mini",
-        description: "1.2\" x 3.5\"",
-        color: "green",
+        size: "1.2\" x 3.5\"",
         options: [
           {
             type: "Classic",
@@ -313,155 +230,7 @@ const productData = {
       }
     ]
   },
-  documentPrinting: {
-    title: "Document Printing",
-    items: [
-    {
-        id: "text-only",
-        name: "Text Only",
-        description: "Document printing for text-only documents",
-        color: "gray",
-        options: [
-        {
-            type: "Black and White (One Side)",
-            quantity: "Short Size",
-            price: "₱3.00/page"
-        },
-        {
-            type: "Black and White (One Side)",
-            quantity: "A4 Size",
-            price: "₱3.00/page"
-    },
-    {
-            type: "Black and White (One Side)",
-            quantity: "Long Size",
-            price: "₱4.00/page"
-          },
-          {
-            type: "Black and White (Back to back)",
-            quantity: "Short Size",
-            price: "₱3.00/page"
-          },
-          {
-            type: "Black and White (Back to back)",
-            quantity: "A4 Size",
-            price: "₱3.00/page"
-          },
-          {
-            type: "Black and White (Back to back)",
-            quantity: "Long Size",
-            price: "₱4.00/page"
-          },
-          {
-            type: "Partially Colored",
-            quantity: "Short Size",
-            price: "₱4.00/page"
-        },
-        {
-            type: "Partially Colored",
-            quantity: "A4 Size",
-            price: "₱4.00/page"
-          },
-          {
-            type: "Partially Colored",
-            quantity: "Long Size",
-            price: "₱5.00/page"
-          },
-          {
-            type: "Full Colored",
-            quantity: "Short Size",
-            price: "₱5.00/page"
-          },
-          {
-            type: "Full Colored",
-            quantity: "A4 Size",
-            price: "₱5.00/page"
-          },
-          {
-            type: "Full Colored",
-            quantity: "Long Size",
-            price: "₱6.00/page"
-          }
-        ]
-      },
-      {
-        id: "text-with-image",
-        name: "Text w/ Image",
-        description: "Document printing for text with images",
-        color: "blue",
-        options: [
-        {
-            type: "Black and White",
-            quantity: "Short Size",
-            price: "₱5.00/page"
-        },
-        {
-            type: "Black and White",
-            quantity: "A4 Size",
-            price: "₱5.00/page"
-        },
-        {
-            type: "Black and White",
-            quantity: "Long Size",
-            price: "₱7.00/page"
-        },
-        {
-            type: "Full Colored",
-            quantity: "Short Size",
-            price: "₱6.00/page"
-        },
-        {
-            type: "Full Colored",
-            quantity: "A4 Size",
-            price: "₱6.00/page"
-        },
-        {
-            type: "Full Colored",
-            quantity: "Long Size",
-            price: "₱10.00/page"
-        }
-      ]
-    },
-    {
-        id: "image-only",
-        name: "Image Only",
-        description: "Document printing for image-only documents",
-        color: "green",
-        options: [
-        {
-            type: "Black and White",
-            quantity: "Short Size",
-            price: "₱5.00/page"
-        },
-        {
-            type: "Black and White",
-            quantity: "A4 Size",
-            price: "₱5.00/page"
-        },
-        {
-            type: "Black and White",
-            quantity: "Long Size",
-            price: "₱7.00/page"
-        },
-        {
-            type: "Full Colored",
-            quantity: "Short Size",
-            price: "₱10.00/page"
-        },
-        {
-            type: "Full Colored",
-            quantity: "A4 Size",
-            price: "₱10.00/page"
-        },
-        {
-            type: "Full Colored",
-            quantity: "Long Size",
-            price: "₱12.00/page"
-        }
-      ]
-    }
-  ]
-}
+  
 };
 
 export default productData;

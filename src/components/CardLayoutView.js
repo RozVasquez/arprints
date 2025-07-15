@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BlobImage from './BlobImage';
-import { ProductPricing } from './features';
+import { getStartingOption, formatPrice } from '../utils';
 
 function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
   // Use ordered subtype keys if available, otherwise fall back to alphabetical
@@ -53,14 +53,14 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
       <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
         <div className="flex flex-col lg:flex-row min-h-[400px] lg:min-h-[600px]">
           {/* Left Menu - Responsive */}
-          <div className="lg:w-1/4 bg-white border-b lg:border-b-0 lg:border-r border-gray-200">
-            <div className="p-4 lg:p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+          <div className="lg:w-1/4 bg-white border-b lg:border-b-0 lg:border-r border-gray-200 flex flex-col h-full">
+            <div className="p-4 lg:p-6 flex flex-col h-full">
+              <h3 className="text-lg font-semibold text-gray-800 mb-6">
                 {categoryData.title}
               </h3>
               
               {/* Mobile: Horizontal menu, Desktop: Vertical menu */}
-              <div className="flex flex-row lg:flex-col gap-2 lg:space-y-2 lg:gap-0 overflow-x-auto lg:overflow-x-visible">
+              <div className="flex flex-row lg:flex-col gap-2 lg:space-y-3 lg:gap-0 overflow-x-auto lg:overflow-x-visible mb-6">
                 {orderedSubtypeKeys.map((key) => {
                   const subtype = categoryData.subtypes[key];
                   return (
@@ -74,51 +74,67 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
                       }`}
                     >
                       <span>{subtype.title}</span>
-                      <div className="w-6 h-6 flex items-center justify-center">
-                        {activeSubtype === key ? (
-                          // Selected: Small pink circle
-                          <div className="w-3 h-3 bg-pink-500 rounded-full"></div>
-                        ) : (
-                          // Unselected: Arrow on hover, nothing by default
-                          <svg 
-                            xmlns="http://www.w3.org/2000/svg" 
-                            className="h-4 w-4 text-pink-500 transition-opacity duration-200 opacity-0 group-hover:opacity-100" 
-                            fill="none" 
-                            viewBox="0 0 24 24" 
-                            stroke="currentColor"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        )}
-                      </div>
+                      {/* Removed color circle */}
                     </button>
                   );
                 })}
               </div>
-              
-              {/* Separator between category selection and pricing */}
-              <div className="hidden lg:block mt-4 mb-2">
-                <div className="border-b border-gray-200"></div>
+
+              {/* Separator above starting prices */}
+              <div className="my-4 border-b border-gray-200"></div>
+
+              {/* Starting Prices Section */}
+              <div className="mb-6">
+                <h5 className="text-base font-semibold text-pink-600 mb-3">Starting Prices</h5>
+                <ul className="flex flex-col gap-4">
+                  {(() => {
+                    const categoryMap = {
+                      'photocard': 'photocards',
+                      'photocards': 'photocards',
+                      'instax': 'instaxInspired',
+                      'strips': 'photoStrips',
+                    };
+                    const productsKey = categoryMap[selectedCategory?.toLowerCase?.()] || 'photocards';
+                    try {
+                      const productData = require('../data/products').default || require('../data/products');
+                      const items = productData[productsKey]?.items || [];
+                      return items.map((item) => {
+                        const startingOption = getStartingOption(item.options);
+                        return (
+                          <li key={item.id} className="bg-white rounded-lg shadow p-4 flex items-center justify-between border border-gray-100">
+                            <div className="flex-1 text-left">
+                              <span className="block text-sm font-medium text-gray-700">{item.name}</span>
+                            </div>
+                            <div className="text-right ml-4">
+                              <span className="text-lg font-bold text-pink-600">{startingOption ? formatPrice(startingOption.price) : 'N/A'}</span>
+                            </div>
+                          </li>
+                        );
+                      });
+                    } catch (e) {
+                      return <li className="text-gray-500">Unable to load prices.</li>;
+                    }
+                  })()}
+                </ul>
+                <button
+                  className="mt-4 w-full flex items-center justify-between text-pink-600 font-medium hover:text-pink-700 transition-colors duration-200 text-sm px-2 py-2 rounded"
+                  type="button"
+                  onClick={() => { /* TODO: Implement view all prices action */ }}
+                >
+                  <span>View All Prices</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
               </div>
-              
-              {/* Pricing Component - Only show on desktop */}
-              <div className="hidden lg:block">
-                {/* Map photocard-like folder names to 'photocards' for pricing */}
-                <ProductPricing 
-                  selectedCategory={(() => {
-                    const name = selectedCategory?.toLowerCase?.() || '';
-                    if (name.includes('card')) return 'photocards';
-                    if (name === 'instax') return 'instax';
-                    if (name === 'strips') return 'strips';
-                    return selectedCategory;
-                  })()} 
-                  activeSubtype={activeSubtype} 
-                  onViewPricing={handleViewPricing}
-                />
-                
-                {/* Instructions and Call-to-Action - Below left nav */}
-                <div className="mt-4 text-center">
-                  <p className="text-xs text-gray-600 mb-2 lg:mb-3">
+
+              {/* Separator below starting prices */}
+              <div className="mb-6 border-b border-gray-200"></div>
+
+              {/* Desktop: push Order Now to bottom, Mobile: keep after prices */}
+              <div className="mt-auto pt-4 hidden lg:block">
+                <div className="text-center">
+                  <p className="text-xs text-gray-600 mb-3">
                     Take a screenshot of your preferred design and place your order by clicking the button below
                   </p>
                   <a 
@@ -135,6 +151,25 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
                 </div>
               </div>
             </div>
+            {/* Mobile: Order Now after prices */}
+            <div className="block lg:hidden px-4 pb-4">
+              <div className="text-center">
+                <p className="text-xs text-gray-600 mb-3">
+                  Take a screenshot of your preferred design and place your order by clicking the button below
+                </p>
+                <a 
+                  href="https://www.facebook.com/arprintservices/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center px-6 py-3 bg-pink-600 text-white font-medium rounded-lg hover:bg-pink-700 transition-colors duration-200"
+                >
+                  Order Now
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
+                </a>
+              </div>
+            </div>
           </div>
 
           {/* Right Grid - Responsive */}
@@ -149,40 +184,54 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
             {showAllImages ? (
               // Expanded view - show all images
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {currentImages.map((image, index) => (
-                  <div
-                    key={index}
-                    className="relative overflow-hidden rounded-lg shadow-sm cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-md group"
-                    style={{ aspectRatio: '4/3' }} // More flexible aspect ratio
-                    onClick={() => onImageClick(image.path, index)}
-                  >
-                    <BlobImage
-                      src={image.path}
-                      alt={`${categoryData.subtypes[activeSubtype]?.title} Design ${index + 1}`}
-                      className="w-full h-full object-cover object-center"
-                      priority={index < 6} // Priority load for first 6 images
-                    />
-                  </div>
-                ))}
+                {getCurrentImages().map((image, index) => {
+                  // Find the matching product item for this subtype (by name or id)
+                  const subtype = categoryData.subtypes[activeSubtype];
+                  const productItem = subtype && subtype.productItem;
+                  let startingPrice = '';
+                  if (productItem && productItem.options) {
+                    const option = getStartingOption(productItem.options);
+                    if (option) startingPrice = formatPrice(option.price);
+                  }
+                  return (
+                    <div
+                      key={index}
+                      className="relative overflow-hidden rounded-lg shadow-sm cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-md group"
+                      style={{ aspectRatio: '4/3' }}
+                      onClick={() => onImageClick(image.path, index)}
+                    >
+                      <BlobImage
+                        src={image.path}
+                        alt={`${categoryData.subtypes[activeSubtype]?.title} Design ${index + 1}`}
+                        className="w-full h-full object-cover object-center"
+                        priority={index < 6}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             ) : (
               // Compact 4-image grid - Responsive with proper aspect ratios
               <div className="grid grid-cols-2 gap-3 lg:gap-4">
-                {currentImages.slice(0, 4).map((image, index) => (
-                  <div
-                    key={index}
-                    className="relative overflow-hidden rounded-lg shadow-sm cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-md group"
-                    style={{ aspectRatio: '4/3' }} // Consistent aspect ratio
-                    onClick={() => onImageClick(image.path, index)}
-                  >
-                    <BlobImage
-                      src={image.path}
-                      alt={`${categoryData.subtypes[activeSubtype]?.title} Design ${index + 1}`}
-                      className="w-full h-full object-cover object-center"
-                      priority={index < 2} // Priority load for first 2 images
-                    />
-                  </div>
-                ))}
+                {getCurrentImages().slice(0, 4).map((image, index) => {
+                  // Remove starting price badge from image cards
+                  return (
+                    <div
+                      key={index}
+                      className="relative overflow-hidden rounded-lg shadow-sm cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-md group"
+                      style={{ aspectRatio: '4/3' }}
+                      onClick={() => onImageClick(image.path, index)}
+                    >
+                      <BlobImage
+                        src={image.path}
+                        alt={`${categoryData.subtypes[activeSubtype]?.title} Design ${index + 1}`}
+                        className="w-full h-full object-cover object-center"
+                        priority={index < 2}
+                      />
+                      {/* Removed starting price badge */}
+                    </div>
+                  );
+                })}
                 
                 {/* Empty slots if less than 4 images in compact view */}
                 {!showAllImages && currentImages.length < 4 && Array.from({ length: 4 - currentImages.length }).map((_, index) => (
@@ -208,36 +257,7 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
               <div className="mb-2">
                 <div className="border-b border-gray-200"></div>
               </div>
-              {/* Map photocard-like folder names to 'photocards' for pricing */}
-              <ProductPricing 
-                selectedCategory={(() => {
-                  const name = selectedCategory?.toLowerCase?.() || '';
-                  if (name.includes('card')) return 'photocards';
-                  if (name === 'instax') return 'instax';
-                  if (name === 'strips') return 'strips';
-                  return selectedCategory;
-                })()} 
-                activeSubtype={activeSubtype} 
-                onViewPricing={handleViewPricing}
-              />
-              
-              {/* Instructions and Call-to-Action - Below left nav on mobile/tablet */}
-              <div className="mt-4 text-center">
-                <p className="text-xs text-gray-600 mb-4 lg:mb-3">
-                  Take a screenshot of your preferred design and place your order by clicking the button below
-                </p>
-                <a 
-                  href="https://www.facebook.com/arprintservices/" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="w-full inline-flex items-center justify-center px-6 py-3 bg-pink-600 text-white font-medium rounded-lg hover:bg-pink-700 transition-colors duration-200"
-                >
-                  Order Now
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                  </svg>
-                </a>
-              </div>
+              {/* Removed duplicate instruction and Order Now button from below images on mobile */}
             </div>
 
             {/* Action Buttons */}

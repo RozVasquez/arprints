@@ -9,6 +9,7 @@ import Products from './pages/Products';
 import Pricing from './pages/Pricing';
 import Order from './pages/Order';
 import ScrollToTop from './components/ScrollToTop';
+import Admin from './pages/Admin';
 
 // Initialize Speed Insights
 injectSpeedInsights();
@@ -30,16 +31,9 @@ const AppContent = () => {
           <Route path="/products/:category" element={<Products />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/order" element={<Order />} />
-          
-          {/* Admin routes - only in development */}
-          {process.env.NODE_ENV === 'development' && (() => {
-            try {
-              const Admin = require('./pages/Admin').default;
-              return <Route path="/admin" element={<Admin />} />;
-            } catch (error) {
-              return null;
-            }
-          })()}
+          {/* Admin route */}
+          <Route path="/admin" element={<Admin />} />
+
         </Routes>
       </main>
       {!isAdminPage && <Footer />}

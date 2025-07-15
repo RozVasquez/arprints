@@ -1,12 +1,8 @@
 import React from 'react';
-import PricingCardLayoutStatic from '../components/PricingCardLayout';
+import PricingCardLayout from '../components/PricingCardLayout';
 
 function Pricing() {
-  return (
-    <div>
-      <PricingCardLayoutStatic />
-    </div>
-  );
+  return <PricingCardLayout />;
 }
 
 export default Pricing; 

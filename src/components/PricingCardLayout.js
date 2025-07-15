@@ -14,6 +14,8 @@ function PricingCardLayoutStatic({ initialCategory = 'photocards' }) {
 
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [searchText, setSearchText] = useState('');
+  const [sortValue, setSortValue] = useState('');
 
   // Get current category data
   const currentCategoryData = productData[selectedCategory] || null;
@@ -42,6 +44,42 @@ function PricingCardLayoutStatic({ initialCategory = 'photocards' }) {
     return groups;
   };
 
+  // Filter and sort items
+  const filteredAndSortedItems = useMemo(() => {
+    let items = currentCategoryData?.items || [];
+    // Filter by search text
+    if (searchText.trim()) {
+      const search = searchText.trim().toLowerCase();
+      items = items.filter(item => {
+        if (item.name.toLowerCase().includes(search)) return true;
+        // Check options for match
+        return item.options.some(opt =>
+          (opt.type && opt.type.toLowerCase().includes(search)) ||
+          (opt.quantity && opt.quantity.toLowerCase().includes(search))
+        );
+      });
+    }
+    // Sort
+    if (sortValue === 'price-asc') {
+      items = [...items].sort((a, b) => {
+        const aPrice = getStartingOption(a.options)?.price || 0;
+        const bPrice = getStartingOption(b.options)?.price || 0;
+        return aPrice - bPrice;
+      });
+    } else if (sortValue === 'price-desc') {
+      items = [...items].sort((a, b) => {
+        const aPrice = getStartingOption(a.options)?.price || 0;
+        const bPrice = getStartingOption(b.options)?.price || 0;
+        return bPrice - aPrice;
+      });
+    } else if (sortValue === 'name-asc') {
+      items = [...items].sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortValue === 'name-desc') {
+      items = [...items].sort((a, b) => b.name.localeCompare(a.name));
+    }
+    return items;
+  }, [currentCategoryData, searchText, sortValue]);
+
   if (!currentCategoryData) {
     return (
       <div className="min-h-screen bg-gray-50 pt-24 pb-12 flex items-center justify-center">
@@ -58,9 +96,7 @@ function PricingCardLayoutStatic({ initialCategory = 'photocards' }) {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">Pricing</h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Transparent and affordable pricing for all your printing needs. Choose from our variety of services.
-          </p>
+          {/* Removed lorem ipsum description */}
         </div>
 
         {/* Card Container */}
@@ -87,19 +123,6 @@ function PricingCardLayoutStatic({ initialCategory = 'photocards' }) {
                       <div>
                         <span className="block">{category.title}</span>
                       </div>
-                      {selectedCategory === category.id ? (
-                        <div className="w-3 h-3 bg-pink-500 rounded-full"></div>
-                      ) : (
-                        <svg 
-                          xmlns="http://www.w3.org/2000/svg" 
-                          className="h-4 w-4 text-pink-500 transition-opacity duration-200 opacity-0 group-hover:opacity-100" 
-                          fill="none" 
-                          viewBox="0 0 24 24" 
-                          stroke="currentColor"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      )}
                     </button>
                   ))}
                 </div>
@@ -108,15 +131,36 @@ function PricingCardLayoutStatic({ initialCategory = 'photocards' }) {
 
             {/* Right Content - Pricing Items */}
             <div className="flex-1 p-6">
-              <div className="mb-6">
+              <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <h4 className="text-2xl font-semibold text-gray-800">
                   {currentCategoryData.title}
                 </h4>
+                {/* Search and Dropdown UI */}
+                <div className="flex flex-col md:flex-row gap-2 md:gap-4 w-full md:w-auto md:ml-auto">
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                    className="border border-gray-300 rounded-lg px-3 py-2 w-full md:w-48"
+                    value={searchText}
+                    onChange={e => setSearchText(e.target.value)}
+                  />
+                  <select
+                    className="border border-gray-300 rounded-lg px-3 py-2 w-full md:w-40"
+                    value={sortValue}
+                    onChange={e => setSortValue(e.target.value)}
+                  >
+                    <option value="">Sort by</option>
+                    <option value="price-asc">Price: Low to High</option>
+                    <option value="price-desc">Price: High to Low</option>
+                    <option value="name-asc">Name: A-Z</option>
+                    <option value="name-desc">Name: Z-A</option>
+                  </select>
+                </div>
               </div>
 
               {/* Pricing Items Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                {currentCategoryData.items.map((item) => {
+                {filteredAndSortedItems.map((item) => {
                   const isExpanded = selectedItem?.id === item.id;
                   const optionsToShow = isExpanded ? item.options : item.options.slice(0, 3);
                   const groupedOptions = groupOptionsByType(optionsToShow);
@@ -136,24 +180,12 @@ function PricingCardLayoutStatic({ initialCategory = 'photocards' }) {
                           <h5 className="text-lg font-bold text-gray-800 text-left">
                             {item.name}
                           </h5>
-                          <p className="text-sm text-gray-600 text-left">
-                            {item.description}
-                          </p>
                         </div>
                         <div className="flex items-center ml-4">
                           <span className="text-xs font-medium text-gray-500">
                             {item.options.length} option{item.options.length !== 1 ? 's' : ''}
                           </span>
                         </div>
-                      </div>
-
-                      {/* Starting Price */}
-                      <div className="flex items-center mb-2">
-                        <span className="text-xs font-semibold text-pink-600 bg-pink-50 px-2 py-1 rounded">
-                          {startingOption
-                            ? `Starting at ${formatPrice(startingOption.price)}${startingOption.quantity ? ` • ${startingOption.quantity}` : ''}`
-                            : ''}
-                        </span>
                       </div>
 
                       {/* Pricing Options */}

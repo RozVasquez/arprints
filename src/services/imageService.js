@@ -3,25 +3,19 @@ import { supabase, STORAGE_BUCKET, STORAGE_FOLDERS, getPublicUrl, uploadImage, d
 // Image management service with Supabase integration
 export class ImageService {
   
-  // Upload a new product image
-  static async uploadProductImage(file, category, filename) {
+  // Upload a new product image to product-catalog bucket
+  static async uploadProductImage(file, productName, typeName, filename) {
     try {
-      const folder = STORAGE_FOLDERS[category.toUpperCase()]
-      if (!folder) {
-        throw new Error(`Invalid category: ${category}`)
-      }
-      
-      const path = `${folder}/${filename}`
-      const result = await uploadImage(file, path)
-      
+      const bucket = 'product-catalog'
+      const path = `${productName}/${typeName}/${filename}`
+      const result = await uploadImage(file, path, bucket)
       if (result.success) {
         return {
           success: true,
-          url: getPublicUrl(path),
+          url: getPublicUrl(path, bucket),
           path: path
         }
       }
-      
       return result
     } catch (error) {
       console.error('Error uploading product image:', error)
@@ -29,27 +23,21 @@ export class ImageService {
     }
   }
   
-  // Get all images for a specific category
-  static async getProductImages(category) {
+  // Get all images for a specific product/type in product-catalog bucket
+  static async getProductImages(productName, typeName) {
     try {
-      const folder = STORAGE_FOLDERS[category.toUpperCase()]
-      if (!folder) {
-        throw new Error(`Invalid category: ${category}`)
-      }
-      
-      const result = await listImages(folder)
-      
+      const bucket = 'product-catalog'
+      const folder = `${productName}/${typeName}`
+      const result = await listImages(folder, bucket)
       if (result.success) {
         const images = result.data.map(file => ({
           name: file.name,
-          url: getPublicUrl(`${folder}/${file.name}`),
+          url: getPublicUrl(`${folder}/${file.name}`, bucket),
           path: `${folder}/${file.name}`,
           metadata: file.metadata
         }))
-        
         return { success: true, images }
       }
-      
       return result
     } catch (error) {
       console.error('Error getting product images:', error)
@@ -57,35 +45,30 @@ export class ImageService {
     }
   }
   
-  // Delete a product image
-  static async deleteProductImage(path) {
+  // Delete a product image from product-catalog bucket
+  static async deleteProductImage(productName, typeName, filename) {
     try {
-      return await deleteImage(path)
+      const bucket = 'product-catalog'
+      const path = `${productName}/${typeName}/${filename}`
+      return await deleteImage(path, bucket)
     } catch (error) {
       console.error('Error deleting product image:', error)
       return { success: false, error }
     }
   }
   
-  // Bulk upload images for a category
-  static async bulkUploadImages(files, category) {
+  // Bulk upload images for a product/type in product-catalog bucket
+  static async bulkUploadImages(files, productName, typeName) {
     try {
-      const folder = STORAGE_FOLDERS[category.toUpperCase()]
-      if (!folder) {
-        throw new Error(`Invalid category: ${category}`)
-      }
-      
-      const uploadPromises = files.map(async (file, index) => {
-        
-        const path = `${folder}/${file.name}`
-        
-        const result = await uploadImage(file, path)
-        
+      const bucket = 'product-catalog'
+      const uploadPromises = files.map(async (file) => {
+        const path = `${productName}/${typeName}/${file.name}`
+        const result = await uploadImage(file, path, bucket)
         if (result.success) {
           return {
             success: true,
             filename: file.name,
-            url: getPublicUrl(path),
+            url: getPublicUrl(path, bucket),
             path: path
           }
         } else {
@@ -96,12 +79,9 @@ export class ImageService {
           }
         }
       })
-      
       const results = await Promise.all(uploadPromises)
-      
       const successful = results.filter(r => r.success).length
       const failed = results.filter(r => !r.success).length
-      
       return {
         success: true,
         results: results,

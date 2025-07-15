@@ -19,3 +19,4 @@ export { default as PricingCardLayout } from './PricingCardLayout';
 export { default as Hero } from './Hero';
 export { default as About } from './About';
 export { default as FeaturedProducts } from './FeaturedProducts'; 
+export { default as FAQSection } from './FAQSection'; 

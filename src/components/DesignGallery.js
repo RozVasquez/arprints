@@ -60,7 +60,7 @@ function DesignGallery({ initialCategory = null }) {
     
     return {
       id: categoryId,
-      title: displayNames[categoryId] || categoryName + ' Designs',
+      title: displayNames[categoryId] || categoryName + ' Design',
       description: descriptions[categoryId] || `${categoryName} designs and products`,
       categoryImage: categoryData?.categoryImage
     };
