@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BlobImage from './BlobImage';
 import { getStartingOption, formatPrice } from '../utils';
@@ -10,6 +10,7 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
   const [showAllImages, setShowAllImages] = useState(false);
   const [showPrices, setShowPrices] = useState(false);
   const navigate = useNavigate();
+  const imageGridRef = useRef(null);
 
   // Get current images based on selected subtype
   const getCurrentImages = useCallback(() => {
@@ -24,6 +25,10 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
 
   // Handle view all toggle
   const handleViewAllToggle = () => {
+    if (showAllImages && imageGridRef.current) {
+      // If collapsing, scroll image grid into view
+      imageGridRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
     setShowAllImages(!showAllImages);
   };
 
@@ -187,7 +192,7 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
             {/* Image Grid - Responsive */}
             {showAllImages ? (
               // Expanded view - show all images
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div ref={imageGridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {getCurrentImages().map((image, index) => {
                   // Find the matching product item for this subtype (by name or id)
                   const subtype = categoryData.subtypes[activeSubtype];
@@ -216,7 +221,7 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
               </div>
             ) : (
               // Compact 4-image grid - Responsive with proper aspect ratios
-              <div className="grid grid-cols-2 gap-3 lg:gap-4">
+              <div ref={imageGridRef} className="grid grid-cols-2 gap-3 lg:gap-4">
                 {getCurrentImages().slice(0, 4).map((image, index) => {
                   // Remove starting price badge from image cards
                   return (
@@ -270,19 +275,19 @@ function CardLayoutView({ categoryData, onImageClick, selectedCategory }) {
               {currentImages.length > 4 && (
                 <button 
                   onClick={handleViewAllToggle}
-                  className="inline-flex items-center justify-center px-6 py-3 bg-pink-600 text-white font-medium rounded-lg hover:bg-pink-700 transition-colors duration-200"
+                  className={`inline-flex items-center justify-center px-6 py-3 border border-pink-500 text-pink-500 bg-transparent font-medium rounded-lg hover:bg-transparent hover:text-pink-600 transition-colors duration-200`}
                 >
                   {showAllImages ? (
                     <>
                       Show Less
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="white">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                       </svg>
                     </>
                   ) : (
                     <>
                       View All Images
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="white">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
                     </>
