@@ -65,3 +65,7 @@ admin-*.js
 *.swp
 *.swo
 *~
+
+# Ignore admin features and related files
+src/pages/Admin.js
+src/components/admin/
