@@ -25,12 +25,12 @@ function Header() {
       : "py-2 px-3 transition duration-300 flex items-center";
     
     const activeClasses = isMobile
-      ? "text-pink-600 bg-pink-50 font-semibold"
-      : "text-pink-600 font-semibold";
+      ? "text-red-600 bg-red-50 font-semibold"
+      : "text-red-600 font-semibold";
     
     const inactiveClasses = isMobile
-      ? "text-pink-600 hover:bg-pink-50"
-      : "text-pink-600 hover:text-pink-300";
+      ? "text-red-600 hover:bg-red-50"
+      : "text-red-600 hover:text-red-300";
     
     return `${baseClasses} ${isActive(path) ? activeClasses : inactiveClasses}`;
   };
@@ -42,11 +42,11 @@ function Header() {
         <div className="flex-shrink-0">
           <Link to="/" className="flex items-center space-x-2">
             <img 
-              src="/AR-01.png" 
+              src="/NavIcon.png" 
               alt="AR Prints Logo" 
-              className="w-12 h-12 rounded-full object-cover"
+              className="w-10 h-10 object-contain"
             />
-            <span className="text-2xl font-bold text-pink-600">AR Prints</span>
+            <span className="text-2xl font-bold text-red-600">AR Prints</span>
           </Link>
         </div>
         
@@ -65,7 +65,7 @@ function Header() {
             href="https://www.facebook.com/arprintservices/" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="py-2 px-3 transition duration-300 flex items-center text-pink-600 hover:text-pink-300"
+            className="py-2 px-3 transition duration-300 flex items-center text-red-600 hover:text-red-300"
           >
             Contact Us
           </a> */}
@@ -77,7 +77,7 @@ function Header() {
             href="https://www.facebook.com/arprintservices/" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition duration-300 font-medium"
+            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300 font-medium"
           >
             Order Now
           </a>
@@ -85,7 +85,7 @@ function Header() {
 
         {/* Mobile Menu Button */}
         <button 
-          className="md:hidden text-pink-600 focus:outline-none transform transition-transform duration-300 hover:scale-110 ml-auto"
+          className="md:hidden text-red-600 focus:outline-none transform transition-transform duration-300 hover:scale-110 ml-auto"
           onClick={toggleMobileMenu}
           aria-label="Toggle menu"
         >
@@ -133,7 +133,7 @@ function Header() {
             href="https://www.facebook.com/arprintservices/" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="mx-6 my-2 py-2 px-4 text-center bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition duration-300 font-medium"
+            className="mx-6 my-2 py-2 px-4 text-center bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-300 font-medium"
             onClick={toggleMobileMenu}
           >
             Order Now

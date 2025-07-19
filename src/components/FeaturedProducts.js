@@ -101,12 +101,6 @@ function FeaturedProducts() {
                       <div className="absolute bottom-0 left-0 right-0 p-8 text-white hidden md:block">
                         <h3 className="text-2xl md:text-3xl font-bold mb-3">{category.title}</h3>
                         <p className="text-lg opacity-90 mb-4">{category.description}</p>
-                        <div className="flex items-center justify-end text-pink-300 font-medium group-hover:text-pink-200 transition-colors">
-                          Learn More
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </div>
                       </div>
                     </div>
                   </Link>
@@ -121,7 +115,7 @@ function FeaturedProducts() {
               {/* Previous Button */}
               <button
                 onClick={goToPrev}
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 hover:text-pink-600 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-10"
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 hover:text-red-600 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-10"
                 aria-label="Previous slide"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -132,7 +126,7 @@ function FeaturedProducts() {
               {/* Next Button */}
               <button
                 onClick={goToNext}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 hover:text-pink-600 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-10"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 hover:text-red-600 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-10"
                 aria-label="Next slide"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -165,14 +159,14 @@ function FeaturedProducts() {
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-10">
           <Link
             to="/pricing"
-            className="inline-flex items-center text-pink-600 font-medium text-base px-8 py-3 bg-transparent border border-pink-500 hover:bg-pink-50 hover:text-pink-700 transform hover:-translate-y-1 transition-all duration-300 rounded-lg"
+            className="inline-flex items-center text-red-600 font-medium text-base px-8 py-3 bg-transparent border border-red-500 hover:bg-red-50 hover:text-red-700 transform hover:-translate-y-1 transition-all duration-300 rounded-lg"
             style={{ fontSize: '14px' }}
           >
             See Pricing
           </Link>
           <Link
             to="/products"
-            className="inline-flex items-center text-white font-medium text-base px-8 py-3 rounded-lg shadow-sm border bg-pink-500 hover:bg-pink-500 hover:text-white transform hover:-translate-y-1 transition-all duration-300"
+            className="inline-flex items-center text-white font-medium text-base px-8 py-3 rounded-lg shadow-sm border bg-red-500 hover:bg-red-500 hover:text-white transform hover:-translate-y-1 transition-all duration-300"
             style={{ fontSize: '14px' }}
           >
             View All Products

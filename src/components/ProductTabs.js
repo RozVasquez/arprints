@@ -167,8 +167,8 @@ function ProductTabs() {
     services: ['rushID', 'documentPrinting']
   };
 
-  // Use pink for all tabs
-  const activeTabColor = 'bg-pink-500';
+  // Use red for all tabs
+  const activeTabColor = 'bg-red-500';
 
   return (
     <section id="pricing" className="py-8 md:py-12 bg-white">
@@ -190,7 +190,7 @@ function ProductTabs() {
                 className="flex items-center justify-between w-full py-4 px-4 text-left text-base font-medium text-gray-800 bg-white border-b border-gray-200 focus:outline-none"
               >
                 <span className="flex items-center">
-                  <span className="mr-2 w-3 h-3 rounded-full bg-pink-500"></span>
+                  <span className="mr-2 w-3 h-3 rounded-full bg-red-500"></span>
                   {productData[activeTab].title}
                 </span>
                 <svg 
@@ -208,7 +208,7 @@ function ProductTabs() {
                   {Object.keys(productData).map((tabId) => (
                     <button
                       key={tabId}
-                      className={`w-full py-3 px-4 text-left ${activeTab === tabId ? 'bg-pink-50 text-pink-600 font-medium' : 'text-gray-700'}`}
+                      className={`w-full py-3 px-4 text-left ${activeTab === tabId ? 'bg-red-50 text-red-600 font-medium' : 'text-gray-700'}`}
                       onClick={() => handleTabClick(tabId)}
                     >
                       {productData[tabId].title}
@@ -230,7 +230,7 @@ function ProductTabs() {
                 key={tabId}
                   className={`py-4 px-6 text-base font-medium transition-colors duration-200 relative whitespace-nowrap ${
                   activeTab === tabId 
-                      ? 'text-pink-600 border-b-2 border-pink-500' 
+                      ? 'text-red-600 border-b-2 border-red-500' 
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 onClick={() => handleTabClick(tabId)}
@@ -246,7 +246,7 @@ function ProductTabs() {
             <div className="bg-white border-b border-gray-200 px-4 relative">
               {/* Left scroll button for product tabs */}
           <button 
-                className="absolute left-1 top-1/2 transform -translate-y-1/2 bg-white text-pink-500 border border-gray-200 rounded-full p-1.5 md:hidden focus:outline-none hover:bg-pink-500 hover:text-white transition-all duration-200 z-10"
+                className="absolute left-1 top-1/2 transform -translate-y-1/2 bg-white text-red-500 border border-gray-200 rounded-full p-1.5 md:hidden focus:outline-none hover:bg-red-500 hover:text-white transition-all duration-200 z-10"
                 onClick={scrollProductTabsLeft}
                 aria-label="Scroll product tabs left"
           >
@@ -266,7 +266,7 @@ function ProductTabs() {
                 onClick={() => handleProductClick(product.id)}
                     className={`py-3 px-4 text-sm font-medium transition-colors duration-200 whitespace-nowrap ${
                   activeProduct === product.id
-                        ? 'text-pink-600 border-b-2 border-pink-500' 
+                        ? 'text-red-600 border-b-2 border-red-500' 
                         : 'text-gray-600 hover:text-gray-900'
                     }`}
               >
@@ -277,7 +277,7 @@ function ProductTabs() {
               
               {/* Right scroll button for product tabs */}
               <button 
-                className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-white text-pink-500 border border-gray-200 rounded-full p-1.5 md:hidden focus:outline-none hover:bg-pink-500 hover:text-white transition-all duration-200 z-10"
+                className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-white text-red-500 border border-gray-200 rounded-full p-1.5 md:hidden focus:outline-none hover:bg-red-500 hover:text-white transition-all duration-200 z-10"
                 onClick={scrollProductTabsRight}
                 aria-label="Scroll product tabs right"
               >
@@ -297,7 +297,7 @@ function ProductTabs() {
                     <h3 className="text-xl md:text-2xl font-bold mb-2 text-gray-800 text-left bg-white">{productData[activeTab].items.find(item => item.id === activeProduct).name}</h3>
                     {productData[activeTab].items.find(item => item.id === activeProduct).description && (
                       <div className="flex items-center text-gray-600 mb-2 text-left bg-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
                         </svg>
                         <span className="font-medium">{productData[activeTab].items.find(item => item.id === activeProduct).description}</span>
@@ -325,7 +325,7 @@ function ProductTabs() {
             href="https://www.facebook.com/arprintservices/" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="inline-block bg-pink-600 text-white font-bold text-lg px-8 py-4 rounded-lg shadow-lg hover:bg-pink-700 transform hover:-translate-y-1 transition-all duration-300"
+            className="inline-block bg-red-600 text-white font-bold text-lg px-8 py-4 rounded-lg shadow-lg hover:bg-red-700 transform hover:-translate-y-1 transition-all duration-300"
           >
             Order Now
           </a>

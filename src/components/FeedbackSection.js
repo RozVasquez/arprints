@@ -44,7 +44,7 @@ function FeedbackSection() {
   };
 
   const HeartIcon = () => (
-    <svg className="w-5 h-5 fill-pink-500 text-pink-500" viewBox="0 0 24 24">
+    <svg className="w-5 h-5 fill-red-500 text-red-500" viewBox="0 0 24 24">
       <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
     </svg>
   );
@@ -108,7 +108,7 @@ function FeedbackSection() {
   }
 
   return (
-    <section className="w-full py-12 md:py-20 bg-gray-50">
+    <section id="feedback" className="w-full py-12 md:py-20 bg-gray-50">
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
           <ScrollReveal enableBlur={true} baseOpacity={0.2} baseRotation={2} blurStrength={3}>
@@ -116,7 +116,7 @@ function FeedbackSection() {
               What Our Customers Say
             </h2>
           </ScrollReveal>
-          <div className="w-24 h-1 bg-pink-500 mx-auto mb-8 rounded-full"></div>
+          <div className="w-24 h-1 bg-red-500 mx-auto mb-8 rounded-full"></div>
           <ScrollReveal enableBlur={true} baseOpacity={0.05} baseRotation={0.5} blurStrength={1.5}>
             <p className="max-w-2xl mx-auto text-gray-600 text-lg">
               Hear from our happy customers who love their <br /> beautifully printed memories.
@@ -138,8 +138,8 @@ function FeedbackSection() {
                 onClick={() => handleFeedbackClick(feedback)}
               >
                 {/* Avatar */}
-                <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-pink-600 font-semibold text-lg">{getInitials(feedback.name)}</span>
+                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-red-600 font-semibold text-lg">{getInitials(feedback.name)}</span>
                 </div>
                 
                 {/* Hearts */}

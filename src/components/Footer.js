@@ -1,23 +1,37 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Heart, Instagram, Facebook, Mail, Phone, MapPin, Printer, Sparkles } from "lucide-react";
+import { Link, useNavigate } from 'react-router-dom';
+import { Heart, Sparkles, Printer, Mail, Phone, MapPin, Instagram, Facebook } from 'lucide-react';
 
 function Footer() {
+  const navigate = useNavigate();
+
+  const handleFeedbackClick = (e) => {
+    e.preventDefault();
+    navigate('/');
+    // Wait for navigation to complete, then scroll to feedback
+    setTimeout(() => {
+      const element = document.getElementById('feedback');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 300);
+  };
+
   return (
-    <footer className="bg-gradient-to-br from-pink-500 via-pink-600 to-pink-700 text-white">
+    <footer className="bg-gradient-to-br from-red-500 via-red-600 to-red-700 text-white">
       {/* Main Footer Content */}
       <div className="container mx-auto px-4 py-12">
-        <div className="flex flex-col lg:flex-row lg:justify-between gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           
           {/* Brand Section */}
           <div className="space-y-4 text-center md:text-left lg:max-w-sm">
             <div className="flex items-center justify-center md:justify-start space-x-2 mb-4">
               <h3 className="text-2xl font-bold">AR Prints</h3>
             </div>
-            <p className="text-pink-100 text-sm leading-relaxed mb-4">
+            <p className="text-red-100 text-sm leading-relaxed mb-4">
               Creating beautiful memories, one print at a time. Handcrafted photocards, instax prints, and photo strips made with love.
             </p>
-            <div className="flex items-center justify-center md:justify-start space-x-1 text-pink-100">
+            <div className="flex items-center justify-center md:justify-start space-x-1 text-red-100">
               <span className="text-sm">Made with</span>
               <Heart className="h-4 w-4 fill-current" />
               <span className="text-sm">since 2024</span>
@@ -37,17 +51,24 @@ function Footer() {
                 { name: "Home", path: "/" },
                 { name: "Products", path: "/products" },
                 { name: "Pricing", path: "/pricing" },
-                { name: "feedbacks", path: "/feedbacks" },
               ].map((item) => (
                 <li key={item.name}>
                   <Link
                     to={item.path}
-                    className="text-pink-100 hover:text-white transition-colors duration-200 text-sm hover:underline block py-1"
+                    className="text-red-100 hover:text-white transition-colors duration-200 text-sm hover:underline block py-1"
                   >
                     {item.name}
                   </Link>
                 </li>
               ))}
+              <li>
+                <button
+                  onClick={handleFeedbackClick}
+                  className="text-red-100 hover:text-white transition-colors duration-200 text-sm hover:underline block py-1 w-full text-left"
+                >
+                  Feedbacks
+                </button>
+              </li>
             </ul>
           </div>
 
@@ -58,18 +79,23 @@ function Footer() {
               Our Products
             </h4>
             <ul className="space-y-2">
-              {["Photo Cards", "Instax Prints", "Photo Strips", "Custom Designs", "Gift Sets", "Bulk Orders"].map(
-                (item) => (
-                  <li key={item}>
-                    <Link
-                      to="/products"
-                      className="text-pink-100 hover:text-white transition-colors duration-200 text-sm hover:underline block py-1"
-                    >
-                      {item}
-                    </Link>
-                  </li>
-                )
-              )}
+              {[
+                { name: "Photo Cards", path: "/products" },
+                { name: "Instax Prints", path: "/products" },
+                { name: "Photo Strips", path: "/products" },
+                { name: "Custom Designs", path: "/products" },
+                { name: "Gift Sets", path: "/products" },
+                { name: "Bulk Orders", path: "/products" }
+              ].map((item) => (
+                <li key={item.name}>
+                  <Link
+                    to={item.path}
+                    className="text-red-100 hover:text-white transition-colors duration-200 text-sm hover:underline block py-1"
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -120,20 +146,20 @@ function Footer() {
         </div>
 
         {/* Newsletter Signup
-        <div className="mt-12 pt-8 border-t border-pink-400/30">
+        <div className="mt-12 pt-8 border-t border-red-400/30">
           <div className="bg-white/10 rounded-2xl p-6 backdrop-blur-sm">
             <div className="text-center space-y-4">
               <h4 className="text-xl font-semibold">Stay Updated! ✨</h4>
-              <p className="text-pink-100 text-sm max-w-md mx-auto">
+              <p className="text-red-100 text-sm max-w-md mx-auto">
                 Get the latest updates on new products, special offers, and printing tips delivered to your inbox.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
                 <input
                   type="email"
                   placeholder="Enter your email"
-                  className="flex-1 px-4 py-2 rounded-full bg-white/20 border border-white/30 text-white placeholder-pink-200 focus:outline-none focus:ring-2 focus:ring-white/50 text-sm"
+                  className="flex-1 px-4 py-2 rounded-full bg-white/20 border border-white/30 text-white placeholder-red-200 focus:outline-none focus:ring-2 focus:ring-white/50 text-sm"
                 />
-                <button className="px-6 py-2 bg-white text-pink-600 rounded-full font-medium hover:bg-pink-50 transition-colors duration-200 text-sm">
+                <button className="px-6 py-2 bg-white text-red-600 rounded-full font-medium hover:bg-red-50 transition-colors duration-200 text-sm">
                   Subscribe
                 </button>
               </div>
@@ -143,20 +169,20 @@ function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-pink-400/30 bg-pink-700/50">
+      <div className="border-t border-red-400/30 bg-red-700/50">
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
             
             {/* Copyright */}
             <div className="text-center lg:text-left order-2 lg:order-1 mt-6 md:mt-10">
-              <p className="text-pink-100 text-sm">
+              <p className="text-red-100 text-sm">
                 © 2024 AR Prints. All rights reserved. | Made with love for your memories 💕
               </p>
             </div>
 
             {/* Social Links */}
             <div className="flex items-center justify-center space-x-4 order-1 lg:order-2">
-              <span className="text-pink-100 text-sm">Follow us:</span>
+              <span className="text-red-100 text-sm">Follow us:</span>
               <div className="flex space-x-3">
                 <a
                   href="https://www.instagram.com/a.r.prints_/"
@@ -192,10 +218,10 @@ function Footer() {
 
             {/* Legal Links
             <div className="flex space-x-4 text-sm order-3 lg:order-3">
-              <Link to="/privacy" className="text-pink-100 hover:text-white transition-colors duration-200">
+              <Link to="/privacy" className="text-red-100 hover:text-white transition-colors duration-200">
                 Privacy Policy
               </Link>
-              <Link to="/terms" className="text-pink-100 hover:text-white transition-colors duration-200">
+              <Link to="/terms" className="text-red-100 hover:text-white transition-colors duration-200">
                 Terms of Service
               </Link>
             </div> */}

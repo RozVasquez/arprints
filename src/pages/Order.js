@@ -360,7 +360,7 @@ Thank you
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div 
-                className="bg-pink-500 h-2 rounded-full transition-all duration-300 ease-out"
+                className="bg-red-500 h-2 rounded-full transition-all duration-300 ease-out"
                 style={{ width: `${(currentStep / steps.length) * 100}%` }}
               />
             </div>
@@ -376,14 +376,14 @@ Thank you
                       currentStep > step.id
                         ? 'bg-green-500 text-white'
                         : currentStep === step.id
-                        ? 'bg-pink-500 text-white'
+                        ? 'bg-red-500 text-white'
                         : 'bg-gray-200 text-gray-600'
                     }`}>
                       {currentStep > step.id ? <Check className="w-3 h-3 sm:w-5 sm:h-5" /> : step.id}
                     </div>
                     <div className="mt-1 sm:mt-2 text-center">
                       <p className={`text-xs sm:text-sm font-medium ${
-                        currentStep >= step.id ? 'text-pink-600' : 'text-gray-500'
+                        currentStep >= step.id ? 'text-red-600' : 'text-gray-500'
                       }`}>
                         {step.title}
                       </p>
@@ -410,7 +410,7 @@ Thank you
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
+                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
                       errors.name ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="Name *"
@@ -425,7 +425,7 @@ Thank you
                     name="contactNo"
                     value={formData.contactNo}
                     onChange={handleInputChange}
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
+                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
                       errors.contactNo ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="Contact Number *"
@@ -445,7 +445,7 @@ Thank you
                       name="orderDetails"
                       value={formData.orderDetails}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent appearance-none bg-white ${
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent appearance-none bg-white ${
                         errors.orderDetails ? 'border-red-500' : 'border-gray-300'
                       }`}
                     >
@@ -467,7 +467,7 @@ Thank you
                         name="orderType"
                         value={formData.orderType}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent appearance-none bg-white ${
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent appearance-none bg-white ${
                           errors.orderType ? 'border-red-500' : 'border-gray-300'
                         }`}
                       >
@@ -491,8 +491,8 @@ Thank you
                         onClick={() => handleDesignChoice('Plain')}
                         className={`flex-1 py-3 px-4 rounded-lg border-2 transition-all duration-200 ${
                           formData.designChoice === 'Plain'
-                            ? 'bg-pink-500 border-pink-500 text-white'
-                            : 'border-pink-200 text-pink-600 hover:border-pink-300'
+                            ? 'bg-red-500 border-red-500 text-white'
+                            : 'border-red-200 text-red-600 hover:border-red-300'
                         }`}
                       >
                         Plain
@@ -503,8 +503,8 @@ Thank you
                           onClick={() => handleDesignChoice('Colored')}
                           className={`flex-1 py-3 px-4 rounded-lg border-2 transition-all duration-200 ${
                             formData.designChoice === 'Colored'
-                              ? 'bg-pink-500 border-pink-500 text-white'
-                              : 'border-pink-200 text-pink-600 hover:border-pink-300'
+                              ? 'bg-red-500 border-red-500 text-white'
+                              : 'border-red-200 text-red-600 hover:border-red-300'
                           }`}
                         >
                           Colored
@@ -515,8 +515,8 @@ Thank you
                         onClick={() => handleDesignChoice('Designed')}
                         className={`flex-1 py-3 px-4 rounded-lg border-2 transition-all duration-200 ${
                           formData.designChoice === 'Designed'
-                            ? 'bg-pink-500 border-pink-500 text-white'
-                            : 'border-pink-200 text-pink-600 hover:border-pink-300'
+                            ? 'bg-red-500 border-red-500 text-white'
+                            : 'border-red-200 text-red-600 hover:border-red-300'
                         }`}
                       >
                         Designed
@@ -534,7 +534,7 @@ Thank you
                         name="quantity"
                         value={formData.quantity}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent appearance-none bg-white ${
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent appearance-none bg-white ${
                           errors.quantity ? 'border-red-500' : 'border-gray-300'
                         }`}
                       >
@@ -590,8 +590,8 @@ Thank you
                 </div>
 
                 {/* Payment Instructions */}
-                <div className="bg-white border-2 border-pink-200 rounded-lg p-4 md:p-6">
-                  <h3 className="text-lg md:text-xl font-bold text-pink-800 mb-4 md:mb-6 text-left">Payment Instructions</h3>
+                <div className="bg-white border-2 border-red-200 rounded-lg p-4 md:p-6">
+                  <h3 className="text-lg md:text-xl font-bold text-red-800 mb-4 md:mb-6 text-left">Payment Instructions</h3>
                   <div className="space-y-4 text-gray-700 text-left">
                     <div className="space-y-3">
                       <p className="font-medium text-left">1. There will be a 50% down payment of your order.</p>
@@ -600,8 +600,8 @@ Thank you
                       <p className="font-medium text-left">4. Upload the receipt and chosen design images in Gmail.</p>
                     </div>
                     
-                    <div className="bg-pink-50 border border-pink-200 rounded-lg p-3 md:p-4 mt-4 md:mt-6">
-                      <h4 className="text-sm md:text-base font-bold text-pink-800 mb-2 text-left">GCASH Details</h4>
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-3 md:p-4 mt-4 md:mt-6">
+                      <h4 className="text-sm md:text-base font-bold text-red-800 mb-2 text-left">GCASH Details</h4>
                       <p className="text-left"><strong>Name:</strong> Roz Vasquez</p>
                       <p className="text-left"><strong>Number:</strong> 09606592742</p>
                     </div>
@@ -630,7 +630,7 @@ Thank you
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="flex items-center px-6 py-3 bg-pink-500 hover:bg-pink-600 text-white font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+                  className="flex items-center px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
                 >
                   Next
                   <ChevronRight className="w-4 h-4 ml-2" />
@@ -639,7 +639,7 @@ Thank you
                 <button
                   type="button"
                   onClick={handleSubmit}
-                  className="flex items-center px-6 py-3 bg-pink-500 hover:bg-pink-600 text-white font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+                  className="flex items-center px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
                 >
                   Submit Order
                 </button>

@@ -116,7 +116,7 @@ function PricingCardLayoutStatic({ initialCategory = 'photocards' }) {
                       onClick={() => handleCategoryClick(category.id)}
                       className={`flex-shrink-0 lg:flex-shrink lg:w-full text-left px-4 py-3 rounded-lg font-medium transition-all duration-200 whitespace-nowrap lg:whitespace-normal flex items-center justify-between group ${
                         selectedCategory === category.id
-                          ? 'bg-pink-100 text-pink-700 border border-pink-200'
+                          ? 'bg-red-100 text-red-700 border border-red-200'
                           : 'text-gray-600 hover:bg-gray-50 hover:text-gray-800 border border-transparent'
                       }`}
                     >
@@ -201,7 +201,7 @@ function PricingCardLayoutStatic({ initialCategory = 'photocards' }) {
                                 <p className="text-xs text-gray-600">{option.quantity}</p>
                               </div>
                               <div className="text-right ml-4">
-                                <p className="text-sm font-semibold text-pink-600">{formatPrice(option.price)}</p>
+                                <p className="text-sm font-semibold text-red-600">{formatPrice(option.price)}</p>
                               </div>
                             </div>
                           ))}
@@ -219,7 +219,7 @@ function PricingCardLayoutStatic({ initialCategory = 'photocards' }) {
                             e.stopPropagation();
                             handleItemClick(item);
                           }}
-                          className="w-full text-center py-2 mt-3 text-sm text-pink-600 hover:text-pink-700 font-medium"
+                          className="w-full text-center py-2 mt-3 text-sm text-red-600 hover:text-red-700 font-medium"
                         >
                           {isExpanded ? 'Show Less' : 'Show More'}
                         </button>
@@ -230,7 +230,7 @@ function PricingCardLayoutStatic({ initialCategory = 'photocards' }) {
               </div>
 
               {/* Call to Action */}
-              <div className="mt-8 text-center p-6 bg-pink-50 rounded-lg border border-pink-200">
+              <div className="mt-8 text-center p-6 bg-red-50 rounded-lg border border-red-200">
                 <h6 className="text-lg font-semibold text-gray-800 mb-2">
                   Ready to Order?
                 </h6>
@@ -241,7 +241,7 @@ function PricingCardLayoutStatic({ initialCategory = 'photocards' }) {
                   href="https://www.facebook.com/arprintservices/" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="inline-block bg-pink-600 text-white font-bold text-lg px-8 py-4 rounded-lg shadow-lg hover:bg-pink-700 transform hover:-translate-y-1 transition-all duration-300"
+                  className="inline-block bg-red-600 text-white font-bold text-lg px-8 py-4 rounded-lg shadow-lg hover:bg-red-700 transform hover:-translate-y-1 transition-all duration-300"
                 >
                   Order Now
                 </a>

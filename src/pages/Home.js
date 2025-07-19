@@ -3,6 +3,7 @@ import Hero from '../components/Hero';
 import Leverage from '../components/Leverage';
 import FeaturedProducts from '../components/FeaturedProducts';
 import About from '../components/About';
+import FeedbackSection from '../components/FeedbackSection';
 import FAQSection from '../components/FAQSection';
 
 function Home() {
@@ -12,6 +13,7 @@ function Home() {
       <Leverage />
       <FeaturedProducts />
       <About />
+      <FeedbackSection />
       <FAQSection />
     </div>
   );

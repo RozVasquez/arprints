@@ -70,8 +70,8 @@ function PricingCard() {
                 onClick={() => setSelectedCategory(category.id)}
                 className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
                   selectedCategory === category.id
-                    ? 'bg-pink-600 text-white shadow-lg'
-                    : 'bg-white text-gray-700 hover:bg-pink-50 border border-gray-200'
+                    ? 'bg-red-600 text-white shadow-lg'
+                    : 'bg-white text-gray-700 hover:bg-red-50 border border-gray-200'
                 }`}
               >
                 {category.title}
@@ -110,7 +110,7 @@ function PricingCard() {
 
                   {/* Starting Price */}
                   <div className="mb-4">
-                    <span className="text-sm font-semibold text-pink-600 bg-pink-50 px-3 py-1 rounded-full">
+                    <span className="text-sm font-semibold text-red-600 bg-red-50 px-3 py-1 rounded-full">
                       Starting at {getLowestPriceForType(item.options)}
                     </span>
                   </div>
@@ -128,7 +128,7 @@ function PricingCard() {
                           <p className="text-xs text-gray-600">{option.quantity}</p>
                         </div>
                         <div className="text-right">
-                          <p className="text-sm font-semibold text-pink-600">
+                          <p className="text-sm font-semibold text-red-600">
                             {formatPrice(option.price)}
                           </p>
                         </div>
@@ -140,7 +140,7 @@ function PricingCard() {
                       <div>
                         <button
                           onClick={() => toggleExpanded(item.id)}
-                          className="w-full text-center py-2 text-sm text-pink-600 hover:text-pink-700 font-medium"
+                          className="w-full text-center py-2 text-sm text-red-600 hover:text-red-700 font-medium"
                         >
                           {expandedItems.has(item.id) ? 'Show Less' : `Show ${item.options.length - 3} More`}
                         </button>
@@ -156,7 +156,7 @@ function PricingCard() {
                                   <p className="text-xs text-gray-600">{option.quantity}</p>
                                 </div>
                                 <div className="text-right">
-                                  <p className="text-sm font-semibold text-pink-600">
+                                  <p className="text-sm font-semibold text-red-600">
                                     {formatPrice(option.price)}
                                   </p>
                                 </div>
@@ -175,7 +175,7 @@ function PricingCard() {
                     href="https://www.facebook.com/arprintservices/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full bg-pink-600 text-white text-center py-3 rounded-lg font-medium hover:bg-pink-700 transition-colors duration-200 block"
+                    className="w-full bg-red-600 text-white text-center py-3 rounded-lg font-medium hover:bg-red-700 transition-colors duration-200 block"
                   >
                     Order Now
                   </a>
@@ -196,7 +196,7 @@ function PricingCard() {
               href="https://www.facebook.com/arprintservices/"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block bg-pink-600 text-white font-bold text-lg px-8 py-4 rounded-lg shadow-lg hover:bg-pink-700 transform hover:-translate-y-1 transition-all duration-300"
+              className="inline-block bg-red-600 text-white font-bold text-lg px-8 py-4 rounded-lg shadow-lg hover:bg-red-700 transform hover:-translate-y-1 transition-all duration-300"
             >
               Order Now
             </a>

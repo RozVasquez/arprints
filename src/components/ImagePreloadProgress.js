@@ -65,7 +65,7 @@ function ImagePreloadProgress() {
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div 
-              className="bg-gradient-to-r from-pink-500 to-purple-600 h-2 rounded-full transition-all duration-300"
+              className="bg-gradient-to-r from-red-500 to-purple-600 h-2 rounded-full transition-all duration-300"
               style={{ width: `${progress.percentage}%` }}
             ></div>
           </div>
