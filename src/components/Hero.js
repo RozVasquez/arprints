@@ -21,7 +21,7 @@ function Hero() {
       <div className="container mx-auto px-4 md:px-8 flex flex-col md:flex-row items-center md:items-center justify-between">
         <div className="text-center md:text-left md:w-1/2 mb-12 md:mb-0 md:-mt-20">
           <SplitText
-            className="text-4xl md:text-6xl font-bold text-red-800 leading-tight mt-6 md:mt-4 mb-4"
+            className="text-4xl md:text-6xl font-bold text-red-800 leading-tight mt-6 md:mt-4 mb-4 font-dynapuff"
             delay={80}
             duration={0.8}
             splitType="words"
@@ -50,7 +50,7 @@ function Hero() {
         </div>
         <div className="w-full md:w-1/2 flex justify-center md:justify-end items-center">
           <img 
-            src="/images/Hero.png" 
+            src="/Hero.png" 
             alt="AR Prints Photos" 
             className="w-[95%] md:w-[90%] max-w-none md:max-w-xl lg:max-w-2xl object-contain transform hover:scale-105 transition-transform duration-300 px-0 md:px-0"
           />

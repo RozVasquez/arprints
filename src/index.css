@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&family=TikTok+Sans:opsz,wght@12..36,300..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
 :root {
@@ -10,27 +11,58 @@
   --primary-dark: #cc0000;
   --primary-bg: #fff5f5;
   --primary-border: #ffcccc;
+  --heading-font: 'DynaPuff', cursive;
+  --body-font: 'Poppins', sans-serif;
+  --accent-font: 'Poppins', sans-serif;
+  --display-font: 'TikTok Sans', sans-serif;
+}
+
+/* Apply heading font to all headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--heading-font);
+}
+
+/* Apply different fonts to different text elements */
+body {
+  margin: 0;
+  font-family: var(--body-font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Use Poppins for buttons and interactive elements */
+button, .btn, .button {
+  font-family: var(--accent-font);
+}
+
+/* Use TikTok Sans for special display text */
+.display-text, .hero-subtitle, .section-title {
+  font-family: var(--display-font);
+}
+
+/* Use Poppins for navigation and menu items */
+nav, .nav-item, .menu-item {
+  font-family: var(--accent-font);
+}
+
+/* Use TikTok Sans for prices and important numbers */
+.price, .cost, .amount {
+  font-family: var(--display-font);
+  font-weight: 600;
 }
 
 /* Hide scrollbars globally */
 * {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
 }
 
-*::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+*::-webkit-scrollbar { 
+  display: none;  /* Safari and Chrome */
 }
 
 html, body {
   overflow-x: hidden; /* Prevent horizontal scroll */
-}
-
-body {
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 code {

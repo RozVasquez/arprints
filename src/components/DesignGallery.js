@@ -508,7 +508,7 @@ function DesignGallery({ initialCategory = null }) {
   // Show loading state
   if (loading) {
     return (
-      <section id="gallery" className="py-16 md:py-20">
+      <section id="gallery" className="min-h-screen flex items-center justify-center">
         <div className="container mx-auto px-4 md:px-8">
           <div className="text-center">
             <LoadingSpinner size="lg" className="mb-4" />
@@ -522,7 +522,7 @@ function DesignGallery({ initialCategory = null }) {
   // Show error state
   if (error) {
     return (
-      <section id="gallery" className="py-16 md:py-20">
+      <section id="gallery" className="min-h-screen flex items-center justify-center">
         <div className="container mx-auto px-4 md:px-8">
           <div className="text-center">
             <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
@@ -547,7 +547,7 @@ function DesignGallery({ initialCategory = null }) {
   // Show no data state
   if (!galleryData || Object.keys(galleryData).length === 0) {
     return (
-      <section id="gallery" className="py-16 md:py-20">
+      <section id="gallery" className="min-h-screen flex items-center justify-center">
         <div className="container mx-auto px-4 md:px-8">
           <div className="text-center">
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 max-w-md mx-auto">

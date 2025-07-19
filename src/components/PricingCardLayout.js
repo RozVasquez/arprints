@@ -91,7 +91,7 @@ function PricingCardLayoutStatic({ initialCategory = 'photocards' }) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-24 pb-12">
+    <div className="min-h-screen bg-gray-50 pt-8 pb-12">
       <div className="max-w-6xl mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-8">

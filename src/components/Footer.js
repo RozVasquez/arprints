@@ -18,7 +18,7 @@ function Footer() {
   };
 
   return (
-    <footer className="bg-gradient-to-br from-red-500 via-red-600 to-red-700 text-white">
+    <footer className="bg-gradient-to-br from-red-600 via-red-700 to-red-900 text-white">
       {/* Main Footer Content */}
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
@@ -64,7 +64,7 @@ function Footer() {
               <li>
                 <button
                   onClick={handleFeedbackClick}
-                  className="text-red-100 hover:text-white transition-colors duration-200 text-sm hover:underline block py-1 w-full text-left"
+                  className="text-red-100 hover:text-white transition-colors duration-200 text-sm hover:underline block py-1 w-full text-center md:text-left"
                 >
                   Feedbacks
                 </button>
