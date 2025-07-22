@@ -90,20 +90,10 @@ const productData = {
           {
             type: "Classic White",
             quantity: "10 pcs",
-            price: "₱50.00"
-          },
-          {
-            type: "Classic White",
-            quantity: "30 pcs",
-            price: "₱120.00"
-          },
-          {
-            type: "Classic Colored",
-            quantity: "10 pcs",
             price: "₱60.00"
           },
           {
-            type: "Classic Colored",
+            type: "Classic White",
             quantity: "30 pcs",
             price: "₱120.00"
           },
@@ -115,7 +105,7 @@ const productData = {
           {
             type: "Instax Design",
             quantity: "30 pcs",
-            price: "₱150.00"
+            price: "₱160.00"
           }
         ]
       },
@@ -127,22 +117,12 @@ const productData = {
           {
             type: "Classic White",
             quantity: "8 pcs",
-            price: "₱60.00"
+            price: "₱70.00"
           },
           {
             type: "Classic White",
             quantity: "24 pcs",
-            price: "₱120.00"
-          },
-          {
-            type: "Classic Colored",
-            quantity: "8 pcs",
-            price: "₱70.00"
-          },
-          {
-            type: "Classic Colored",
-            quantity: "24 pcs",
-            price: "₱140.00"
+            price: "₱130.00"
           },
           {
             type: "Instax Design",
@@ -152,7 +132,7 @@ const productData = {
           {
             type: "Instax Design",
             quantity: "24 pcs",
-            price: "₱160.00"
+            price: "₱180.00"
           }
         ]
       },
@@ -164,32 +144,22 @@ const productData = {
           {
             type: "Classic White",
             quantity: "5 pcs",
-            price: "₱60.00"
+            price: "₱80.00"
           },
           {
             type: "Classic White",
-            quantity: "15 pcs",
-            price: "₱120.00"
-          },
-          {
-            type: "Classic Colored",
-            quantity: "5 pcs",
-            price: "₱70.00"
-          },
-          {
-            type: "Classic Colored",
             quantity: "15 pcs",
             price: "₱140.00"
           },
           {
             type: "Instax Design",
             quantity: "5 pcs",
-            price: "₱80.00"
+            price: "₱90.00"
           },
           {
             type: "Instax Design",
             quantity: "15 pcs",
-            price: "₱160.00"
+            price: "₱190.00"
           }
         ]
       },
@@ -206,22 +176,22 @@ const productData = {
           {
             type: "Classic Colors",
             quantity: "2 pcs",
-            price: "₱30.00"
+            price: "₱40.00"
           },
           {
             type: "Classic Colors",
             quantity: "5 pcs",
-            price: "₱50.00"
+            price: "₱70.00"
           },
           {
             type: "with Design",
             quantity: "2 pcs",
-            price: "₱40.00"
+            price: "₱50.00"
           },
           {
             type: "with Design",
             quantity: "5 pcs",
-            price: "₱60.00"
+            price: "₱80.00"
           }
         ]
       },
@@ -233,22 +203,22 @@ const productData = {
           {
             type: "Classic",
             quantity: "4 pcs",
-            price: "₱30.00"
+            price: "₱40.00"
           },
           {
             type: "Classic",
             quantity: "8 pcs",
-            price: "₱50.00"
+            price: "₱70.00"
           },
           {
             type: "with Design",
             quantity: "4 pcs",
-            price: "₱40.00"
+            price: "₱50.00"
           },
           {
             type: "with Design",
-            quantity: "10 pcs",
-            price: "₱70.00"
+            quantity: "8 pcs",
+            price: "₱90.00"
           }
         ]
       }
